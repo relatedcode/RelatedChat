@@ -67,12 +67,12 @@ NSString * const kJSQSystemSoundTypeWAV = @"wav";
 
 
 
-void systemServicesSoundCompletion(SystemSoundID  soundID, void *data)
+static void systemServicesSoundCompletion(SystemSoundID  soundID, void *data)
 {
     JSQSystemSoundPlayer *player = [JSQSystemSoundPlayer sharedPlayer];
     
     JSQSystemSoundPlayerCompletionBlock block = [player completionBlockForSoundID:soundID];
-    if(block) {
+    if (block) {
         block();
         [player removeCompletionBlockForSoundID:soundID];
     }
@@ -100,6 +100,7 @@ void systemServicesSoundCompletion(SystemSoundID  soundID, void *data)
 {
     self = [super init];
     if (self) {
+        _bundle = [NSBundle mainBundle];
         _on = [self readSoundPlayerOnFromUserDefaults];
         _sounds = [[NSMutableDictionary alloc] init];
         _completionBlocks = [[NSMutableDictionary alloc] init];
@@ -266,7 +267,7 @@ void systemServicesSoundCompletion(SystemSoundID  soundID, void *data)
 
 - (SystemSoundID)soundIDFromData:(NSData *)data
 {
-    if (!data) {
+    if (data == nil) {
         return 0;
     }
     
@@ -321,8 +322,7 @@ void systemServicesSoundCompletion(SystemSoundID  soundID, void *data)
 - (SystemSoundID)createSoundIDWithName:(NSString *)filename
                              extension:(NSString *)extension
 {
-    NSURL *fileURL = [[NSBundle mainBundle] URLForResource:filename
-                                             withExtension:extension];
+    NSURL *fileURL = [self.bundle URLForResource:filename withExtension:extension];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]]) {
         SystemSoundID soundID;
@@ -355,11 +355,11 @@ void systemServicesSoundCompletion(SystemSoundID  soundID, void *data)
 {
     SystemSoundID soundID = [self soundIDForFilename:filename];
     
-    if(soundID) {
+    if (soundID) {
         AudioServicesRemoveSystemSoundCompletion(soundID);
         
         OSStatus error = AudioServicesDisposeSystemSoundID(soundID);
-        if(error) {
+        if (error) {
             [self logError:error withMessage:@"Warning! SystemSoundID could not be disposed."];
         }
     }

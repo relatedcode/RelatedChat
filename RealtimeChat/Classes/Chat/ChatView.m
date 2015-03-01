@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014 Related Code - http://relatedcode.com
+// Copyright (c) 2015 Related Code - http://relatedcode.com
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -23,7 +23,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 @interface ChatView()
 {
-	NSString *roomId;
+	NSString *groupId;
 
 	BOOL initialized;
 	FirebaseHandle handle;
@@ -31,10 +31,9 @@
 	NSMutableArray *messages;
 	NSMutableDictionary *avatars;
 
-	JSQMessagesBubbleImage *outgoingBubbleImageData;
-	JSQMessagesBubbleImage *incomingBubbleImageData;
-	
-	JSQMessagesAvatarImage *placeholderImageData;
+	JSQMessagesBubbleImage *bubbleImageOutgoing;
+	JSQMessagesBubbleImage *bubbleImageIncoming;
+	JSQMessagesAvatarImage *avatarImageBlank;
 }
 @end
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -42,11 +41,11 @@
 @implementation ChatView
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (id)initWith:(NSString *)roomId_
+- (id)initWith:(NSString *)groupId_
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	self = [super init];
-	roomId = roomId_;
+	groupId = groupId_;
 	return self;
 }
 
@@ -56,23 +55,24 @@
 {
 	[super viewDidLoad];
 	self.title = @"Chat";
-
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	messages = [[NSMutableArray alloc] init];
 	avatars = [[NSMutableDictionary alloc] init];
-
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	PFUser *user = [PFUser currentUser];
 	self.senderId = user.objectId;
 	self.senderDisplayName = user[PF_USER_FULLNAME];
-
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	JSQMessagesBubbleImageFactory *bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-	outgoingBubbleImageData = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
-	incomingBubbleImageData = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleGreenColor]];
-
-	placeholderImageData = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"chat_blank"] diameter:30.0];
-
+	bubbleImageOutgoing = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+	bubbleImageIncoming = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleGreenColor]];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	avatarImageBlank = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"chat_blank"] diameter:30.0];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	self.firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Chat/%@", FIREBASE, groupId]];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self loadMessages];
-
-	ClearMessageCounter(roomId);
+	ClearMessageCounter(groupId);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	[super viewDidAppear:animated];
-	self.collectionView.collectionViewLayout.springinessEnabled = YES;
+	self.collectionView.collectionViewLayout.springinessEnabled = NO;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -98,7 +98,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	initialized = NO;
-	self.firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/%@", FIREBASE, roomId]];
+	self.automaticallyScrollsToMostRecentMessage = NO;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self.firebase observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot)
 	{
@@ -125,10 +125,9 @@
 	handle = [self.firebase observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
 	{
 		[self.firebase removeObserverWithHandle:handle];
-		
 		[self finishReceivingMessage];
-		[ProgressHUD dismiss];
-		
+		[self scrollToBottomAnimated:NO];
+		self.automaticallyScrollsToMostRecentMessage = YES;
 		initialized	= YES;
 	}];
 }
@@ -143,11 +142,15 @@
 	[formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'zzz'"];
 	[formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	NSString *dateStr = [formatter stringFromDate:date];
-
-	[[self.firebase childByAutoId] setValue:@{@"text":text, @"userId":senderId, @"date":dateStr, @"name":senderDisplayName}];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	SendPushNotification(roomId, text);
-	UpdateMessageCounter(roomId, text);
+	NSDictionary *values = @{@"text":text, @"userId":senderId, @"date":dateStr, @"name":senderDisplayName};
+	[[self.firebase childByAutoId] setValue:values withCompletionBlock:^(NSError *error, Firebase *ref)
+	{
+		if (error != nil) [ProgressHUD showError:@"Network error."];
+	}];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	SendPushNotification(groupId, text);
+	UpdateMessageCounter(groupId, text);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[JSQSystemSoundPlayer jsq_playMessageSentSound];
 	[self finishSendingMessage];
@@ -176,9 +179,9 @@
 	JSQMessage *message = messages[indexPath.item];
 	if ([message.senderId isEqualToString:self.senderId])
 	{
-		return outgoingBubbleImageData;
+		return bubbleImageOutgoing;
 	}
-	return incomingBubbleImageData;
+	return bubbleImageIncoming;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -215,7 +218,7 @@
 			}
 			else NSLog(@"Network error.");
 		}];
-		return placeholderImageData;
+		return avatarImageBlank;
 	}
 	else return avatars[userId];
 }

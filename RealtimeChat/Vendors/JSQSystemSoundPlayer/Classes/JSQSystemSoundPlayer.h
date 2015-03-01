@@ -60,6 +60,12 @@ typedef void(^JSQSystemSoundPlayerCompletionBlock)(void);
 @property (assign, nonatomic, readonly) BOOL on;
 
 /**
+ *  The bundle in which the sound player uses to search for sound file resources. You may change this property as needed.
+ *  The default value is the main bundle. This value must not be `nil`.
+ */
+@property (strong, nonatomic) NSBundle *bundle;
+
+/**
  *  Returns the shared `JSQSystemSoundPlayer` object. This method always returns the same sound system player object.
  *
  *  @return An initialized `JSQSystemSoundPlayer` object if successful, `nil` otherwise.

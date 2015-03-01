@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014 Related Code - http://relatedcode.com
+// Copyright (c) 2015 Related Code - http://relatedcode.com
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,8 +15,8 @@
 #import "ProgressHUD.h"
 
 #import "AppConstant.h"
+#import "images.h"
 #import "pushnotification.h"
-#import "utilities.h"
 
 #import "WelcomeView.h"
 #import "LoginView.h"
@@ -60,7 +60,6 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	[ProgressHUD show:@"Signing in..." Interaction:NO];
-
 	[PFFacebookUtils logInWithPermissions:@[@"public_profile", @"email", @"user_friends"] block:^(PFUser *user, NSError *error)
 	{
 		if (user != nil)
@@ -109,20 +108,19 @@
 	{
 		UIImage *image = (UIImage *)responseObject;
 		//-----------------------------------------------------------------------------------------------------------------------------------------
-		if (image.size.width > 140) image = ResizeImage(image, 140, 140);
+		UIImage *picture = ResizeImage(image, 280, 280);
+		UIImage *thumbnail = ResizeImage(image, 60, 60);
 		//-----------------------------------------------------------------------------------------------------------------------------------------
-		PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(image, 0.6)];
+		PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
 		[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 		{
-			if (error != nil) [ProgressHUD showError:error.userInfo[@"error"]];
+			if (error != nil) [ProgressHUD showError:@"Network error."];
 		}];
 		//-----------------------------------------------------------------------------------------------------------------------------------------
-		if (image.size.width > 30) image = ResizeImage(image, 30, 30);
-		//-----------------------------------------------------------------------------------------------------------------------------------------
-		PFFile *fileThumbnail = [PFFile fileWithName:@"thumbnail.jpg" data:UIImageJPEGRepresentation(image, 0.6)];
+		PFFile *fileThumbnail = [PFFile fileWithName:@"thumbnail.jpg" data:UIImageJPEGRepresentation(thumbnail, 0.6)];
 		[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 		{
-			if (error != nil) [ProgressHUD showError:error.userInfo[@"error"]];
+			if (error != nil) [ProgressHUD showError:@"Network error."];
 		}];
 		//-----------------------------------------------------------------------------------------------------------------------------------------
 		user[PF_USER_EMAILCOPY] = userData[@"email"];

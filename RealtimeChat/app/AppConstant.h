@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014 Related Code - http://relatedcode.com
+// Copyright (c) 2015 Related Code - http://relatedcode.com
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -16,10 +16,16 @@
 #define		FIREBASE							@"https://relatedchat.firebaseio.com"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
+#define		DEFAULT_TAB							1
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#define		MESSAGE_INVITE						@"Check out RealtimeChat. You can download here: https://github.com/relatedcode/RealtimeChat"
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		PF_INSTALLATION_CLASS_NAME			@"_Installation"		//	Class name
 #define		PF_INSTALLATION_OBJECTID			@"objectId"				//	String
 #define		PF_INSTALLATION_USER				@"user"					//	Pointer to User Class
-
+//-----------------------------------------------------------------------
 #define		PF_USER_CLASS_NAME					@"_User"				//	Class name
 #define		PF_USER_OBJECTID					@"objectId"				//	String
 #define		PF_USER_USERNAME					@"username"				//	String
@@ -31,19 +37,18 @@
 #define		PF_USER_FACEBOOKID					@"facebookId"			//	String
 #define		PF_USER_PICTURE						@"picture"				//	File
 #define		PF_USER_THUMBNAIL					@"thumbnail"			//	File
-
-#define		PF_CHATROOMS_CLASS_NAME				@"ChatRooms"			//	Class name
-#define		PF_CHATROOMS_NAME					@"name"					//	String
-
+//-----------------------------------------------------------------------
+#define		PF_GROUPS_CLASS_NAME				@"Groups"				//	Class name
+#define		PF_GROUPS_NAME						@"name"					//	String
+//-----------------------------------------------------------------------
 #define		PF_MESSAGES_CLASS_NAME				@"Messages2"			//	Class name
 #define		PF_MESSAGES_USER					@"user"					//	Pointer to User Class
-#define		PF_MESSAGES_ROOMID					@"roomId"				//	String
+#define		PF_MESSAGES_GROUPID					@"groupId"				//	String
 #define		PF_MESSAGES_DESCRIPTION				@"description"			//	String
 #define		PF_MESSAGES_LASTUSER				@"lastUser"				//	Pointer to User Class
 #define		PF_MESSAGES_LASTMESSAGE				@"lastMessage"			//	String
 #define		PF_MESSAGES_COUNTER					@"counter"				//	Number
 #define		PF_MESSAGES_UPDATEDACTION			@"updatedAction"		//	Date
-
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		NOTIFICATION_APP_STARTED			@"NCAppStarted"
 #define		NOTIFICATION_USER_LOGGED_IN			@"NCUserLoggedIn"
