@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		291D96481AAEF3D60040D594 /* chat_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 291D963E1AAEF3D60040D594 /* chat_blank@2x.png */; };
+		291D96491AAEF3D60040D594 /* messages_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 291D96401AAEF3D60040D594 /* messages_blank@2x.png */; };
+		291D964A1AAEF3D60040D594 /* messages_compose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 291D96411AAEF3D60040D594 /* messages_compose@2x.png */; };
+		291D964B1AAEF3D60040D594 /* profile_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 291D96431AAEF3D60040D594 /* profile_blank@2x.png */; };
+		291D964C1AAEF3D60040D594 /* tab_groups@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 291D96451AAEF3D60040D594 /* tab_groups@2x.png */; };
+		291D964D1AAEF3D60040D594 /* tab_messages@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 291D96461AAEF3D60040D594 /* tab_messages@2x.png */; };
+		291D964E1AAEF3D60040D594 /* tab_profile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 291D96471AAEF3D60040D594 /* tab_profile@2x.png */; };
 		2936D2521A557852001A5D5C /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2936D24D1A557852001A5D5C /* FacebookSDK.framework */; };
 		2936D2531A557852001A5D5C /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2936D24E1A557852001A5D5C /* Firebase.framework */; };
 		2936D2541A557852001A5D5C /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2936D24F1A557852001A5D5C /* Parse.framework */; };
@@ -89,13 +96,6 @@
 		297B09BA1AA3C58D001B3A84 /* JSQSystemSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 297B09791AA3C58D001B3A84 /* JSQSystemSoundPlayer.m */; };
 		297B09BB1AA3C58D001B3A84 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 297B097B1AA3C58D001B3A84 /* ProgressHUD.bundle */; };
 		297B09BC1AA3C58D001B3A84 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 297B097D1AA3C58D001B3A84 /* ProgressHUD.m */; };
-		297B09CA1AA3C592001B3A84 /* chat_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 297B09C01AA3C592001B3A84 /* chat_blank@2x.png */; };
-		297B09CB1AA3C592001B3A84 /* messages_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 297B09C21AA3C592001B3A84 /* messages_blank@2x.png */; };
-		297B09CC1AA3C592001B3A84 /* messages_compose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 297B09C31AA3C592001B3A84 /* messages_compose@2x.png */; };
-		297B09CD1AA3C592001B3A84 /* profile_blank@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 297B09C51AA3C592001B3A84 /* profile_blank@2x.png */; };
-		297B09CE1AA3C592001B3A84 /* tab_groups@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 297B09C71AA3C592001B3A84 /* tab_groups@2x.png */; };
-		297B09CF1AA3C592001B3A84 /* tab_messages@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 297B09C81AA3C592001B3A84 /* tab_messages@2x.png */; };
-		297B09D01AA3C592001B3A84 /* tab_profile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 297B09C91AA3C592001B3A84 /* tab_profile@2x.png */; };
 		297B0A0E1AA3C596001B3A84 /* NavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 297B09D41AA3C596001B3A84 /* NavigationController.m */; };
 		297B0A0F1AA3C596001B3A84 /* ChatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 297B09D71AA3C596001B3A84 /* ChatView.m */; };
 		297B0A101AA3C596001B3A84 /* GroupsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 297B09DB1AA3C596001B3A84 /* GroupsView.m */; };
@@ -131,6 +131,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		291D963E1AAEF3D60040D594 /* chat_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_blank@2x.png"; sourceTree = "<group>"; };
+		291D96401AAEF3D60040D594 /* messages_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "messages_blank@2x.png"; sourceTree = "<group>"; };
+		291D96411AAEF3D60040D594 /* messages_compose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "messages_compose@2x.png"; sourceTree = "<group>"; };
+		291D96431AAEF3D60040D594 /* profile_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile_blank@2x.png"; sourceTree = "<group>"; };
+		291D96451AAEF3D60040D594 /* tab_groups@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab_groups@2x.png"; sourceTree = "<group>"; };
+		291D96461AAEF3D60040D594 /* tab_messages@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab_messages@2x.png"; sourceTree = "<group>"; };
+		291D96471AAEF3D60040D594 /* tab_profile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab_profile@2x.png"; sourceTree = "<group>"; };
 		2936D24D1A557852001A5D5C /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		2936D24E1A557852001A5D5C /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Firebase.framework; sourceTree = "<group>"; };
 		2936D24F1A557852001A5D5C /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -290,13 +297,6 @@
 		297B097B1AA3C58D001B3A84 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		297B097C1AA3C58D001B3A84 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		297B097D1AA3C58D001B3A84 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
-		297B09C01AA3C592001B3A84 /* chat_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_blank@2x.png"; sourceTree = "<group>"; };
-		297B09C21AA3C592001B3A84 /* messages_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "messages_blank@2x.png"; sourceTree = "<group>"; };
-		297B09C31AA3C592001B3A84 /* messages_compose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "messages_compose@2x.png"; sourceTree = "<group>"; };
-		297B09C51AA3C592001B3A84 /* profile_blank@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile_blank@2x.png"; sourceTree = "<group>"; };
-		297B09C71AA3C592001B3A84 /* tab_groups@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab_groups@2x.png"; sourceTree = "<group>"; };
-		297B09C81AA3C592001B3A84 /* tab_messages@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab_messages@2x.png"; sourceTree = "<group>"; };
-		297B09C91AA3C592001B3A84 /* tab_profile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab_profile@2x.png"; sourceTree = "<group>"; };
 		297B09D31AA3C596001B3A84 /* NavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationController.h; sourceTree = "<group>"; };
 		297B09D41AA3C596001B3A84 /* NavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationController.m; sourceTree = "<group>"; };
 		297B09D61AA3C596001B3A84 /* ChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatView.h; sourceTree = "<group>"; };
@@ -383,6 +383,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		291D963C1AAEF3D60040D594 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				291D963D1AAEF3D60040D594 /* chat */,
+				291D963F1AAEF3D60040D594 /* messages */,
+				291D96421AAEF3D60040D594 /* profileview */,
+				291D96441AAEF3D60040D594 /* tabbar */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		291D963D1AAEF3D60040D594 /* chat */ = {
+			isa = PBXGroup;
+			children = (
+				291D963E1AAEF3D60040D594 /* chat_blank@2x.png */,
+			);
+			path = chat;
+			sourceTree = "<group>";
+		};
+		291D963F1AAEF3D60040D594 /* messages */ = {
+			isa = PBXGroup;
+			children = (
+				291D96401AAEF3D60040D594 /* messages_blank@2x.png */,
+				291D96411AAEF3D60040D594 /* messages_compose@2x.png */,
+			);
+			path = messages;
+			sourceTree = "<group>";
+		};
+		291D96421AAEF3D60040D594 /* profileview */ = {
+			isa = PBXGroup;
+			children = (
+				291D96431AAEF3D60040D594 /* profile_blank@2x.png */,
+			);
+			path = profileview;
+			sourceTree = "<group>";
+		};
+		291D96441AAEF3D60040D594 /* tabbar */ = {
+			isa = PBXGroup;
+			children = (
+				291D96451AAEF3D60040D594 /* tab_groups@2x.png */,
+				291D96461AAEF3D60040D594 /* tab_messages@2x.png */,
+				291D96471AAEF3D60040D594 /* tab_profile@2x.png */,
+			);
+			path = tabbar;
+			sourceTree = "<group>";
+		};
 		297B08E11AA3C58C001B3A84 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
@@ -639,55 +685,9 @@
 		297B09BD1AA3C592001B3A84 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				297B09BE1AA3C592001B3A84 /* Images */,
+				291D963C1AAEF3D60040D594 /* Images */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		297B09BE1AA3C592001B3A84 /* Images */ = {
-			isa = PBXGroup;
-			children = (
-				297B09BF1AA3C592001B3A84 /* chat */,
-				297B09C11AA3C592001B3A84 /* messages */,
-				297B09C41AA3C592001B3A84 /* profile */,
-				297B09C61AA3C592001B3A84 /* tabbar */,
-			);
-			path = Images;
-			sourceTree = "<group>";
-		};
-		297B09BF1AA3C592001B3A84 /* chat */ = {
-			isa = PBXGroup;
-			children = (
-				297B09C01AA3C592001B3A84 /* chat_blank@2x.png */,
-			);
-			path = chat;
-			sourceTree = "<group>";
-		};
-		297B09C11AA3C592001B3A84 /* messages */ = {
-			isa = PBXGroup;
-			children = (
-				297B09C21AA3C592001B3A84 /* messages_blank@2x.png */,
-				297B09C31AA3C592001B3A84 /* messages_compose@2x.png */,
-			);
-			path = messages;
-			sourceTree = "<group>";
-		};
-		297B09C41AA3C592001B3A84 /* profile */ = {
-			isa = PBXGroup;
-			children = (
-				297B09C51AA3C592001B3A84 /* profile_blank@2x.png */,
-			);
-			path = profile;
-			sourceTree = "<group>";
-		};
-		297B09C61AA3C592001B3A84 /* tabbar */ = {
-			isa = PBXGroup;
-			children = (
-				297B09C71AA3C592001B3A84 /* tab_groups@2x.png */,
-				297B09C81AA3C592001B3A84 /* tab_messages@2x.png */,
-				297B09C91AA3C592001B3A84 /* tab_profile@2x.png */,
-			);
-			path = tabbar;
 			sourceTree = "<group>";
 		};
 		297B09D11AA3C596001B3A84 /* Classes */ = {
@@ -998,27 +998,27 @@
 				297B0A201AA3C596001B3A84 /* LoginView.xib in Resources */,
 				297B0A241AA3C596001B3A84 /* WelcomeView.xib in Resources */,
 				297B09BB1AA3C58D001B3A84 /* ProgressHUD.bundle in Resources */,
+				291D964D1AAEF3D60040D594 /* tab_messages@2x.png in Resources */,
 				297B0A221AA3C596001B3A84 /* RegisterView.xib in Resources */,
 				297B098F1AA3C58D001B3A84 /* JSQMessagesAssets.bundle in Resources */,
 				297B09B91AA3C58D001B3A84 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */,
 				297B0A1C1AA3C596001B3A84 /* MessagesView.xib in Resources */,
 				297B09901AA3C58D001B3A84 /* JSQMessages.strings in Resources */,
-				297B09CE1AA3C592001B3A84 /* tab_groups@2x.png in Resources */,
+				291D964C1AAEF3D60040D594 /* tab_groups@2x.png in Resources */,
 				29EB241919E9292500D7AA97 /* LaunchScreen.xib in Resources */,
 				297B0A161AA3C596001B3A84 /* AddressBookView.xib in Resources */,
-				297B09CB1AA3C592001B3A84 /* messages_blank@2x.png in Resources */,
 				297B09B41AA3C58D001B3A84 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
-				297B09D01AA3C592001B3A84 /* tab_profile@2x.png in Resources */,
-				297B09CC1AA3C592001B3A84 /* messages_compose@2x.png in Resources */,
 				297B0A141AA3C596001B3A84 /* SelectMultipleView.xib in Resources */,
 				297B09AF1AA3C58D001B3A84 /* JSQMessagesCollectionViewCellOutgoing.xib in Resources */,
 				29EB241619E9292500D7AA97 /* Images.xcassets in Resources */,
+				291D964E1AAEF3D60040D594 /* tab_profile@2x.png in Resources */,
+				291D964B1AAEF3D60040D594 /* profile_blank@2x.png in Resources */,
+				291D96491AAEF3D60040D594 /* messages_blank@2x.png in Resources */,
+				291D964A1AAEF3D60040D594 /* messages_compose@2x.png in Resources */,
 				297B09991AA3C58D001B3A84 /* JSQMessagesViewController.xib in Resources */,
 				297B0A1A1AA3C596001B3A84 /* MessagesCell.xib in Resources */,
-				297B09CF1AA3C592001B3A84 /* tab_messages@2x.png in Resources */,
 				297B0A121AA3C596001B3A84 /* SelectSingleView.xib in Resources */,
-				297B09CD1AA3C592001B3A84 /* profile_blank@2x.png in Resources */,
-				297B09CA1AA3C592001B3A84 /* chat_blank@2x.png in Resources */,
+				291D96481AAEF3D60040D594 /* chat_blank@2x.png in Resources */,
 				297B09AD1AA3C58D001B3A84 /* JSQMessagesCollectionViewCellIncoming.xib in Resources */,
 				297B09B71AA3C58D001B3A84 /* JSQMessagesToolbarContentView.xib in Resources */,
 			);
