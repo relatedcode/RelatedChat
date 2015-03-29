@@ -11,10 +11,9 @@
 
 #import <Parse/Parse.h>
 #import <Firebase/Firebase.h>
-#import "ProgressHUD.h"
 
 #import "AppConstant.h"
-#import "camera.h"
+#import "converters.h"
 #import "messages.h"
 #import "pushnotification.h"
 
@@ -26,7 +25,7 @@
 	NSString *groupId;
 
 	BOOL initialized;
-	FirebaseHandle handle;
+	Firebase *firebase;
 
 	NSMutableArray *messages;
 	NSMutableDictionary *avatars;
@@ -69,10 +68,9 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	avatarImageBlank = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"chat_blank"] diameter:30.0];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	self.firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Chat/%@", FIREBASE, groupId]];
+	firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Chat/%@", FIREBASE, groupId]];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self loadMessages];
-	ClearMessageCounter(groupId);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -88,7 +86,11 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	[super viewWillDisappear:animated];
-	[self.firebase removeAllObservers];
+	if (self.isMovingFromParentViewController)
+	{
+		ClearMessageCounter(groupId);
+		[firebase removeAllObservers];
+	}
 }
 
 #pragma mark - Backend methods
@@ -100,36 +102,63 @@
 	initialized = NO;
 	self.automaticallyScrollsToMostRecentMessage = NO;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[self.firebase observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot)
+	[firebase observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot)
 	{
-		NSString *userId = snapshot.value[@"userId"];
-		NSString *name = snapshot.value[@"name"];
-		NSString *dateStr = snapshot.value[@"date"];
-		NSString *text = snapshot.value[@"text"];
-
-		NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-		[formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'zzz'"];
-		[formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-		NSDate *date = [formatter dateFromString:dateStr];
-
-		JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date text:text];
-		[messages addObject:message];
+		JSQMessage *message = [self addMessage:snapshot.value];
 
 		if (initialized)
 		{
-			[JSQSystemSoundPlayer jsq_playMessageReceivedSound];
+			if ([self incoming:message])
+				[JSQSystemSoundPlayer jsq_playMessageReceivedSound];
 			[self finishReceivingMessage];
 		}
 	}];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	handle = [self.firebase observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
+	[firebase observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
 	{
-		[self.firebase removeObserverWithHandle:handle];
 		[self finishReceivingMessage];
 		[self scrollToBottomAnimated:NO];
 		self.automaticallyScrollsToMostRecentMessage = YES;
 		initialized	= YES;
 	}];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (JSQMessage *)addMessage:(NSDictionary *)values
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	NSString *userId = values[@"userId"];
+	NSString *name = values[@"name"];
+	NSDate *date = String2Date(values[@"date"]);
+	NSString *text = values[@"text"];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date text:text];
+	[messages addObject:message];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	return message;
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)sendMessage:(NSString *)text
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	PFUser *user = [PFUser currentUser];
+	NSString *userId = user.objectId;
+	NSString *name = user[PF_USER_FULLNAME];
+	NSString *date = Date2String([NSDate date]);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSDictionary *values = @{@"text":text, @"userId":userId, @"date":date, @"name":name};
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[[firebase childByAutoId] setValue:values withCompletionBlock:^(NSError *error, Firebase *ref)
+	{
+		if (error != nil) NSLog(@"saveMessage network error.");
+	}];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	SendPushNotification(groupId, text);
+	UpdateMessageCounter(groupId, text);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[JSQSystemSoundPlayer jsq_playMessageSentSound];
+	[self finishSendingMessage];
 }
 
 #pragma mark - JSQMessagesViewController method overrides
@@ -138,22 +167,7 @@
 - (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-	[formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'zzz'"];
-	[formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	NSString *dateStr = [formatter stringFromDate:date];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	NSDictionary *values = @{@"text":text, @"userId":senderId, @"date":dateStr, @"name":senderDisplayName};
-	[[self.firebase childByAutoId] setValue:values withCompletionBlock:^(NSError *error, Firebase *ref)
-	{
-		if (error != nil) [ProgressHUD showError:@"Network error."];
-	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	SendPushNotification(groupId, text);
-	UpdateMessageCounter(groupId, text);
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[JSQSystemSoundPlayer jsq_playMessageSentSound];
-	[self finishSendingMessage];
+	[self sendMessage:text];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -171,13 +185,13 @@
 {
 	return messages[indexPath.item];
 }
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView
 			 messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	JSQMessage *message = messages[indexPath.item];
-	if ([message.senderId isEqualToString:self.senderId])
+	if ([self outgoing:messages[indexPath.item]])
 	{
 		return bubbleImageOutgoing;
 	}
@@ -190,7 +204,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	JSQMessage *message = messages[indexPath.item];
-	NSString *userId = [message senderId];
+	NSString *userId = message.senderId;
 
 	if (avatars[userId] == nil)
 	{
@@ -232,7 +246,7 @@
 		JSQMessage *message = messages[indexPath.item];
 		return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.date];
 	}
-	return nil;
+	else return nil;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -240,20 +254,19 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	JSQMessage *message = messages[indexPath.item];
-	if ([message.senderId isEqualToString:self.senderId])
+	if ([self incoming:message])
 	{
-		return nil;
-	}
-
-	if (indexPath.item - 1 > 0)
-	{
-		JSQMessage *previousMessage = messages[indexPath.item-1];
-		if ([previousMessage.senderId isEqualToString:message.senderId])
+		if (indexPath.item > 0)
 		{
-			return nil;
+			JSQMessage *previous = messages[indexPath.item-1];
+			if ([previous.senderId isEqualToString:message.senderId])
+			{
+				return nil;
+			}
 		}
+		return [[NSAttributedString alloc] initWithString:message.senderDisplayName];
 	}
-	return [[NSAttributedString alloc] initWithString:message.senderDisplayName];
+	else return nil;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -277,9 +290,8 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
-	
-	JSQMessage *message = messages[indexPath.item];
-	if ([message.senderId isEqualToString:self.senderId])
+
+	if ([self outgoing:messages[indexPath.item]])
 	{
 		cell.textView.textColor = [UIColor blackColor];
 	}
@@ -301,7 +313,7 @@
 	{
 		return kJSQMessagesCollectionViewCellLabelHeightDefault;
 	}
-	return 0.0f;
+	else return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -310,20 +322,19 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	JSQMessage *message = messages[indexPath.item];
-	if ([message.senderId isEqualToString:self.senderId])
+	if ([self incoming:message])
 	{
-		return 0.0f;
-	}
-	
-	if (indexPath.item - 1 > 0)
-	{
-		JSQMessage *previousMessage = messages[indexPath.item-1];
-		if ([previousMessage.senderId isEqualToString:message.senderId])
+		if (indexPath.item > 0)
 		{
-			return 0.0f;
+			JSQMessage *previous = messages[indexPath.item-1];
+			if ([previous.senderId isEqualToString:message.senderId])
+			{
+				return 0;
+			}
 		}
+		return kJSQMessagesCollectionViewCellLabelHeightDefault;
 	}
-	return kJSQMessagesCollectionViewCellLabelHeightDefault;
+	else return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -331,7 +342,7 @@
 				   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellBottomLabelAtIndexPath:(NSIndexPath *)indexPath
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	return 0.0f;
+	return 0;
 }
 
 #pragma mark - Responding to collection view tap events
@@ -364,6 +375,22 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	NSLog(@"didTapCellAtIndexPath %@", NSStringFromCGPoint(touchLocation));
+}
+
+#pragma mark - Helper methods
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (BOOL)incoming:(JSQMessage *)message
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	return ([message.senderId isEqualToString:self.senderId] == NO);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (BOOL)outgoing:(JSQMessage *)message
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	return ([message.senderId isEqualToString:self.senderId] == YES);
 }
 
 @end

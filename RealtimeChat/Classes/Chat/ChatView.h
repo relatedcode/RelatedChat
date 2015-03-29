@@ -19,6 +19,4 @@
 
 - (id)initWith:(NSString *)groupId_;
 
-@property (strong, nonatomic) Firebase *firebase;
-
 @end
