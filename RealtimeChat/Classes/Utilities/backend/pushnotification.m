@@ -61,9 +61,15 @@ void SendPushNotification(NSString *groupId, NSString *text)
 	PFQuery *queryInstallation = [PFInstallation query];
 	[queryInstallation whereKey:PF_INSTALLATION_USER matchesKey:PF_MESSAGES_USER inQuery:query];
 
+	NSDictionary *data = @{
+                           @"alert": message,
+                           @"badge": @"Increment",
+                           @"sound": @"chime"
+                           };
+
 	PFPush *push = [[PFPush alloc] init];
 	[push setQuery:queryInstallation];
-	[push setMessage:message];
+	[push setData:data];
 	[push sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
 		if (error != nil)
