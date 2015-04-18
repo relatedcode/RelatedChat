@@ -4,17 +4,17 @@
 
 This is a full native iPhone app to create realtime, text based group or private chat with Parse and Firebase.
 
-![Chat](http://relatedcode.com/github/chat801.png)
-.
 ![Chat](http://relatedcode.com/github/chat802.png)
 .
 ![Chat](http://relatedcode.com/github/chat803.png)
+.
+![Chat](http://relatedcode.com/github/chat807.png)
 
 ![Chat](http://relatedcode.com/github/chat804.png)
 .
-![Chat](http://relatedcode.com/github/chat806.png)
+![Chat](http://relatedcode.com/github/chat805.png)
 .
-![Chat](http://relatedcode.com/github/chat807.png)
+![Chat](http://relatedcode.com/github/chat806.png)
 
 ## FEATURES
 
