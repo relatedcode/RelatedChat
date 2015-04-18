@@ -82,7 +82,7 @@ This is a full native iPhone app to create realtime, text based group or private
 
 ## INSTALLATION
 
-**1.,** All files located in *Classes* directory. Vendor files located in *Vendor* directory and external Frameworks in *Framework* directory. Some resource files can be found in *Resources* directory. Simply add *Classes*, *Resources*, *Vendor* and *Framework* directories to your project.
+**1.,** All source files located in *Classes* directory. Vendor files located in *Vendor* directory and external Frameworks in *Framework* directory. Some resource files can be found in *Resources* directory. Simply add *Classes*, *Resources*, *Vendor* and *Framework* directories to your project.
 
 **2.,** You also need the latest Parse SDK. (Already included, but you can download from [here](https://www.parse.com/docs/downloads)).
 
