@@ -9,10 +9,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import <UIKit/UIKit.h>
+
 #import "JSQMessages.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface ChatView : JSQMessagesViewController <UIActionSheetDelegate>
+@interface ChatView : JSQMessagesViewController <UIActionSheetDelegate, UIImagePickerControllerDelegate>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 - (id)initWith:(NSString *)groupId_;
