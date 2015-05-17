@@ -13,7 +13,7 @@
 #define HEXCOLOR(c) [UIColor colorWithRed:((c>>24)&0xFF)/255.0 green:((c>>16)&0xFF)/255.0 blue:((c>>8)&0xFF)/255.0 alpha:((c)&0xFF)/255.0]
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-#define		FIREBASE							@"https://relatedchat.firebaseio.com"
+#define		FIREBASE							@"https://relatedchat2.firebaseio.com"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		DEFAULT_TAB							0
@@ -46,7 +46,14 @@
 #define		PF_USER_PICTURE						@"picture"				//	File
 #define		PF_USER_THUMBNAIL					@"thumbnail"			//	File
 //-----------------------------------------------------------------------
+#define		PF_BLOCKED_CLASS_NAME				@"Blocked"				//	Class name
+#define		PF_BLOCKED_USER						@"user"					//	Pointer to User Class
+#define		PF_BLOCKED_USER1					@"user1"				//	Pointer to User Class
+#define		PF_BLOCKED_USER2					@"user2"				//	Pointer to User Class
+#define		PF_BLOCKED_USERID2					@"userId2"				//	String
+//-----------------------------------------------------------------------
 #define		PF_GROUP_CLASS_NAME					@"Group"				//	Class name
+#define		PF_GROUP_USER						@"user"					//	Pointer to User Class
 #define		PF_GROUP_NAME						@"name"					//	String
 #define		PF_GROUP_MEMBERS					@"members"				//	Array
 //-----------------------------------------------------------------------
@@ -57,11 +64,16 @@
 #define		PF_RECENT_CLASS_NAME				@"Recent2"				//	Class name
 #define		PF_RECENT_USER						@"user"					//	Pointer to User Class
 #define		PF_RECENT_GROUPID					@"groupId"				//	String
+#define		PF_RECENT_MEMBERS					@"members"				//	Array
 #define		PF_RECENT_DESCRIPTION				@"description"			//	String
 #define		PF_RECENT_LASTUSER					@"lastUser"				//	Pointer to User Class
 #define		PF_RECENT_LASTMESSAGE				@"lastMessage"			//	String
 #define		PF_RECENT_COUNTER					@"counter"				//	Number
 #define		PF_RECENT_UPDATEDACTION				@"updatedAction"		//	Date
+//-----------------------------------------------------------------------
+#define		PF_REPORT_CLASS_NAME				@"Report"				//	Class name
+#define		PF_REPORT_USER1						@"user1"				//	Pointer to User Class
+#define		PF_REPORT_USER2						@"user2"				//	Pointer to User Class
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		NOTIFICATION_APP_STARTED			@"NCAppStarted"
 #define		NOTIFICATION_USER_LOGGED_IN			@"NCUserLoggedIn"

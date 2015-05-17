@@ -15,6 +15,7 @@
 #import <Parse/Parse.h>
 #import <Firebase/Firebase.h>
 #import "IDMPhotoBrowser.h"
+#import "RNGridMenu.h"
 
 #import "AppConstant.h"
 #import "AppDelegate.h"
@@ -26,9 +27,11 @@
 #import "recent.h"
 #import "video.h"
 
+#import "PhotoMediaItem.h"
 #import "VideoMediaItem.h"
 
 #import "ChatView.h"
+#import "ProfileView.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 @interface ChatView()
@@ -206,7 +209,7 @@
 	NSString *userId = item[@"userId"];
 	NSDate *date = String2Date(item[@"date"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:nil];
+	PhotoMediaItem *mediaItem = [[PhotoMediaItem alloc] initWithImage:nil Width:item[@"picture_width"] Height:item[@"picture_height"]];
 	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:self.senderId];
 	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -245,7 +248,7 @@
 				{
 					if (error == nil)
 					{
-		 				UIImage *image = [UIImage imageWithData:imageData];
+						UIImage *image = [UIImage imageWithData:imageData];
 						avatars[senderId] = [JSQMessagesAvatarImageFactory avatarImageWithImage:image diameter:30.0];
 						[self.collectionView reloadData];
 					}
@@ -270,7 +273,8 @@
 	item[@"status"] = @"Delivered";
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	item[@"video"] = item[@"thumbnail"] = item[@"picture"] = item[@"audio"] = item[@"latitude"] = item[@"longitude"] = @"";
-	item[@"duration"] = @0;
+	item[@"video_duration"] = item[@"audio_duration"] = @0;
+	item[@"picture_width"] = item[@"picture_height"] = @0;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if (text != nil) [self sendTextMessage:item Text:text];
 	else if (video != nil) [self sendVideoMessage:item Video:video];
@@ -304,8 +308,8 @@
 				if (error == nil)
 				{
 					item[@"video"] = fileVideo.url;
+					item[@"video_duration"] = duration;
 					item[@"thumbnail"] = fileThumbnail.url;
-					item[@"duration"] = duration;
 					item[@"text"] = @"[Video message]";
 					item[@"type"] = @"video";
 					[self messageSave:item];
@@ -321,12 +325,16 @@
 - (void)sendPictureMessage:(NSMutableDictionary *)item Picture:(UIImage *)picture
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
+	int width = (int) picture.size.width;
+	int height = (int) picture.size.height;
 	PFFile *file = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
 	[file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
 		if (error == nil)
 		{
 			item[@"picture"] = file.url;
+			item[@"picture_width"] = [NSNumber numberWithInt:width];
+			item[@"picture_height"] = [NSNumber numberWithInt:height];
 			item[@"text"] = @"[Picture message]";
 			item[@"type"] = @"picture";
 			[self messageSave:item];
@@ -354,18 +362,6 @@
 	[self finishSendingMessage];
 }
 
-#pragma mark - User actions
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionDelete
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"
-										  destructiveButtonTitle:@"Delete message" otherButtonTitles:nil];
-	action.tag = 1;
-	[action showInView:self.view];
-}
-
 #pragma mark - JSQMessagesViewController method overrides
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -379,10 +375,16 @@
 - (void)didPressAccessoryButton:(UIButton *)sender
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-		otherButtonTitles:@"Take photo or video", @"Choose existing photo", @"Choose existing video", @"Record audio", @"Send location", nil];
-	action.tag = 2;
-	[action showInView:self.view];
+	[self.view endEditing:YES];
+	NSArray *menuItems = @[[[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_camera"] title:@"Camera"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_audio"] title:@"Audio"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_pictures"] title:@"Pictures"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_videos"] title:@"Videos"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_location"] title:@"Location"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_stickers"] title:@"Stickers"]];
+	RNGridMenu *gridMenu = [[RNGridMenu alloc] initWithItems:menuItems];
+	gridMenu.delegate = self;
+	[gridMenu showInViewController:self center:CGPointMake(self.view.bounds.size.width/2.f, self.view.bounds.size.height/2.f)];
 }
 
 #pragma mark - JSQMessages CollectionView DataSource
@@ -552,7 +554,13 @@
 		   atIndexPath:(NSIndexPath *)indexPath
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	NSLog(@"didTapAvatarImageView");
+	PFUser *user = [PFUser currentUser];
+	NSDictionary *item = items[indexPath.item];
+	if ([user.objectId isEqualToString:item[@"userId"]] == NO)
+	{
+		ProfileView *profileView = [[ProfileView alloc] initWith:item[@"userId"]];
+		[self.navigationController pushViewController:profileView animated:YES];
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -573,9 +581,9 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if (message.isMediaMessage)
 	{
-		if ([message.media isKindOfClass:[JSQPhotoMediaItem class]])
+		if ([message.media isKindOfClass:[PhotoMediaItem class]])
 		{
-			JSQPhotoMediaItem *mediaItem = (JSQPhotoMediaItem *)message.media;
+			PhotoMediaItem *mediaItem = (PhotoMediaItem *)message.media;
 			NSArray *photos = [IDMPhoto photosWithImages:@[mediaItem.image]];
 			IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
 			[self presentViewController:browser animated:YES completion:nil];
@@ -597,18 +605,21 @@
 	NSLog(@"didTapCellAtIndexPath %@", NSStringFromCGPoint(touchLocation));
 }
 
+#pragma mark - User actions
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionDelete
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"
+										  destructiveButtonTitle:@"Delete message" otherButtonTitles:nil];
+	[action showInView:self.view];
+}
+
 #pragma mark - UIActionSheetDelegate
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	if (actionSheet.tag == 1) [self actionSheet:actionSheet clickedButtonAtIndex1:buttonIndex];
-	if (actionSheet.tag == 2) [self actionSheet:actionSheet clickedButtonAtIndex2:buttonIndex];
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex1:(NSInteger)buttonIndex
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	if (buttonIndex != actionSheet.cancelButtonIndex)
@@ -617,18 +628,19 @@
 	}
 }
 
+#pragma mark - RNGridMenuDelegate
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex2:(NSInteger)buttonIndex
+- (void)gridMenu:(RNGridMenu *)gridMenu willDismissWithSelectedItem:(RNGridMenuItem *)item atIndex:(NSInteger)itemIndex
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (buttonIndex != actionSheet.cancelButtonIndex)
-	{
-		if (buttonIndex == 0)	PresentMultiCamera(self, YES);
-		if (buttonIndex == 1)	PresentPhotoLibrary(self, YES);
-		if (buttonIndex == 2)	PresentVideoLibrary(self, YES);
-		if (buttonIndex == 3)	PresentPremium(self);
-		if (buttonIndex == 4)	PresentPremium(self);
-	}
+	[gridMenu dismissAnimated:NO];
+	if ([item.title isEqualToString:@"Camera"])		PresentMultiCamera(self, YES);
+	if ([item.title isEqualToString:@"Audio"])		PresentPremium(self);
+	if ([item.title isEqualToString:@"Pictures"])	PresentPhotoLibrary(self, YES);
+	if ([item.title isEqualToString:@"Videos"])		PresentVideoLibrary(self, YES);
+	if ([item.title isEqualToString:@"Location"])	PresentPremium(self);
+	if ([item.title isEqualToString:@"Stickers"])	PresentPremium(self);
 }
 
 #pragma mark - UIImagePickerControllerDelegate
