@@ -15,12 +15,20 @@
 NSString*		StartPrivateChat		(PFUser *user1, PFUser *user2);
 NSString*		StartMultipleChat		(NSMutableArray *users);
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-void			CreateRecentItem		(PFUser *user, NSString *groupId, NSArray *members, NSString *description);
+void			StartGroupChat			(PFObject *group, NSMutableArray *users);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void			UpdateRecentCounter		(NSString *groupId, NSInteger amount, NSString *lastMessage);
-void			ClearRecentCounter		(NSString *groupId);
+void			CreateRecentItem1		(PFUser *user, NSString *groupId, NSArray *members, NSString *description, PFUser *profile);
+void			CreateRecentItem2		(PFUser *user, NSString *groupId, NSArray *members, NSString *description, PFUser *profile);
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void			UpdateRecentCounter1	(NSString *groupId, NSInteger amount, NSString *lastMessage);
+void			UpdateRecentCounter2	(NSDictionary *recent, NSInteger amount, NSString *lastMessage);
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void			ClearRecentCounter1		(NSString *groupId);
+void			ClearRecentCounter2		(NSDictionary *recent);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 void			DeleteRecentItems		(PFUser *user1, PFUser *user2);
+void			DeleteRecentItem		(NSDictionary *recent);

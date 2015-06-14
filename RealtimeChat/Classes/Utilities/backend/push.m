@@ -10,6 +10,7 @@
 // THE SOFTWARE.
 
 #import <Parse/Parse.h>
+#import <Firebase/Firebase.h>
 
 #import "AppConstant.h"
 
@@ -46,20 +47,39 @@ void ParsePushUserResign(void)
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void SendPushNotification(NSString *groupId, NSString *text)
+void SendPushNotification1(NSString *groupId, NSString *text)
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+	FQuery *query = [[firebase queryOrderedByChild:@"groupId"] queryEqualToValue:groupId];
+	[query observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
+	{
+		if (snapshot.value != [NSNull null])
+		{
+			NSArray *recents = [snapshot.value allValues];
+			NSDictionary *recent = [recents firstObject];
+			if (recent != nil)
+			{
+				SendPushNotification2(recent[@"members"], text);
+			}
+		}
+	}];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void SendPushNotification2(NSArray *members, NSString *text)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	PFUser *user = [PFUser currentUser];
 	NSString *message = [NSString stringWithFormat:@"%@: %@", user[PF_USER_FULLNAME], text];
-
-	PFQuery *query = [PFQuery queryWithClassName:PF_RECENT_CLASS_NAME];
-	[query whereKey:PF_RECENT_GROUPID equalTo:groupId];
-	[query whereKey:PF_RECENT_USER notEqualTo:user];
-	[query includeKey:PF_RECENT_USER];
+	
+	PFQuery *query = [PFQuery queryWithClassName:PF_USER_CLASS_NAME];
+	[query whereKey:PF_USER_OBJECTID containedIn:members];
+	[query whereKey:PF_USER_OBJECTID notEqualTo:user.objectId];
 	[query setLimit:1000];
 
 	PFQuery *queryInstallation = [PFInstallation query];
-	[queryInstallation whereKey:PF_INSTALLATION_USER matchesKey:PF_RECENT_USER inQuery:query];
+	[queryInstallation whereKey:PF_INSTALLATION_USER matchesQuery:query];
 
 	PFPush *push = [[PFPush alloc] init];
 	[push setQuery:queryInstallation];
@@ -68,7 +88,7 @@ void SendPushNotification(NSString *groupId, NSString *text)
 	{
 		if (error != nil)
 		{
-			NSLog(@"SendPushNotification send error.");
+			NSLog(@"SendPushNotification2 send error.");
 		}
 	}];
 }

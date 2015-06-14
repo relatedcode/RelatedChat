@@ -27,19 +27,19 @@ UIImage* SquareImage(UIImage *image, CGFloat size)
 		cropped = CropImage(image, xpos, 0, image.size.height, image.size.height);
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	UIImage *resized = ResizeImage(cropped, size, size);
+	UIImage *resized = ResizeImage(cropped, size, size, 1);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return resized;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-UIImage* ResizeImage(UIImage *image, CGFloat width, CGFloat height)
+UIImage* ResizeImage(UIImage *image, CGFloat width, CGFloat height, CGFloat scale)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	CGSize size = CGSizeMake(width, height);
 	CGRect rect = CGRectMake(0, 0, size.width, size.height);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	UIGraphicsBeginImageContextWithOptions(size, NO, 1.0);
+	UIGraphicsBeginImageContextWithOptions(size, NO, scale);
 	[image drawInRect:rect];
 	UIImage *resized = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();

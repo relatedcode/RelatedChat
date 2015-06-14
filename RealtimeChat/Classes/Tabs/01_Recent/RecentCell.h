@@ -15,6 +15,6 @@
 @interface RecentCell : UITableViewCell
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
-- (void)bindData:(PFObject *)recent_;
+- (void)bindData:(NSDictionary *)recent_;
 
 @end

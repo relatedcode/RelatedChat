@@ -10,10 +10,12 @@
 // THE SOFTWARE.
 
 #import <Parse/Parse.h>
+#import <Firebase/Firebase.h>
 #import "ProgressHUD.h"
 
 #import "AppConstant.h"
 #import "common.h"
+#import "converter.h"
 #import "recent.h"
 
 #import "RecentView.h"
@@ -28,6 +30,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 @interface RecentView()
 {
+	Firebase *firebase;
 	NSMutableArray *recents;
 }
 @end
@@ -44,6 +47,8 @@
 		[self.tabBarItem setImage:[UIImage imageNamed:@"tab_recent"]];
 		self.tabBarItem.title = @"Recent";
 		//-----------------------------------------------------------------------------------------------------------------------------------------
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadRecents) name:NOTIFICATION_APP_STARTED object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadRecents) name:NOTIFICATION_USER_LOGGED_IN object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCleanup) name:NOTIFICATION_USER_LOGGED_OUT object:nil];
 	}
 	return self;
@@ -61,9 +66,6 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self.tableView registerNib:[UINib nibWithNibName:@"RecentCell" bundle:nil] forCellReuseIdentifier:@"RecentCell"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	self.refreshControl = [[UIRefreshControl alloc] init];
-	[self.refreshControl addTarget:self action:@selector(loadRecents) forControlEvents:UIControlEventValueChanged];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
 	recents = [[NSMutableArray alloc] init];
 }
 
@@ -75,7 +77,7 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if ([PFUser currentUser] != nil)
 	{
-		[self loadRecents];
+
 	}
 	else LoginUser(self);
 }
@@ -86,22 +88,33 @@
 - (void)loadRecents
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFQuery *query = [PFQuery queryWithClassName:PF_RECENT_CLASS_NAME];
-	[query whereKey:PF_RECENT_USER equalTo:[PFUser currentUser]];
-	[query includeKey:PF_RECENT_LASTUSER];
-	[query orderByDescending:PF_RECENT_UPDATEDACTION];
-	[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+	PFUser *user = [PFUser currentUser];
+	if ((user != nil) && (firebase == nil))
 	{
-		if (error == nil)
+		firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+		FQuery *query = [[firebase queryOrderedByChild:@"userId"] queryEqualToValue:user.objectId];
+		[query observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
 		{
 			[recents removeAllObjects];
-			[recents addObjectsFromArray:objects];
+			if (snapshot.value != [NSNull null])
+			{
+				NSArray *sorted = [[snapshot.value allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+				{
+					NSDictionary *recent1 = (NSDictionary *)obj1;
+					NSDictionary *recent2 = (NSDictionary *)obj2;
+					NSDate *date1 = String2Date(recent1[@"date"]);
+					NSDate *date2 = String2Date(recent2[@"date"]);
+					return [date2 compare:date1];
+				}];
+				for (NSDictionary *recent in sorted)
+				{
+					[recents addObject:recent];
+				}
+			}
 			[self.tableView reloadData];
 			[self updateTabCounter];
-		}
-		else [ProgressHUD showError:@"Network error."];
-		[self.refreshControl endRefreshing];
-	}];
+		}];
+	}
 }
 
 #pragma mark - Helper methods
@@ -113,7 +126,7 @@
 	int total = 0;
 	for (PFObject *recent in recents)
 	{
-		total += [recent[PF_RECENT_COUNTER] intValue];
+		total += [recent[@"counter"] intValue];
 	}
 	UITabBarItem *item = self.tabBarController.tabBar.items[0];
 	item.badgeValue = (total == 0) ? nil : [NSString stringWithFormat:@"%d", total];
@@ -134,6 +147,8 @@
 - (void)actionCleanup
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
+	[firebase removeAllObservers];
+	firebase = nil;
 	[recents removeAllObjects];
 	[self.tableView reloadData];
 	[self updateTabCounter];
@@ -266,16 +281,13 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFObject *recent = recents[indexPath.row];
+	NSDictionary *recent = recents[indexPath.row];
 	[recents removeObject:recent];
 	[self updateTabCounter];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[recent deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-	{
-		if (error != nil) [ProgressHUD showError:@"Network error."];
-	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	DeleteRecentItem(recent);
 }
 
 #pragma mark - Table view delegate
@@ -286,8 +298,8 @@
 {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	PFObject *recent = recents[indexPath.row];
-	[self actionChat:recent[PF_RECENT_GROUPID]];
+	NSDictionary *recent = recents[indexPath.row];
+	[self actionChat:recent[@"groupId"]];
 }
 
 @end

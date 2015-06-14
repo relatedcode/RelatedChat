@@ -20,6 +20,4 @@
 @interface RecentView : UITableViewController <UIActionSheetDelegate, SelectSingleDelegate, SelectMultipleDelegate, AddressBookDelegate, FacebookFriendsDelegate>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
-- (void)loadRecents;
-
 @end

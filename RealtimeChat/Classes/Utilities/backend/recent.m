@@ -10,9 +10,12 @@
 // THE SOFTWARE.
 
 #import <Parse/Parse.h>
+#import <Firebase/Firebase.h>
 #import "PFUser+Util.h"
+#import "ProgressHUD.h"
 
 #import "AppConstant.h"
+#import "converter.h"
 
 #import "recent.h"
 
@@ -27,8 +30,8 @@ NSString* StartPrivateChat(PFUser *user1, PFUser *user2)
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	NSArray *members = @[user1.objectId, user2.objectId];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	CreateRecentItem(user1, groupId, members, user2[PF_USER_FULLNAME]);
-	CreateRecentItem(user2, groupId, members, user1[PF_USER_FULLNAME]);
+	CreateRecentItem1(user1, groupId, members, user2[PF_USER_FULLNAME], user2);
+	CreateRecentItem1(user2, groupId, members, user1[PF_USER_FULLNAME], user1);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return groupId;
 }
@@ -64,95 +67,128 @@ NSString* StartMultipleChat(NSMutableArray *users)
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	for (PFUser *user in users)
 	{
-		CreateRecentItem(user, groupId, userIds, description);
+		CreateRecentItem1(user, groupId, userIds, description, [PFUser currentUser]);
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return groupId;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void CreateRecentItem(PFUser *user, NSString *groupId, NSArray *members, NSString *description)
+void StartGroupChat(PFObject *group, NSMutableArray *users)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFQuery *query = [PFQuery queryWithClassName:PF_RECENT_CLASS_NAME];
-	[query whereKey:PF_RECENT_USER equalTo:user];
-	[query whereKey:PF_RECENT_GROUPID equalTo:groupId];
-	[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+	for (PFUser *user in users)
 	{
-		if (error == nil)
+		CreateRecentItem1(user, group.objectId, group[PF_GROUP_MEMBERS], group[PF_GROUP_NAME], [PFUser currentUser]);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void CreateRecentItem1(PFUser *user, NSString *groupId, NSArray *members, NSString *description, PFUser *profile)
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+	FQuery *query = [[firebase queryOrderedByChild:@"groupId"] queryEqualToValue:groupId];
+	[query observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
+	{
+		BOOL create = YES;
+		if (snapshot.value != [NSNull null])
 		{
-			if ([objects count] == 0)
+			for (NSDictionary *recent in [snapshot.value allValues])
 			{
-				PFObject *recent = [PFObject objectWithClassName:PF_RECENT_CLASS_NAME];
-				recent[PF_RECENT_USER] = user;
-				recent[PF_RECENT_GROUPID] = groupId;
-				recent[PF_RECENT_MEMBERS] = members;
-				recent[PF_RECENT_DESCRIPTION] = description;
-				recent[PF_RECENT_LASTUSER] = [PFUser currentUser];
-				recent[PF_RECENT_LASTMESSAGE] = @"";
-				recent[PF_RECENT_COUNTER] = @0;
-				recent[PF_RECENT_UPDATEDACTION] = [NSDate date];
-				[recent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-				{
-					if (error != nil) NSLog(@"CreateRecentItem save error.");
-				}];
+				if ([recent[@"userId"] isEqualToString:user.objectId]) create = NO;
 			}
 		}
-		else NSLog(@"CreateRecentItem query error.");
+		if (create) CreateRecentItem2(user, groupId, members, description, profile);
 	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void UpdateRecentCounter(NSString *groupId, NSInteger amount, NSString *lastMessage)
+void CreateRecentItem2(PFUser *user, NSString *groupId, NSArray *members, NSString *description, PFUser *profile)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFQuery *query = [PFQuery queryWithClassName:PF_RECENT_CLASS_NAME];
-	[query whereKey:PF_RECENT_GROUPID equalTo:groupId];
-	[query includeKey:PF_RECENT_USER];
-	[query setLimit:1000];
-	[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+	Firebase *reference = [firebase childByAutoId];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSString *recentId = reference.key;
+	PFUser *lastUser = [PFUser currentUser];
+	NSString *date = Date2String([NSDate date]);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSDictionary *recent = @{@"recentId":recentId, @"userId":user.objectId, @"groupId":groupId, @"members":members, @"description":description,
+								@"lastUser":lastUser.objectId, @"lastMessage":@"", @"counter":@0, @"date":date, @"profileId":profile.objectId};
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[reference setValue:recent withCompletionBlock:^(NSError *error, Firebase *ref)
 	{
-		if (error == nil)
-		{
-			for (PFObject *recent in objects)
-			{
-				if ([recent[PF_RECENT_USER] isEqualTo:[PFUser currentUser]] == NO)
-					[recent incrementKey:PF_RECENT_COUNTER byAmount:[NSNumber numberWithInteger:amount]];
-				//---------------------------------------------------------------------------------------------------------------------------------
-				recent[PF_RECENT_LASTUSER] = [PFUser currentUser];
-				recent[PF_RECENT_LASTMESSAGE] = lastMessage;
-				recent[PF_RECENT_UPDATEDACTION] = [NSDate date];
-				[recent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-				{
-					if (error != nil) NSLog(@"UpdateRecentCounter save error.");
-				}];
-			}
-		}
-		else NSLog(@"UpdateRecentCounter query error.");
+		if (error != nil) NSLog(@"CreateRecentItem2 save error.");
 	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void ClearRecentCounter(NSString *groupId)
+void UpdateRecentCounter1(NSString *groupId, NSInteger amount, NSString *lastMessage)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFQuery *query = [PFQuery queryWithClassName:PF_RECENT_CLASS_NAME];
-	[query whereKey:PF_RECENT_GROUPID equalTo:groupId];
-	[query whereKey:PF_RECENT_USER equalTo:[PFUser currentUser]];
-	[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+	FQuery *query = [[firebase queryOrderedByChild:@"groupId"] queryEqualToValue:groupId];
+	[query observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
 	{
-		if (error == nil)
+		if (snapshot.value != [NSNull null])
 		{
-			for (PFObject *recent in objects)
+			for (NSDictionary *recent in [snapshot.value allValues])
 			{
-				recent[PF_RECENT_COUNTER] = @0;
-				[recent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-				{
-					if (error != nil) NSLog(@"ClearRecentCounter save error.");
-				}];
+				UpdateRecentCounter2(recent, amount, lastMessage);
 			}
 		}
-		else NSLog(@"ClearRecentCounter query error.");
+	}];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void UpdateRecentCounter2(NSDictionary *recent, NSInteger amount, NSString *lastMessage)
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	PFUser *user = [PFUser currentUser];
+	NSString *date = Date2String([NSDate date]);
+	NSInteger counter = [recent[@"counter"] integerValue];
+	if ([recent[@"userId"] isEqualToString:user.objectId] == NO) counter += amount;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent/%@", FIREBASE, recent[@"recentId"]]];
+	NSDictionary *values = @{@"lastUser":user.objectId, @"lastMessage":lastMessage, @"counter":@(counter), @"date":date};
+	[firebase updateChildValues:values withCompletionBlock:^(NSError *error, Firebase *ref)
+	{
+		[ProgressHUD dismiss];
+		if (error != nil) NSLog(@"UpdateRecentCounter2 save error.");
+	}];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void ClearRecentCounter1(NSString *groupId)
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+	FQuery *query = [[firebase queryOrderedByChild:@"groupId"] queryEqualToValue:groupId];
+	[query observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
+	{
+		if (snapshot.value != [NSNull null])
+		{
+			PFUser *user = [PFUser currentUser];
+			for (NSDictionary *recent in [snapshot.value allValues])
+			{
+				if ([recent[@"userId"] isEqualToString:user.objectId])
+				{
+					ClearRecentCounter2(recent);
+				}
+			}
+		}
+	}];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void ClearRecentCounter2(NSDictionary *recent)
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent/%@", FIREBASE, recent[@"recentId"]]];
+	[firebase updateChildValues:@{@"counter":@0} withCompletionBlock:^(NSError *error, Firebase *ref)
+	{
+		if (error != nil) NSLog(@"ClearRecentCounter2 save error.");
 	}];
 }
 
@@ -160,21 +196,30 @@ void ClearRecentCounter(NSString *groupId)
 void DeleteRecentItems(PFUser *user1, PFUser *user2)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFQuery *query = [PFQuery queryWithClassName:PF_RECENT_CLASS_NAME];
-	[query whereKey:PF_RECENT_USER equalTo:user1];
-	[query whereKey:PF_RECENT_MEMBERS equalTo:user2.objectId];
-	[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+	FQuery *query = [[firebase queryOrderedByChild:@"userId"] queryEqualToValue:user1.objectId];
+	[query observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
 	{
-		if (error == nil)
+		if (snapshot.value != [NSNull null])
 		{
-			for (PFObject *recent in objects)
+			for (NSDictionary *recent in [snapshot.value allValues])
 			{
-				[recent deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+				if ([recent[@"members"] containsObject:user2.objectId])
 				{
-					if (error != nil) NSLog(@"DeleteMessageItem delete error.");
-				}];
+					DeleteRecentItem(recent);
+				}
 			}
 		}
-		else NSLog(@"DeleteMessages query error.");
+	}];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void DeleteRecentItem(NSDictionary *recent)
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent/%@", FIREBASE, recent[@"recentId"]]];
+	[firebase removeValueWithCompletionBlock:^(NSError *error, Firebase *ref)
+	{
+		if (error != nil) NSLog(@"DeleteRecentItem delete error.");
 	}];
 }

@@ -1,10 +1,10 @@
-[![RelatedCode](http://relatedcode.com/github/header88.png)](http://relatedcode.com/premium)
+[![ChatExamples](http://relatedcode.com/github/header4.png)](http://chatexamples.com)
 
 ## OVERVIEW
 
 This is a full native iPhone app to create realtime, text based group or private chat with Parse and Firebase.
 
-![Chat](http://relatedcode.com/github/chat817.png)
+![Chat](http://relatedcode.com/github/chat821.png)
 .
 ![Chat](http://relatedcode.com/github/chat803.png)
 .
@@ -12,7 +12,7 @@ This is a full native iPhone app to create realtime, text based group or private
 
 ![Chat](http://relatedcode.com/github/chat804.png)
 .
-![Chat](http://relatedcode.com/github/chat806.png)
+![Chat](http://relatedcode.com/github/chat820.png)
 .
 ![Chat](http://relatedcode.com/github/chat819.png)
 
@@ -26,40 +26,41 @@ This is a full native iPhone app to create realtime, text based group or private
 - No backend programming needed
 - Native and easy to customize user interface
 - Push Notification support
-- Deep linking for Push Notification (<i>coming soon</i>) - **[Premium only](http://relatedcode.com/premium)**
+- Deep linking for Push Notification (<i>coming soon</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Login with Email
 - Login with Facebook
 - Login with Twitter
 - Sending text messages
 - Sending pictures
 - Sending videos
-- Sending audio messages - **[Premium only](http://relatedcode.com/premium)**
-- Sending location - **[Premium only](http://relatedcode.com/premium)**
-- Sending stickers (<i>new</i>) - **[Premium only](http://relatedcode.com/premium)**
-- Sending emojis
-- Typing indicator - **[Premium only](http://relatedcode.com/premium)**
-- Message delivery receipt - **[Premium only](http://relatedcode.com/premium)**
-- Message read receipt - **[Premium only](http://relatedcode.com/premium)**
-- Delete unread messages - **[Premium only](http://relatedcode.com/premium)**
-- Block user functionality (<i>new</i>) - **[Premium only](http://relatedcode.com/premium)**
-- Report user functionality (<i>new</i>) - **[Premium only](http://relatedcode.com/premium)**
-- Address Book access
+- Sending audio messages - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Sending location - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Sending stickers - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Sending large emojis (<i>new</i>)
+- Typing indicator - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Message delivery receipt - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Message read receipt - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Delete read and unread messages (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Block user functionality - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Report user functionality - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Address Book friend list
 - Invite functionality - SMS, email
-- Facebook friend list
-- Recent view for ongoing chats
-- Map view for shared locations - **[Premium only](http://relatedcode.com/premium)**
+- Facebook friend list (list only registered users)
+- Realtime recent view for ongoing chats (<i>new</i>)
+- Map view for shared locations - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Picture view for pictures
 - Basic Settings view included
-- Profile view for users (<i>new</i>)
-- Group settings view for groups (<i>new</i>)
-- Blocked view for blocked users (<i>new</i>)
+- Profile view for users
+- Group settings view for groups
+- Blocked view for blocked users
 - Privacy Policy view
 - Terms of Service view
-- In-app push notification settings (<i>coming soon</i>) - **[Premium only](http://relatedcode.com/premium)**
+- In-app push notification settings (<i>coming soon</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Facebook profile picture grabbed automatically
 - Twitter profile picture grabbed automatically (<i>coming soon</i>)
+- Picture, video and audio upload progress indicator (<i>new</i>)
 - Video length limit possibility
-- Copy and paste messages
+- Copy and paste text messages
 - Send button is enabled/disabled automatically
 - Arbitrary message sizes
 - Data detectors - phone numbers, links, dates

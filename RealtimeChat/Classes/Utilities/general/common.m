@@ -23,10 +23,12 @@ void LoginUser(id target)
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void PresentPremium(id target)
+void ActionPremium(id target)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[target presentViewController:[[PremiumView alloc] init] animated:YES completion:nil];
+	PremiumView *premiumView = [[PremiumView alloc] init];
+	premiumView.modalPresentationStyle = UIModalPresentationOverFullScreen;
+	[target presentViewController:premiumView animated:YES completion:nil];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------

@@ -9,12 +9,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFNetworking.h"
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import "ProgressHUD.h"
+#import "UIImageView+WebCache.h"
 
 #import "AppConstant.h"
+#import "common.h"
 #import "image.h"
 #import "push.h"
 
@@ -140,53 +141,50 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	NSString *link = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", userData[@"id"]];
-	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:link]];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-	operation.responseSerializer = [AFImageResponseSerializer serializer];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject)
+	SDWebImageManager *manager = [SDWebImageManager sharedManager];
+	[manager downloadImageWithURL:[NSURL URLWithString:link] options:0 progress:nil
+	completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL)
 	{
-		UIImage *image = (UIImage *)responseObject;
-		//-----------------------------------------------------------------------------------------------------------------------------------------
-		UIImage *picture = ResizeImage(image, 280, 280);
-		UIImage *thumbnail = ResizeImage(image, 60, 60);
-		//-----------------------------------------------------------------------------------------------------------------------------------------
-		PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
-		[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+		if (image != nil)
 		{
-			if (error != nil) [ProgressHUD showError:@"Network error."];
-		}];
-		//-----------------------------------------------------------------------------------------------------------------------------------------
-		PFFile *fileThumbnail = [PFFile fileWithName:@"thumbnail.jpg" data:UIImageJPEGRepresentation(thumbnail, 0.6)];
-		[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-		{
-			if (error != nil) [ProgressHUD showError:@"Network error."];
-		}];
-		//-----------------------------------------------------------------------------------------------------------------------------------------
-		user[PF_USER_EMAILCOPY] = userData[@"email"];
-		user[PF_USER_FULLNAME] = userData[@"name"];
-		user[PF_USER_FULLNAME_LOWER] = [userData[@"name"] lowercaseString];
-		user[PF_USER_FACEBOOKID] = userData[@"id"];
-		user[PF_USER_PICTURE] = filePicture;
-		user[PF_USER_THUMBNAIL] = fileThumbnail;
-		[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-		{
-			if (error != nil)
+			UIImage *picture = ResizeImage(image, 140, 140, 1);
+			UIImage *thumbnail = ResizeImage(image, 60, 60, 1);
+			//-------------------------------------------------------------------------------------------------------------------------------------
+			PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
+			[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 			{
-				[PFUser logOut];
-				[ProgressHUD showError:error.userInfo[@"error"]];
-			}
-			else [self userLoggedIn:user];
-		}];
-	}
-	failure:^(AFHTTPRequestOperation *operation, NSError *error)
-	{
-		[PFUser logOut];
-		[ProgressHUD showError:@"Failed to fetch Facebook profile picture."];
+				if (error != nil) [ProgressHUD showError:@"Network error."];
+			}];
+			//-------------------------------------------------------------------------------------------------------------------------------------
+			PFFile *fileThumbnail = [PFFile fileWithName:@"thumbnail.jpg" data:UIImageJPEGRepresentation(thumbnail, 0.6)];
+			[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+			{
+				if (error != nil) [ProgressHUD showError:@"Network error."];
+			}];
+			//-------------------------------------------------------------------------------------------------------------------------------------
+			user[PF_USER_EMAILCOPY] = userData[@"email"];
+			user[PF_USER_FULLNAME] = userData[@"name"];
+			user[PF_USER_FULLNAME_LOWER] = [userData[@"name"] lowercaseString];
+			user[PF_USER_FACEBOOKID] = userData[@"id"];
+			user[PF_USER_PICTURE] = filePicture;
+			user[PF_USER_THUMBNAIL] = fileThumbnail;
+			[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+			{
+				if (error != nil)
+				{
+					[PFUser logOut];
+					[ProgressHUD showError:error.userInfo[@"error"]];
+				}
+				else [self userLoggedIn:user];
+			}];
+		}
+		else
+		{
+			[PFUser logOut];
+			[ProgressHUD showError:@"Failed to fetch Facebook profile picture."];
+		}
 	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[[NSOperationQueue mainQueue] addOperation:operation];
 }
 
 #pragma mark - Helper methods
@@ -196,6 +194,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	ParsePushUserAssign();
+	PostNotification(NOTIFICATION_USER_LOGGED_IN);
 	[ProgressHUD showSuccess:[NSString stringWithFormat:@"Welcome back %@!", user[PF_USER_FULLNAME]]];
 	[self dismissViewControllerAnimated:YES completion:nil];
 }

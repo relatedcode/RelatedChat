@@ -11,27 +11,25 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 
-#import "AFNetworking.h"
 #import <Parse/Parse.h>
 #import <Firebase/Firebase.h>
 #import "IDMPhotoBrowser.h"
 #import "RNGridMenu.h"
 
 #import "AppConstant.h"
-#import "AppDelegate.h"
 #import "camera.h"
 #import "common.h"
-#import "converter.h"
-#import "image.h"
-#import "push.h"
 #import "recent.h"
-#import "video.h"
+
+#import "Incoming.h"
+#import "Outgoing.h"
 
 #import "PhotoMediaItem.h"
 #import "VideoMediaItem.h"
 
 #import "ChatView.h"
 #import "ProfileView.h"
+#import "NavigationController.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 @interface ChatView()
@@ -39,8 +37,10 @@
 	NSString *groupId;
 
 	BOOL initialized;
+	int typingCounter;
 
 	Firebase *firebase1;
+	Firebase *firebase2;
 
 	NSMutableArray *items;
 	NSMutableArray *messages;
@@ -85,7 +85,15 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	avatarImageBlank = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"chat_blank"] diameter:30.0];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[JSQMessagesCollectionViewCell registerMenuAction:@selector(actionCopy:)];
+	[JSQMessagesCollectionViewCell registerMenuAction:@selector(actionDelete:)];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	UIMenuItem *menuItemCopy = [[UIMenuItem alloc] initWithTitle:@"Copy" action:@selector(actionCopy:)];
+	UIMenuItem *menuItemDelete = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(actionDelete:)];
+	[UIMenuController sharedMenuController].menuItems = @[menuItemCopy, menuItemDelete];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	firebase1 = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Message/%@", FIREBASE, groupId]];
+	firebase2 = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Typing/%@", FIREBASE, groupId]];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self loadMessages];
 }
@@ -105,8 +113,9 @@
 	[super viewWillDisappear:animated];
 	if (self.isMovingFromParentViewController)
 	{
-		ClearRecentCounter(groupId);
+		ClearRecentCounter1(groupId);
 		[firebase1 removeAllObservers];
+		[firebase2 removeAllObservers];
 	}
 }
 
@@ -143,11 +152,8 @@
 - (BOOL)addMessage:(NSDictionary *)item
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	JSQMessage *message;
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	if ([item[@"type"] isEqualToString:@"text"])		message = [self createTextMessage:item];
-	if ([item[@"type"] isEqualToString:@"video"])		message = [self createVideoMessage:item];
-	if ([item[@"type"] isEqualToString:@"picture"])		message = [self createPictureMessage:item];
+	Incoming *incoming = [[Incoming alloc] initWith:self.senderId ChatView:self];
+	JSQMessage *message = [incoming create:item];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if (message == nil) return NO;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -155,79 +161,6 @@
 	[messages addObject:message];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return [self incoming:message];
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (JSQMessage *)createTextMessage:(NSDictionary *)item
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	NSString *name = item[@"name"];
-	NSString *userId = item[@"userId"];
-	NSDate *date = String2Date(item[@"date"]);
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	NSString *text = item[@"text"];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date text:text];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (JSQMessage *)createVideoMessage:(NSDictionary *)item
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	NSString *name = item[@"name"];
-	NSString *userId = item[@"userId"];
-	NSDate *date = String2Date(item[@"date"]);
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	VideoMediaItem *mediaItem = [[VideoMediaItem alloc] initWithFileURL:[NSURL URLWithString:item[@"video"]] isReadyToPlay:NO];
-	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:self.senderId];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:item[@"thumbnail"]]];
-	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-	operation.responseSerializer = [AFImageResponseSerializer serializer];
-	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject)
-	{
-		mediaItem.isReadyToPlay = YES;
-		mediaItem.image = (UIImage *)responseObject;
-		[self.collectionView reloadData];
-	}
-	failure:^(AFHTTPRequestOperation *operation, NSError *error)
-	{
-		NSLog(@"createVideoMessage picture load error.");
-	}];
-	[[NSOperationQueue mainQueue] addOperation:operation];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (JSQMessage *)createPictureMessage:(NSDictionary *)item
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	NSString *name = item[@"name"];
-	NSString *userId = item[@"userId"];
-	NSDate *date = String2Date(item[@"date"]);
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	PhotoMediaItem *mediaItem = [[PhotoMediaItem alloc] initWithImage:nil Width:item[@"picture_width"] Height:item[@"picture_height"]];
-	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:self.senderId];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:item[@"picture"]]];
-	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-	operation.responseSerializer = [AFImageResponseSerializer serializer];
-	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject)
-	{
-		mediaItem.image = (UIImage *)responseObject;
-		[self.collectionView reloadData];
-	}
-	failure:^(AFHTTPRequestOperation *operation, NSError *error)
-	{
-		NSLog(@"createPictureMessage picture load error.");
-	}];
-	[[NSOperationQueue mainQueue] addOperation:operation];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -255,108 +188,16 @@
 				}];
 			}
 		}
-		else NSLog(@"loadAvatar query error.");
+		else NSLog(@"ChatView loadAvatar query error.");
 	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)sendMessage:(NSString *)text Video:(NSURL *)video Picture:(UIImage *)picture Audio:(NSString *)audio
+- (void)messageSend:(NSString *)text Video:(NSURL *)video Picture:(UIImage *)picture Audio:(NSString *)audio
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFUser *user = [PFUser currentUser];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	NSMutableDictionary *item = [[NSMutableDictionary alloc] init];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	item[@"userId"] = user.objectId;
-	item[@"name"] = user[PF_USER_FULLNAME];
-	item[@"date"] = Date2String([NSDate date]);
-	item[@"status"] = @"Delivered";
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	item[@"video"] = item[@"thumbnail"] = item[@"picture"] = item[@"audio"] = item[@"latitude"] = item[@"longitude"] = @"";
-	item[@"video_duration"] = item[@"audio_duration"] = @0;
-	item[@"picture_width"] = item[@"picture_height"] = @0;
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	if (text != nil) [self sendTextMessage:item Text:text];
-	else if (video != nil) [self sendVideoMessage:item Video:video];
-	else if (picture != nil) [self sendPictureMessage:item Picture:picture];
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)sendTextMessage:(NSMutableDictionary *)item Text:(NSString *)text
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	item[@"text"] = text;
-	item[@"type"] = @"text";
-	[self messageSave:item];
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)sendVideoMessage:(NSMutableDictionary *)item Video:(NSURL *)video
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	UIImage *picture = VideoThumbnail(video);
-	UIImage *squared = SquareImage(picture, 320);
-	NSNumber *duration = VideoDuration(video);
-	PFFile *fileThumbnail = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(squared, 0.6)];
-	[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-	{
-		if (error == nil)
-		{
-			PFFile *fileVideo = [PFFile fileWithName:@"video.mp4" data:[[NSFileManager defaultManager] contentsAtPath:video.path]];
-			[fileVideo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-			{
-				if (error == nil)
-				{
-					item[@"video"] = fileVideo.url;
-					item[@"video_duration"] = duration;
-					item[@"thumbnail"] = fileThumbnail.url;
-					item[@"text"] = @"[Video message]";
-					item[@"type"] = @"video";
-					[self messageSave:item];
-				}
-				else NSLog(@"sendVideoMessage video save error.");
-			}];
-		}
-		else NSLog(@"sendVideoMessage picture save error.");
-	}];
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)sendPictureMessage:(NSMutableDictionary *)item Picture:(UIImage *)picture
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	int width = (int) picture.size.width;
-	int height = (int) picture.size.height;
-	PFFile *file = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
-	[file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-	{
-		if (error == nil)
-		{
-			item[@"picture"] = file.url;
-			item[@"picture_width"] = [NSNumber numberWithInt:width];
-			item[@"picture_height"] = [NSNumber numberWithInt:height];
-			item[@"text"] = @"[Picture message]";
-			item[@"type"] = @"picture";
-			[self messageSave:item];
-		}
-		else NSLog(@"sendPictureMessage picture save error.");
-	}];
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)messageSave:(NSMutableDictionary *)item
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	Firebase *reference = [firebase1 childByAutoId];
-	item[@"key"] = reference.key;
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[reference setValue:item withCompletionBlock:^(NSError *error, Firebase *ref)
-	{
-		if (error != nil) NSLog(@"messageSave network error.");
-	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	SendPushNotification(groupId, item[@"text"]);
-	UpdateRecentCounter(groupId, 1, item[@"text"]);
+	Outgoing *outgoing = [[Outgoing alloc] initWith:groupId View:self.navigationController.view];
+	[outgoing send:text Video:video Picture:picture Audio:audio];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[JSQSystemSoundPlayer jsq_playMessageSentSound];
 	[self finishSendingMessage];
@@ -368,23 +209,14 @@
 - (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)name date:(NSDate *)date
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[self sendMessage:text Video:nil Picture:nil Audio:nil];
+	[self messageSend:text Video:nil Picture:nil Audio:nil];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)didPressAccessoryButton:(UIButton *)sender
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[self.view endEditing:YES];
-	NSArray *menuItems = @[[[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_camera"] title:@"Camera"],
-						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_audio"] title:@"Audio"],
-						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_pictures"] title:@"Pictures"],
-						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_videos"] title:@"Videos"],
-						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_location"] title:@"Location"],
-						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_stickers"] title:@"Stickers"]];
-	RNGridMenu *gridMenu = [[RNGridMenu alloc] initWithItems:menuItems];
-	gridMenu.delegate = self;
-	[gridMenu showInViewController:self center:CGPointMake(self.view.bounds.size.width/2.f, self.view.bounds.size.height/2.f)];
+	[self actionAttach];
 }
 
 #pragma mark - JSQMessages CollectionView DataSource
@@ -492,6 +324,35 @@
 	return cell;
 }
 
+#pragma mark - UICollectionView Delegate
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath
+			withSender:(id)sender
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	if (action == @selector(actionCopy:))
+	{
+		NSDictionary *item = items[indexPath.item];
+		if ([item[@"type"] isEqualToString:@"text"]) return YES;
+	}
+	if (action == @selector(actionDelete:))
+	{
+		JSQMessage *message = messages[indexPath.item];
+		if ([self outgoing:message]) return YES;
+	}
+	return NO;
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath
+			withSender:(id)sender
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	if (action == @selector(actionCopy:))		[self actionCopy:indexPath];
+	if (action == @selector(actionDelete:))		[self actionDelete:indexPath];
+}
+
 #pragma mark - JSQMessages collection view flow layout delegate
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -554,11 +415,10 @@
 		   atIndexPath:(NSIndexPath *)indexPath
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFUser *user = [PFUser currentUser];
-	NSDictionary *item = items[indexPath.item];
-	if ([user.objectId isEqualToString:item[@"userId"]] == NO)
+	JSQMessage *message = messages[indexPath.item];
+	if ([self incoming:message])
 	{
-		ProfileView *profileView = [[ProfileView alloc] initWith:item[@"userId"]];
+		ProfileView *profileView = [[ProfileView alloc] initWith:message.senderId User:nil];
 		[self.navigationController pushViewController:profileView animated:YES];
 	}
 }
@@ -568,16 +428,6 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	JSQMessage *message = messages[indexPath.item];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	if ([self outgoing:message])
-	{
-		NSDictionary *item = items[indexPath.item];
-		if ([item[@"status"] isEqualToString:@"Read"] == NO)
-		{
-			[self actionDelete];
-			return;
-		}
-	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if (message.isMediaMessage)
 	{
@@ -608,24 +458,34 @@
 #pragma mark - User actions
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionDelete
+- (void)actionAttach
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"
-										  destructiveButtonTitle:@"Delete message" otherButtonTitles:nil];
-	[action showInView:self.view];
+	[self.view endEditing:YES];
+	NSArray *menuItems = @[[[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_camera"] title:@"Camera"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_audio"] title:@"Audio"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_pictures"] title:@"Pictures"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_videos"] title:@"Videos"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_location"] title:@"Location"],
+						   [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"chat_stickers"] title:@"Stickers"]];
+	RNGridMenu *gridMenu = [[RNGridMenu alloc] initWithItems:menuItems];
+	gridMenu.delegate = self;
+	[gridMenu showInViewController:self center:CGPointMake(self.view.bounds.size.width/2.f, self.view.bounds.size.height/2.f)];
 }
 
-#pragma mark - UIActionSheetDelegate
-
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionDelete:(NSIndexPath *)indexPath
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (buttonIndex != actionSheet.cancelButtonIndex)
-	{
-		PresentPremium(self);
-	}
+	ActionPremium(self);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionCopy:(NSIndexPath *)indexPath
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	NSDictionary *item = items[indexPath.item];
+	[[UIPasteboard generalPasteboard] setString:item[@"text"]];
 }
 
 #pragma mark - RNGridMenuDelegate
@@ -636,11 +496,11 @@
 {
 	[gridMenu dismissAnimated:NO];
 	if ([item.title isEqualToString:@"Camera"])		PresentMultiCamera(self, YES);
-	if ([item.title isEqualToString:@"Audio"])		PresentPremium(self);
+	if ([item.title isEqualToString:@"Audio"])		ActionPremium(self);
 	if ([item.title isEqualToString:@"Pictures"])	PresentPhotoLibrary(self, YES);
 	if ([item.title isEqualToString:@"Videos"])		PresentVideoLibrary(self, YES);
-	if ([item.title isEqualToString:@"Location"])	PresentPremium(self);
-	if ([item.title isEqualToString:@"Stickers"])	PresentPremium(self);
+	if ([item.title isEqualToString:@"Location"])	ActionPremium(self);
+	if ([item.title isEqualToString:@"Stickers"])	ActionPremium(self);
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -652,7 +512,7 @@
 	NSURL *video = info[UIImagePickerControllerMediaURL];
 	UIImage *picture = info[UIImagePickerControllerEditedImage];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[self sendMessage:nil Video:video Picture:picture Audio:nil];
+	[self messageSend:nil Video:video Picture:picture Audio:nil];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[picker dismissViewControllerAnimated:YES completion:nil];
 }

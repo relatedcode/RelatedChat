@@ -20,7 +20,7 @@
 @end
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface FacebookFriendsView : UITableViewController <UISearchBarDelegate>
+@interface FacebookFriendsView : UITableViewController
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 @property (nonatomic, assign) IBOutlet id<FacebookFriendsDelegate>delegate;

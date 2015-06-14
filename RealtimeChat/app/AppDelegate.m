@@ -29,7 +29,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[Parse setApplicationId:@"lFGSccTxUKnSNEnwLPBZLYNHxyAMOkxsYtCIlV88" clientKey:@"qWT5MpUdI32FhvI79WLRcGxYYUEKOhgQrAlShTs4"];
+	[Parse setApplicationId:@"DAZbyoNRo7HoN9Pw1YQmba0YNI3vZyBzqFXM3TSG" clientKey:@"Lgwgf2gZT4OFhPBuNlxoV7mMwL4V9N9pdbZT6i7q"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[PFTwitterUtils initializeWithConsumerKey:@"kS83MvJltZwmfoWVoyE1R6xko" consumerSecret:@"YXSupp9hC2m1rugTfoSyqricST9214TwYapQErBcXlP1BrSfND"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@
 	NavigationController *navController4 = [[NavigationController alloc] initWithRootViewController:self.settingsView];
 
 	self.tabBarController = [[UITabBarController alloc] init];
-	self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, navController4, nil];
+	self.tabBarController.viewControllers = @[navController1, navController2, navController3, navController4];
 	self.tabBarController.tabBar.translucent = NO;
 	self.tabBarController.selectedIndex = DEFAULT_TAB;
 
@@ -93,6 +93,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
+	PostNotification(NOTIFICATION_APP_STARTED);
 	[self locationManagerStart];
 	[FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
 }
@@ -136,18 +137,6 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	//[PFPush handlePush:userInfo];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	if ([PFUser currentUser] != nil)
-	{
-		[self performSelector:@selector(refreshRecentView) withObject:nil afterDelay:4.0];
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)refreshRecentView
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	[self.recentView loadRecents];
 }
 
 #pragma mark - Location manager methods
