@@ -56,7 +56,7 @@
 	item[@"userId"] = user.objectId;
 	item[@"name"] = user[PF_USER_FULLNAME];
 	item[@"date"] = Date2String([NSDate date]);
-	item[@"status"] = @"Delivered";
+	item[@"status"] = TEXT_DELIVERED;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	item[@"video"] = item[@"thumbnail"] = item[@"picture"] = item[@"audio"] = item[@"latitude"] = item[@"longitude"] = @"";
 	item[@"video_duration"] = item[@"audio_duration"] = @0;
@@ -165,8 +165,8 @@
 - (void)sendMessage:(NSMutableDictionary *)item
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	Firebase *firebase1 = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Message/%@", FIREBASE, groupId]];
-	Firebase *reference = [firebase1 childByAutoId];
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Message/%@", FIREBASE, groupId]];
+	Firebase *reference = [firebase childByAutoId];
 	item[@"key"] = reference.key;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[reference setValue:item withCompletionBlock:^(NSError *error, Firebase *ref)

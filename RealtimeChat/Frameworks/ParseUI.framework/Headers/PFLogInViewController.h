@@ -1,13 +1,13 @@
 /*
- *  Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ *  Copyright (c) 2014, Parse, LLC. All rights reserved.
  *
  *  You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  *  copy, modify, and distribute this software in source code or binary form for use
- *  in connection with the web services and APIs provided by Facebook.
+ *  in connection with the web services and APIs provided by Parse.
  *
- *  As with any software that integrates with the Facebook platform, your use of
- *  this software is subject to the Facebook Developer Principles and Policies
- *  [http://developers.facebook.com/policy/]. This copyright notice shall be
+ *  As with any software that integrates with the Parse platform, your use of
+ *  this software is subject to the Parse Terms of Service
+ *  [https://www.parse.com/about/terms]. This copyright notice shall be
  *  included in all copies or substantial portions of the software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -21,7 +21,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import <ParseUI/ParseUIConstants.h>
 #import <ParseUI/PFLogInView.h>
+
+PFUI_ASSUME_NONNULL_BEGIN
 
 @class PFSignUpViewController;
 @class PFUser;
@@ -49,7 +52,7 @@
 
  @see PFLogInView
  */
-@property (nonatomic, strong, readonly) PFLogInView *logInView;
+@property (PFUI_NULLABLE_PROPERTY nonatomic, strong, readonly) PFLogInView *logInView;
 
 ///--------------------------------------
 /// @name Configuring Log In Behaviors
@@ -60,14 +63,14 @@
 
  @see PFLogInViewControllerDelegate
  */
-@property (nonatomic, weak) id<PFLogInViewControllerDelegate> delegate;
+@property (PFUI_NULLABLE_PROPERTY nonatomic, weak) id<PFLogInViewControllerDelegate> delegate;
 
 /*!
  @abstract The facebook permissions that Facebook log in requests for.
 
  @discussion If unspecified, the default is basic facebook permissions.
  */
-@property (nonatomic, copy) NSArray *facebookPermissions;
+@property (PFUI_NULLABLE_PROPERTY nonatomic, copy) NSArray *facebookPermissions;
 
 /*!
  @abstract The sign up controller if sign up is enabled.
@@ -75,7 +78,7 @@
  @discussion Use this to configure the sign up view, and the transition animation to the sign up view.
  The default is a sign up view with a username, a password, a dismiss button and a sign up button.
  */
-@property (nonatomic, strong) PFSignUpViewController *signUpController;
+@property (PFUI_NULLABLE_PROPERTY nonatomic, strong) PFSignUpViewController *signUpController;
 
 /*!
  @abstract Whether to prompt for the email as username on the login view.
@@ -152,10 +155,14 @@ shouldBeginLogInWithUsername:(NSString *)username
 /*!
  @abstract Sent to the delegate when the log in attempt fails.
 
+ @discussion If you implement this method, PFLoginViewController will not automatically show its default
+ login failure alert view. Instead, you should show your custom alert view in your implementation.
+
  @param logInController The login view controller where login failed.
  @param error `NSError` object representing the error that occured.
  */
-- (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error;
+- (void)logInViewController:(PFLogInViewController *)logInController
+    didFailToLogInWithError:(PFUI_NULLABLE NSError *)error;
 
 /*!
  @abstract Sent to the delegate when the log in screen is cancelled.
@@ -165,3 +172,5 @@ shouldBeginLogInWithUsername:(NSString *)username
 - (void)logInViewControllerDidCancelLogIn:(PFLogInViewController *)logInController;
 
 @end
+
+PFUI_ASSUME_NONNULL_END

@@ -1,13 +1,13 @@
 /*
- *  Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ *  Copyright (c) 2014, Parse, LLC. All rights reserved.
  *
  *  You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  *  copy, modify, and distribute this software in source code or binary form for use
- *  in connection with the web services and APIs provided by Facebook.
+ *  in connection with the web services and APIs provided by Parse.
  *
- *  As with any software that integrates with the Facebook platform, your use of
- *  this software is subject to the Facebook Developer Principles and Policies
- *  [http://developers.facebook.com/policy/]. This copyright notice shall be
+ *  As with any software that integrates with the Parse platform, your use of
+ *  this software is subject to the Parse Terms of Service
+ *  [https://www.parse.com/about/terms]. This copyright notice shall be
  *  included in all copies or substantial portions of the software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -20,6 +20,12 @@
  */
 
 #import <UIKit/UIKit.h>
+
+#import <ParseUI/ParseUIConstants.h>
+
+PFUI_ASSUME_NONNULL_BEGIN
+
+typedef void(^PFImageViewImageResultBlock)(UIImage *PFUI_NULLABLE_S image,  NSError *PFUI_NULLABLE_S error);
 
 @class BFTask;
 @class PFFile;
@@ -34,7 +40,7 @@
 
  @warning Note that the download does not start until <loadInBackground:> is called.
  */
-@property (nonatomic, strong) PFFile *file;
+@property (PFUI_NULLABLE_PROPERTY nonatomic, strong) PFFile *file;
 
 /*!
  @abstract Initiate downloading of the remote image.
@@ -52,6 +58,20 @@
 
  @param completion the completion block.
  */
-- (void)loadInBackground:(void (^)(UIImage *image, NSError *error))completion;
+- (void)loadInBackground:(PFUI_NULLABLE PFImageViewImageResultBlock)completion;
+
+/*!
+ @abstract Initiate downloading of the remote image.
+ 
+ @discussion Once the download completes, the remote image will be displayed.
+ 
+ @param completion the completion block.
+ @param progressBlock called with the download progress as the image is being downloaded. 
+ Will be called with a value of 100 before the completion block is called.
+ */
+- (void)loadInBackground:(PFUI_NULLABLE PFImageViewImageResultBlock)completion
+           progressBlock:(PFUI_NULLABLE void (^)(int percentDone))progressBlock;
 
 @end
+
+PFUI_ASSUME_NONNULL_END

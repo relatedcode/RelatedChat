@@ -36,17 +36,18 @@ This is a full native iPhone app to create realtime, text based group or private
 - Sending audio messages - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Sending location - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Sending stickers - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Sending large emojis (<i>new</i>)
+- Sending large emojis
+- Load earlier messages (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Typing indicator - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Message delivery receipt - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Message read receipt - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Delete read and unread messages (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Delete read and unread messages - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Block user functionality - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Report user functionality - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Address Book friend list
 - Invite functionality - SMS, email
 - Facebook friend list (list only registered users)
-- Realtime recent view for ongoing chats (<i>new</i>)
+- Realtime recent view for ongoing chats
 - Map view for shared locations - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Picture view for pictures
 - Basic Settings view included
@@ -58,7 +59,7 @@ This is a full native iPhone app to create realtime, text based group or private
 - In-app push notification settings (<i>coming soon</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Facebook profile picture grabbed automatically
 - Twitter profile picture grabbed automatically (<i>coming soon</i>)
-- Picture, video and audio upload progress indicator (<i>new</i>)
+- Picture, video and audio upload progress indicator
 - Video length limit possibility
 - Copy and paste text messages
 - Send button is enabled/disabled automatically

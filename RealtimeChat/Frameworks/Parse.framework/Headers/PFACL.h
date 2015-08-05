@@ -6,6 +6,14 @@
 
 #import <Foundation/Foundation.h>
 
+#if TARGET_OS_IPHONE
+#import <Parse/PFNullability.h>
+#else
+#import <ParseOSX/PFNullability.h>
+#endif
+
+PF_ASSUME_NONNULL_BEGIN
+
 @class PFRole;
 @class PFUser;
 
@@ -250,6 +258,8 @@
  - If `NO`, the provided `acl` will be used without modification.
  - If `acl` is `nil`, this value is ignored.
  */
-+ (void)setDefaultACL:(PFACL *)acl withAccessForCurrentUser:(BOOL)currentUserAccess;
++ (void)setDefaultACL:(PF_NULLABLE PFACL *)acl withAccessForCurrentUser:(BOOL)currentUserAccess;
 
 @end
+
+PF_ASSUME_NONNULL_END

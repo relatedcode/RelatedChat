@@ -7,12 +7,16 @@
 #import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
+#import <Parse/PFNullability.h>
 #import <Parse/PFObject.h>
 #import <Parse/PFQuery.h>
 #else
+#import <ParseOSX/PFNullability.h>
 #import <ParseOSX/PFObject.h>
 #import <ParseOSX/PFQuery.h>
 #endif
+
+PF_ASSUME_NONNULL_BEGIN
 
 /*!
  The `PFRelation` class that is used to access all of the children of a many-to-many relationship.
@@ -32,7 +36,7 @@
 /*!
  @abstract Returns a <PFQuery> object that can be used to get objects in this relation.
  */
-- (PFQuery *)query;
+- (PF_NULLABLE PFQuery *)query;
 
 ///--------------------------------------
 /// @name Modifying Relations
@@ -53,3 +57,5 @@
 - (void)removeObject:(PFObject *)object;
 
 @end
+
+PF_ASSUME_NONNULL_END

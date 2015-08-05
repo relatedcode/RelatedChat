@@ -15,6 +15,7 @@
 #import "AppConstant.h"
 #import "converter.h"
 
+#import "AudioMediaItem.h"
 #import "EmojiMediaItem.h"
 #import "PhotoMediaItem.h"
 #import "VideoMediaItem.h"
@@ -27,7 +28,7 @@
 @interface Incoming()
 {
 	NSString *senderId;
-	ChatView *chatView;
+	JSQMessagesCollectionView *collectionView;
 }
 @end
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -35,12 +36,12 @@
 @implementation Incoming
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (id)initWith:(NSString *)senderId_ ChatView:(ChatView *)chatView_
+- (id)initWith:(NSString *)senderId_ CollectionView:(JSQMessagesCollectionView *)collectionView_
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	self = [super init];
 	senderId = senderId_;
-	chatView = chatView_;
+	collectionView = collectionView_;
 	return self;
 }
 
@@ -109,7 +110,7 @@
 		{
 			mediaItem.isReadyToPlay = YES;
 			mediaItem.image = image;
-			[chatView.collectionView reloadData];
+			[collectionView reloadData];
 		}
 		else NSLog(@"Incoming createVideoMessage picture load error.");
 	}];
@@ -136,7 +137,7 @@
 		if (image != nil)
 		{
 			mediaItem.image = image;
-			[chatView.collectionView reloadData];
+			[collectionView reloadData];
 		}
 		else NSLog(@"Incoming createPictureMessage picture load error.");
 	}];
@@ -148,14 +149,35 @@
 - (JSQMessage *)createAudioMessage:(NSDictionary *)item
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	return nil;
+	NSString *name = item[@"name"];
+	NSString *userId = item[@"userId"];
+	NSDate *date = String2Date(item[@"date"]);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	AudioMediaItem *mediaItem = [[AudioMediaItem alloc] initWithFileURL:[NSURL URLWithString:item[@"audio"]] Duration:item[@"audio_duration"]];
+	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:senderId];
+	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	return message;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (JSQMessage *)createLocationMessage:(NSDictionary *)item
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	return nil;
+	NSString *name = item[@"name"];
+	NSString *userId = item[@"userId"];
+	NSDate *date = String2Date(item[@"date"]);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	JSQLocationMediaItem *mediaItem = [[JSQLocationMediaItem alloc] initWithLocation:nil];
+	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:senderId];
+	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	CLLocation *location = [[CLLocation alloc] initWithLatitude:[item[@"latitude"] doubleValue] longitude:[item[@"longitude"] doubleValue]];
+	[mediaItem setLocation:location withCompletionHandler:^{
+		[collectionView reloadData];
+	}];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	return message;
 }
 
 @end

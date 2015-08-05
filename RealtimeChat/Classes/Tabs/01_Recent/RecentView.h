@@ -15,9 +15,10 @@
 #import "SelectMultipleView.h"
 #import "AddressBookView.h"
 #import "FacebookFriendsView.h"
+#import "SelectDistanceView.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface RecentView : UITableViewController <UIActionSheetDelegate, SelectSingleDelegate, SelectMultipleDelegate, AddressBookDelegate, FacebookFriendsDelegate>
+@interface RecentView : UITableViewController <UIActionSheetDelegate, SelectSingleDelegate, SelectMultipleDelegate, AddressBookDelegate, FacebookFriendsDelegate, SelectDistanceDelegate>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 @end

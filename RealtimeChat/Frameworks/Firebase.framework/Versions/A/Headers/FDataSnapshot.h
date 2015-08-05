@@ -125,7 +125,7 @@
 
 
 /**
- * The name of the location that generated this FDataSnapshot.
+ * The key of the location that generated this FDataSnapshot.
  *
  * @return An NSString containing the key for the location of this FDataSnapshot.
  */

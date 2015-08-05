@@ -29,12 +29,14 @@
 
 #import <Foundation/Foundation.h>
 #import "FQuery.h"
+#import "FirebaseApp.h"
 #import "FDataSnapshot.h"
 #import "FMutableData.h"
 #import "FTransactionResult.h"
 #import "FAuthData.h"
 #import "FAuthType.h"
 #import "FirebaseServerValue.h"
+#import "FConfig.h"
 
 /**
  * A Firebase reference represents a particular location in your Firebase
@@ -226,27 +228,16 @@ that will automatically be populated by the Firebase Server.
 
 /** @name Attaching observers to read data */
 
-/*! observeEventType:withBlock: is used to listen for data changes at a particular location.
- 
-This is the primary way to read data from Firebase. Your block will be triggered
-for the initial data and again whenever the data changes.
- 
-Use removeObserverWithHandle: to stop receiving updates.
- 
-Supported events types for all realtime observers are specified in FEventType as:
-
-    typedef NS_ENUM(NSInteger, FEventType) {
-      FEventTypeChildAdded,    // 0, fired when a new child node is added to a location
-      FEventTypeChildRemoved,  // 1, fired when a child node is removed from a location
-      FEventTypeChildChanged,  // 2, fired when a child node at a location changes
-      FEventTypeChildMoved,    // 3, fired when a child node moves relative to the other child nodes at a location
-      FEventTypeValue          // 4, fired when any data changes at a location and, recursively, any children
-    };
-
-@param eventType The type of event to listen for.
-@param block The block that should be called with initial data and updates as a FDataSnapshot.
-@return A handle used to unregister this block later using removeObserverWithHandle:
-*/
+/**
+ * observeEventType:withBlock: is used to listen for data changes at a particular location.
+ * This is the primary way to read data from Firebase. Your block will be triggered
+ * for the initial data and again whenever the data changes.
+ *
+ * Use removeObserverWithHandle: to stop receiving updates.
+ * @param eventType The type of event to listen for.
+ * @param block The block that should be called with initial data and updates.  It is passed the data as an FDataSnapshot.
+ * @return A handle used to unregister this block later using removeObserverWithHandle:
+ */
 - (FirebaseHandle) observeEventType:(FEventType)eventType withBlock:(void (^)(FDataSnapshot* snapshot))block;
 
 
@@ -259,8 +250,8 @@ Supported events types for all realtime observers are specified in FEventType as
  * Use removeObserverWithHandle: to stop receiving updates.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates as a FDataSnapshot, as well as the
- * previous child's key.
+ * @param block The block that should be called with initial data and updates.  It is passed the data as an FDataSnapshot
+ * and the previous child's key.
  * @return A handle used to unregister this block later using removeObserverWithHandle:
  */
 - (FirebaseHandle) observeEventType:(FEventType)eventType andPreviousSiblingKeyWithBlock:(void (^)(FDataSnapshot* snapshot, NSString* prevKey))block;
@@ -276,7 +267,7 @@ Supported events types for all realtime observers are specified in FEventType as
  * Use removeObserverWithHandle: to stop receiving updates.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates as a FDataSnapshot.
+ * @param block The block that should be called with initial data and updates.  It is passed the data as an FDataSnapshot.
  * @param cancelBlock The block that should be called if this client no longer has permission to receive these events
  * @return A handle used to unregister this block later using removeObserverWithHandle:
  */
@@ -294,7 +285,8 @@ Supported events types for all realtime observers are specified in FEventType as
  * Use removeObserverWithHandle: to stop receiving updates.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates as a FDataSnapshot, as well as the previous child's key.
+ * @param block The block that should be called with initial data and updates.  It is passed the data as an FDataSnapshot
+ * and the previous child's key.
  * @param cancelBlock The block that should be called if this client no longer has permission to receive these events
  * @return A handle used to unregister this block later using removeObserverWithHandle:
  */
@@ -305,7 +297,7 @@ Supported events types for all realtime observers are specified in FEventType as
  * This is equivalent to observeEventType:withBlock:, except the block is immediately canceled after the initial data is returned.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates as a FDataSnapshot.
+ * @param block The block that should be called.  It is passed the data as an FDataSnapshot.
  */
 - (void) observeSingleEventOfType:(FEventType)eventType withBlock:(void (^)(FDataSnapshot* snapshot))block;
 
@@ -315,7 +307,7 @@ Supported events types for all realtime observers are specified in FEventType as
  * FEventTypeChildChanged events, your block will be passed the key of the previous node by priority order.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates as a FDataSnapshot, as well as the previous child's key.
+ * @param block The block that should be called.  It is passed the data as an FDataSnapshot and the previous child's key.
  */
 - (void) observeSingleEventOfType:(FEventType)eventType andPreviousSiblingKeyWithBlock:(void (^)(FDataSnapshot* snapshot, NSString* prevKey))block;
 
@@ -326,7 +318,7 @@ Supported events types for all realtime observers are specified in FEventType as
  * The cancelBlock will be called if you do not have permission to read data at this location.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates as a FDataSnapshot.
+ * @param block The block that should be called.  It is passed the data as an FDataSnapshot.
  * @param cancelBlock The block that will be called if you don't have permission to access this data
  */
 - (void) observeSingleEventOfType:(FEventType)eventType withBlock:(void (^)(FDataSnapshot* snapshot))block withCancelBlock:(void (^)(NSError* error))cancelBlock;
@@ -339,7 +331,7 @@ Supported events types for all realtime observers are specified in FEventType as
  * The cancelBlock will be called if you do not have permission to read data at this location.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates as a FDataSnapshot, as well as the previous child's key.
+ * @param block The block that should be called.  It is passed the data as an FDataSnapshot and the previous child's key.
  * @param cancelBlock The block that will be called if you don't have permission to access this data
  */
 - (void) observeSingleEventOfType:(FEventType)eventType andPreviousSiblingKeyWithBlock:(void (^)(FDataSnapshot* snapshot, NSString* prevKey))block withCancelBlock:(void (^)(NSError* error))cancelBlock;
@@ -352,6 +344,15 @@ Supported events types for all realtime observers are specified in FEventType as
  * @param handle The handle returned by the call to observeEventType:withBlock: which we are trying to remove.
  */
 - (void) removeObserverWithHandle:(FirebaseHandle)handle;
+
+/**
+ * By calling `keepSynced:YES` on a location, the data for that location will automatically be downloaded and
+ * kept in sync, even when no listeners are attached for that location. Additionally, while a location is kept
+ * synced, it will not be evicted from the persistent disk cache.
+ *
+ * @param keepSynced Pass YES to keep this location synchronized, pass NO to stop synchronization.
+ */
+- (void) keepSynced:(BOOL)keepSynced;
 
 
 /**
@@ -562,11 +563,11 @@ Supported events types for all realtime observers are specified in FEventType as
 /**
  * queryEqualToValue:childKey: is used to generate a reference to a limited view of the data at this location.
  * The FQuery instance returned by queryEqualToValue:childKey will respond to events at nodes with a value
- * equal to the supplied argument with a name equal to childKey. There will be at most one node that matches because
+ * equal to the supplied argument with a key equal to childKey. There will be at most one node that matches because
  * child keys are unique.
  *
  * @param value The value that the data returned by this FQuery will have
- * @param childKey The name of nodes with the right value
+ * @param childKey The key of nodes with the right value
  * @return An FQuery instance, limited to data with the supplied value and the key.
  */
 - (FQuery *) queryEqualToValue:(id)value childKey:(NSString *)childKey;
@@ -733,8 +734,19 @@ Supported events types for all realtime observers are specified in FEventType as
 * @param email The email for the account to be created
 * @param password The password for the account to be created
 * @param block The block to be called with the results of the operation
-*/- (void) createUser:(NSString *)email password:(NSString *)password withCompletionBlock:(void (^)(NSError *error))block;
+*/
+- (void) createUser:(NSString *)email password:(NSString *)password withCompletionBlock:(void (^)(NSError *error))block;
 
+/**
+ * Used to create a new user account with the given email and password combo. The results will be passed
+ * to the given block. Note that this method will not log the new user in. On success, invokes the result
+ * block with an dictionary of user data, including the user id.
+ *
+ * @param email The email for the account to be created
+ * @param password The password for the account to be created
+ * @param block The block to be called with the results of the operation
+ */
+- (void) createUser:(NSString *)email password:(NSString *)password withValueCompletionBlock:(void (^)(NSError *error, NSDictionary *result))block;
 
 /**
 * Remove a user account with the given email and password.
@@ -755,6 +767,17 @@ Supported events types for all realtime observers are specified in FEventType as
 * @param block A block to receive the results of the operation
 */
 - (void) changePasswordForUser:(NSString *)email fromOld:(NSString *)oldPassword toNew:(NSString *)newPassword withCompletionBlock:(void (^)(NSError *error))block;
+
+
+/**
+ * Attempts to change the email for the account with the given credentials to the new email given. Results are reported to the supplied block.
+ *
+ * @param email The email for the account to be changed
+ * @param password The password for the account to be changed
+ * @param newEmail The desired newEmail for the account
+ * @param block A block to receive the results of the operation
+ */
+- (void) changeEmailForUser:(NSString *)email password:(NSString *)password toNewEmail:(NSString *)newEmail withCompletionBlock:(void (^)(NSError *error))block;
 
 
 /**
@@ -991,19 +1014,41 @@ Supported events types for all realtime observers are specified in FEventType as
  */
 @property (strong, readonly, nonatomic) NSString* key;
 
+/**
+ * Gets the FirebaseApp instance associated with this reference.
+ *
+ * @return The FirebaseApp object for this reference.
+ */
+@property (strong, readonly, nonatomic) FirebaseApp *app;
+
 
 /** @name Global configuration and settings */
 
 /** Set the default dispatch queue for event blocks.
-*
-* @param queue The queue to set as the default for running blocks for all Firebase event types.
+ *
+ * @param queue The queue to set as the default for running blocks for all Firebase event types.
+ * @deprecated This method is deprecated
+ * @note Please use [Firebase defaultConfig].callbackQueue instead
 */
-+ (void) setDispatchQueue:(dispatch_queue_t)queue;
++ (void) setDispatchQueue:(dispatch_queue_t)queue __attribute__((deprecated));
 
 /** Retrieve the Firebase SDK version. */
 + (NSString *) sdkVersion;
 
 + (void) setLoggingEnabled:(BOOL)enabled;
 
-+ (void) setOption:(NSString*)option to:(id)value;
+/**
+ * Returns the default config object, used for configuring Firebase client behavior.
+ *
+ * This can be modified until you create your first `Firebase` instance.
+ */
++ (FConfig *)defaultConfig;
+
+/**
+ * @deprecated This method is deprecated
+ * @note Please enable persistence by setting [Firebase defaultConfig].persistenceEnabled = YES instead.
+ * @param option Option to set.
+ * @param value Value to set.
+ */
++ (void) setOption:(NSString*)option to:(id)value __attribute__((deprecated));
 @end

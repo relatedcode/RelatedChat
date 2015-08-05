@@ -1,13 +1,13 @@
 /*
- *  Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ *  Copyright (c) 2014, Parse, LLC. All rights reserved.
  *
  *  You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  *  copy, modify, and distribute this software in source code or binary form for use
- *  in connection with the web services and APIs provided by Facebook.
+ *  in connection with the web services and APIs provided by Parse.
  *
- *  As with any software that integrates with the Facebook platform, your use of
- *  this software is subject to the Facebook Developer Principles and Policies
- *  [http://developers.facebook.com/policy/]. This copyright notice shall be
+ *  As with any software that integrates with the Parse platform, your use of
+ *  this software is subject to the Parse Terms of Service
+ *  [https://www.parse.com/about/terms]. This copyright notice shall be
  *  included in all copies or substantial portions of the software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -21,10 +21,13 @@
 
 #import <UIKit/UIKit.h>
 
+#import <ParseUI/ParseUIConstants.h>
 #import <ParseUI/PFSignUpView.h>
 
 @class PFUser;
 @protocol PFSignUpViewControllerDelegate;
+
+PFUI_ASSUME_NONNULL_BEGIN
 
 /*!
  The `PFSignUpViewController` class that presents and manages
@@ -48,7 +51,7 @@
 
  @see PFSignUpView
  */
-@property (nonatomic, strong, readonly) PFSignUpView *signUpView;
+@property (PFUI_NULLABLE_PROPERTY nonatomic, strong, readonly) PFSignUpView *signUpView;
 
 ///--------------------------------------
 /// @name Configuring Sign Up Behaviors
@@ -59,7 +62,7 @@
 
  @see PFSignUpViewControllerDelegate
  */
-@property (nonatomic, weak) id<PFSignUpViewControllerDelegate> delegate;
+@property (PFUI_NULLABLE_PROPERTY nonatomic, weak) id<PFSignUpViewControllerDelegate> delegate;
 
 /*!
  @abstract Minimum required password length for user signups, defaults to `0`.
@@ -142,7 +145,8 @@ extern NSString *const PFSignUpCancelNotification;
  @param signUpController The signup view controller where signup failed.
  @param error `NSError` object representing the error that occured.
  */
-- (void)signUpViewController:(PFSignUpViewController *)signUpController didFailToSignUpWithError:(NSError *)error;
+- (void)signUpViewController:(PFSignUpViewController *)signUpController
+    didFailToSignUpWithError:(PFUI_NULLABLE NSError *)error;
 
 /*!
  @abstract Sent to the delegate when the sign up screen is cancelled.
@@ -152,3 +156,5 @@ extern NSString *const PFSignUpCancelNotification;
 - (void)signUpViewControllerDidCancelSignUp:(PFSignUpViewController *)signUpController;
 
 @end
+
+PFUI_ASSUME_NONNULL_END

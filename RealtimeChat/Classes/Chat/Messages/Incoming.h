@@ -11,13 +11,13 @@
 
 #import <UIKit/UIKit.h>
 
-#import "ChatView.h"
+#import "JSQMessages.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 @interface Incoming : NSObject
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
-- (id)initWith:(NSString *)senderId_ ChatView:(ChatView *)chatView_;
+- (id)initWith:(NSString *)senderId_ CollectionView:(JSQMessagesCollectionView *)collectionView_;
 
 - (JSQMessage *)create:(NSDictionary *)item;
 

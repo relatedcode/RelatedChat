@@ -13,10 +13,13 @@
 #define HEXCOLOR(c) [UIColor colorWithRed:((c>>24)&0xFF)/255.0 green:((c>>16)&0xFF)/255.0 blue:((c>>8)&0xFF)/255.0 alpha:((c)&0xFF)/255.0]
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-#define		FIREBASE							@"https://realtimechat2.firebaseio.com"
+#define		FIREBASE							@"https://realtime60.firebaseio.com"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		DEFAULT_TAB							0
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#define		INSERT_MESSAGES						10
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		VIDEO_LENGTH						5
@@ -24,6 +27,10 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		COLOR_OUTGOING						HEXCOLOR(0x007AFFFF)
 #define		COLOR_INCOMING						HEXCOLOR(0xE6E5EAFF)
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#define		TEXT_DELIVERED						@"Delivered"
+#define		TEXT_READ							@"Read"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		SCREEN_WIDTH						[UIScreen mainScreen].bounds.size.width
@@ -52,6 +59,7 @@
 #define		PF_USER_FACEBOOKID					@"facebookId"			//	String
 #define		PF_USER_PICTURE						@"picture"				//	File
 #define		PF_USER_THUMBNAIL					@"thumbnail"			//	File
+#define		PF_USER_LOCATION					@"location"				//	GeoPoint
 //-----------------------------------------------------------------------
 #define		PF_BLOCKED_CLASS_NAME				@"Blocked"				//	Class name
 #define		PF_BLOCKED_USER						@"user"					//	Pointer to User Class

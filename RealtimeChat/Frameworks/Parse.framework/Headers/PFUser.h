@@ -16,25 +16,24 @@
 #import <ParseOSX/PFSubclassing.h>
 #endif
 
+PF_ASSUME_NONNULL_BEGIN
+
+typedef void(^PFUserSessionUpgradeResultBlock)(NSError *PF_NULLABLE_S error);
+typedef void(^PFUserLogoutResultBlock)(NSError *PF_NULLABLE_S error);
+
+
 @class PFQuery;
 
 /*!
  The `PFUser` class is a local representation of a user persisted to the Parse Data.
  This class is a subclass of a <PFObject>, and retains the same functionality of a <PFObject>,
  but also extends it with various user specific methods, like authentication, signing up, and validation uniqueness.
- 
+
  Many APIs responsible for linking a `PFUser` with Facebook or Twitter have been deprecated in favor of dedicated
  utilities for each social network. See <PFFacebookUtils>, <PFTwitterUtils> and <PFAnonymousUtils> for more information.
  */
 
 @interface PFUser : PFObject<PFSubclassing>
-
-/*!
- @abstract The name of the `PFUser` class in the REST API.
-
- @discussion This is a required <PFSubclassing> method.
- */
-+ (NSString *)parseClassName;
 
 ///--------------------------------------
 /// @name Accessing the Current User
@@ -45,14 +44,14 @@
 
  @returns Returns a `PFUser` that is the currently logged in user. If there is none, returns `nil`.
  */
-+ (instancetype)currentUser;
++ (PF_NULLABLE instancetype)currentUser;
 
 /*!
  @abstract The session token for the `PFUser`.
 
  @discussion This is set by the server upon successful authentication.
  */
-@property (nonatomic, strong) NSString *sessionToken;
+@property (PF_NULLABLE_PROPERTY nonatomic, copy, readonly) NSString *sessionToken;
 
 /*!
  @abstract Whether the `PFUser` was just created from a request.
@@ -84,7 +83,7 @@
 
 /*!
  @abstract Enables automatic creation of anonymous users.
- 
+
  @discussion After calling this method, <currentUser> will always have a value.
  The user will only be created on the server once the user has been saved,
  or once an object with a relation to that user or an ACL that refers to the user has been saved.
@@ -97,7 +96,7 @@
 /*!
  @abstract The username for the `PFUser`.
  */
-@property (nonatomic, strong) NSString *username;
+@property (PF_NULLABLE_PROPERTY nonatomic, strong) NSString *username;
 
 /**!
  @abstract The password for the `PFUser`.
@@ -105,12 +104,12 @@
  @discussion This will not be filled in from the server with the password.
  It is only meant to be set.
  */
-@property (nonatomic, strong) NSString *password;
+@property (PF_NULLABLE_PROPERTY nonatomic, strong) NSString *password;
 
 /*!
  @abstract The email for the `PFUser`.
  */
-@property (nonatomic, strong) NSString *email;
+@property (PF_NULLABLE_PROPERTY nonatomic, strong) NSString *email;
 
 /*!
  @abstract Signs up the user *synchronously*.
@@ -130,7 +129,7 @@
 
  @warning Make sure that password and username are set before calling this method.
 
- @param error Error object to set on error. 
+ @param error Error object to set on error.
 
  @returns Returns whether the sign up was successful.
  */
@@ -157,7 +156,7 @@
  @param block The block to execute.
  It should have the following argument signature: `^(BOOL succeeded, NSError *error)`.
  */
-- (void)signUpInBackgroundWithBlock:(PFBooleanResultBlock)block;
+- (void)signUpInBackgroundWithBlock:(PF_NULLABLE PFBooleanResultBlock)block;
 
 /*
  @abstract Signs up the user *asynchronously*.
@@ -172,7 +171,7 @@
  `error` will be `nil` on success and set if there was an error.
  `[result boolValue]` will tell you whether the call succeeded or not.
  */
-- (void)signUpInBackgroundWithTarget:(id)target selector:(SEL)selector;
+- (void)signUpInBackgroundWithTarget:(PF_NULLABLE_S id)target selector:(PF_NULLABLE_S SEL)selector;
 
 ///--------------------------------------
 /// @name Logging In
@@ -190,8 +189,8 @@
  @returns Returns an instance of the `PFUser` on success.
  If login failed for either wrong password or wrong username, returns `nil`.
  */
-+ (instancetype)logInWithUsername:(NSString *)username
-                         password:(NSString *)password;
++ (PF_NULLABLE instancetype)logInWithUsername:(NSString *)username
+                                     password:(NSString *)password;
 
 /*!
  @abstract Makes a *synchronous* request to login a user with specified credentials.
@@ -206,9 +205,9 @@
  @returns Returns an instance of the `PFUser` on success.
  If login failed for either wrong password or wrong username, returns `nil`.
  */
-+ (instancetype)logInWithUsername:(NSString *)username
-                         password:(NSString *)password
-                            error:(NSError **)error;
++ (PF_NULLABLE instancetype)logInWithUsername:(NSString *)username
+                                     password:(NSString *)password
+                                        error:(NSError **)error;
 
 /*!
  @abstract Makes an *asynchronous* request to login a user with specified credentials.
@@ -238,8 +237,8 @@
  */
 + (void)logInWithUsernameInBackground:(NSString *)username
                              password:(NSString *)password
-                               target:(id)target
-                             selector:(SEL)selector;
+                               target:(PF_NULLABLE_S id)target
+                             selector:(PF_NULLABLE_S SEL)selector;
 
 /*!
  @abstract Makes an *asynchronous* request to log in a user with specified credentials.
@@ -254,7 +253,7 @@
  */
 + (void)logInWithUsernameInBackground:(NSString *)username
                              password:(NSString *)password
-                                block:(PFUserResultBlock)block;
+                                block:(PF_NULLABLE PFUserResultBlock)block;
 
 ///--------------------------------------
 /// @name Becoming a User
@@ -271,7 +270,7 @@
  @returns Returns an instance of the `PFUser` on success.
  If becoming a user fails due to incorrect token, it returns `nil`.
  */
-+ (instancetype)become:(NSString *)sessionToken;
++ (PF_NULLABLE instancetype)become:(NSString *)sessionToken;
 
 /*!
  @abstract Makes a *synchronous* request to become a user with the given session token.
@@ -285,8 +284,7 @@
  @returns Returns an instance of the `PFUser` on success.
  If becoming a user fails due to incorrect token, it returns `nil`.
  */
-+ (instancetype)become:(NSString *)sessionToken
-                 error:(NSError **)error;
++ (PF_NULLABLE instancetype)become:(NSString *)sessionToken error:(NSError **)error;
 
 /*!
  @abstract Makes an *asynchronous* request to become a user with the given session token.
@@ -312,8 +310,8 @@
  It should have the following signature: `(void)callbackWithUser:(PFUser *)user error:(NSError *)error`.
  */
 + (void)becomeInBackground:(NSString *)sessionToken
-                    target:(id)target
-                  selector:(SEL)selector;
+                    target:(PF_NULLABLE_S id)target
+                  selector:(PF_NULLABLE_S SEL)selector;
 
 /*!
  @abstract Makes an *asynchronous* request to become a user with the given session token.
@@ -324,8 +322,34 @@
  @param sessionToken The session token for the user.
  @param block The block to execute. The block should have the following argument signature: (PFUser *user, NSError *error)
  */
-+ (void)becomeInBackground:(NSString *)sessionToken
-                     block:(PFUserResultBlock)block;
++ (void)becomeInBackground:(NSString *)sessionToken block:(PF_NULLABLE PFUserResultBlock)block;
+
+///--------------------------------------
+/// @name Revocable Session
+///--------------------------------------
+
+/*!
+ @abstract Enables revocable sessions and migrates the currentUser session token to use revocable session if needed.
+
+ @discussion This method is required if you want to use <PFSession> APIs
+ and you application's 'Require Revocable Session' setting is turned off on `http://parse.com` app settings.
+ After returned `BFTask` completes - <PFSession> class and APIs will be available for use.
+
+ @returns An instance of `BFTask` that is completed when
+ revocable sessions are enabled and currentUser token is migrated.
+ */
++ (BFTask *)enableRevocableSessionInBackground;
+
+/*!
+ @abstract Enables revocable sessions and upgrades the currentUser session token to use revocable session if needed.
+
+ @discussion This method is required if you want to use <PFSession> APIs
+ and legacy sessions are enabled in your application settings on `http://parse.com/`.
+ After returned `BFTask` completes - <PFSession> class and APIs will be available for use.
+
+ @param block Block that will be called when revocable sessions are enabled and currentUser token is migrated.
+ */
++ (void)enableRevocableSessionInBackgroundWithBlock:(PF_NULLABLE PFUserSessionUpgradeResultBlock)block;
 
 ///--------------------------------------
 /// @name Logging Out
@@ -335,6 +359,28 @@
  @abstract *Synchronously* logs out the currently logged in user on disk.
  */
 + (void)logOut;
+
+/*!
+ @abstract *Asynchronously* logs out the currenlt logged in user.
+
+ @discussion This will also remove the session from disk, log out of linked services
+ and all future calls to <currentUser> will return `nil`. This is preferrable to using <logOut>,
+ unless your code is already running from a background thread.
+
+ @returns An instance of `BFTask`, that is resolved with `nil` result when logging out completes.
+ */
++ (BFTask *)logOutInBackground;
+
+/*!
+ @abstract *Asynchronously* logs out the currenlt logged in user.
+
+ @discussion This will also remove the session from disk, log out of linked services
+ and all future calls to <currentUser> will return `nil`. This is preferrable to using <logOut>,
+ unless your code is already running from a background thread.
+
+ @param block A block that will be called when logging out completes or fails.
+ */
++ (void)logOutInBackgroundWithBlock:(PF_NULLABLE PFUserLogoutResultBlock)block;
 
 ///--------------------------------------
 /// @name Requesting a Password Reset
@@ -367,7 +413,7 @@
 
 /*!
  @abstract Send a password reset request asynchronously for a specified email and sets an
- error object. If a user account exists with that email, an email will be sent to 
+ error object. If a user account exists with that email, an email will be sent to
  that address with instructions on how to reset their password.
  @param email Email of the account to send a reset password request.
  @returns The task, that encapsulates the work being done.
@@ -388,8 +434,8 @@
  `[result boolValue]` will tell you whether the call succeeded or not.
  */
 + (void)requestPasswordResetForEmailInBackground:(NSString *)email
-                                          target:(id)target
-                                        selector:(SEL)selector;
+                                          target:(PF_NULLABLE_S id)target
+                                        selector:(PF_NULLABLE_S SEL)selector;
 
 /*!
  @abstract Send a password reset request *asynchronously* for a specified email.
@@ -402,15 +448,8 @@
  It should have the following argument signature: `^(BOOL succeeded, NSError *error)`.
  */
 + (void)requestPasswordResetForEmailInBackground:(NSString *)email
-                                           block:(PFBooleanResultBlock)block;
-
-///--------------------------------------
-/// @name Querying for Users
-///--------------------------------------
-
-/*!
- @abstract Creates a <PFQuery> for `PFUser` objects.
- */
-+ (PFQuery *)query;
+                                           block:(PF_NULLABLE PFBooleanResultBlock)block;
 
 @end
+
+PF_ASSUME_NONNULL_END

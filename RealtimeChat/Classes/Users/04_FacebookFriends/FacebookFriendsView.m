@@ -9,7 +9,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <FacebookSDK/FacebookSDK.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <Parse/Parse.h>
 #import "ProgressHUD.h"
 
@@ -52,10 +52,8 @@
 - (void)loadFacebook
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if ([FBSession.activeSession isOpen] == NO) return;
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	FBRequest *request = [FBRequest requestForMyFriends];
-	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error)
+	FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/friends" parameters:nil];
+	[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error)
 	{
 		if (error == nil)
 		{

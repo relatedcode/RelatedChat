@@ -44,6 +44,8 @@
 
 	NSMutableArray *items;
 	NSMutableArray *messages;
+
+	NSMutableDictionary *started;
 	NSMutableDictionary *avatars;
 
 	JSQMessagesBubbleImage *bubbleImageOutgoing;
@@ -73,6 +75,7 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	items = [[NSMutableArray alloc] init];
 	messages = [[NSMutableArray alloc] init];
+	started = [[NSMutableDictionary alloc] init];
 	avatars = [[NSMutableDictionary alloc] init];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	PFUser *user = [PFUser currentUser];
@@ -87,10 +90,12 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[JSQMessagesCollectionViewCell registerMenuAction:@selector(actionCopy:)];
 	[JSQMessagesCollectionViewCell registerMenuAction:@selector(actionDelete:)];
+	[JSQMessagesCollectionViewCell registerMenuAction:@selector(actionSave:)];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	UIMenuItem *menuItemCopy = [[UIMenuItem alloc] initWithTitle:@"Copy" action:@selector(actionCopy:)];
 	UIMenuItem *menuItemDelete = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(actionDelete:)];
-	[UIMenuController sharedMenuController].menuItems = @[menuItemCopy, menuItemDelete];
+	UIMenuItem *menuItemSave = [[UIMenuItem alloc] initWithTitle:@"Save" action:@selector(actionSave:)];
+	[UIMenuController sharedMenuController].menuItems = @[menuItemCopy, menuItemDelete, menuItemSave];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	firebase1 = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Message/%@", FIREBASE, groupId]];
 	firebase2 = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Typing/%@", FIREBASE, groupId]];
@@ -144,6 +149,7 @@
 		[self finishReceivingMessage];
 		[self scrollToBottomAnimated:NO];
 		self.automaticallyScrollsToMostRecentMessage = YES;
+		self.showLoadEarlierMessagesHeader = YES;
 		initialized	= YES;
 	}];
 }
@@ -152,10 +158,8 @@
 - (BOOL)addMessage:(NSDictionary *)item
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	Incoming *incoming = [[Incoming alloc] initWith:self.senderId ChatView:self];
+	Incoming *incoming = [[Incoming alloc] initWith:self.senderId CollectionView:self.collectionView];
 	JSQMessage *message = [incoming create:item];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	if (message == nil) return NO;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[items addObject:item];
 	[messages addObject:message];
@@ -167,8 +171,11 @@
 - (void)loadAvatar:(NSString *)senderId
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
+	if (started[senderId] == nil) started[senderId] = @YES; else return;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	PFQuery *query = [PFQuery queryWithClassName:PF_USER_CLASS_NAME];
 	[query whereKey:PF_USER_OBJECTID equalTo:senderId];
+	[query setCachePolicy:kPFCachePolicyCacheThenNetwork];
 	[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
 	{
 		if (error == nil)
@@ -185,10 +192,11 @@
 						avatars[senderId] = [JSQMessagesAvatarImageFactory avatarImageWithImage:image diameter:30.0];
 						[self.collectionView reloadData];
 					}
+					else [started removeObjectForKey:senderId];
 				}];
 			}
 		}
-		else NSLog(@"ChatView loadAvatar query error.");
+		else if (error.code != 120) [started removeObjectForKey:senderId];
 	}];
 }
 
@@ -311,16 +319,12 @@
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+	UIColor *color = [self outgoing:messages[indexPath.item]] ? [UIColor whiteColor] : [UIColor blackColor];
 
-	if ([self outgoing:messages[indexPath.item]])
-	{
-		cell.textView.textColor = [UIColor whiteColor];
-	}
-	else
-	{
-		cell.textView.textColor = [UIColor blackColor];
-	}
+	JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+	cell.textView.textColor = color;
+	cell.textView.linkTextAttributes = @{NSForegroundColorAttributeName:color};
+
 	return cell;
 }
 
@@ -331,15 +335,21 @@
 			withSender:(id)sender
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
+	NSDictionary *item = items[indexPath.item];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if (action == @selector(actionCopy:))
 	{
-		NSDictionary *item = items[indexPath.item];
 		if ([item[@"type"] isEqualToString:@"text"]) return YES;
 	}
 	if (action == @selector(actionDelete:))
 	{
-		JSQMessage *message = messages[indexPath.item];
-		if ([self outgoing:message]) return YES;
+		if ([self outgoing:messages[indexPath.item]]) return YES;
+	}
+	if (action == @selector(actionSave:))
+	{
+		if ([item[@"type"] isEqualToString:@"picture"]) return YES;
+		if ([item[@"type"] isEqualToString:@"audio"]) return YES;
+		if ([item[@"type"] isEqualToString:@"video"]) return YES;
 	}
 	return NO;
 }
@@ -351,6 +361,7 @@
 {
 	if (action == @selector(actionCopy:))		[self actionCopy:indexPath];
 	if (action == @selector(actionDelete:))		[self actionDelete:indexPath];
+	if (action == @selector(actionSave:))		[self actionSave:indexPath];
 }
 
 #pragma mark - JSQMessages collection view flow layout delegate
@@ -407,7 +418,7 @@
 				header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	NSLog(@"didTapLoadEarlierMessagesButton");
+	ActionPremium(self);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -452,7 +463,7 @@
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	NSLog(@"didTapCellAtIndexPath %@", NSStringFromCGPoint(touchLocation));
+
 }
 
 #pragma mark - User actions
@@ -486,6 +497,13 @@
 {
 	NSDictionary *item = items[indexPath.item];
 	[[UIPasteboard generalPasteboard] setString:item[@"text"]];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionSave:(NSIndexPath *)indexPath
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	ActionPremium(self);
 }
 
 #pragma mark - RNGridMenuDelegate

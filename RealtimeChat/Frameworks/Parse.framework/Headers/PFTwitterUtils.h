@@ -10,6 +10,8 @@
 #import <Parse/PFUser.h>
 #import <Parse/PF_Twitter.h>
 
+PF_ASSUME_NONNULL_BEGIN
+
 @class BFTask;
 
 /*!
@@ -28,7 +30,7 @@
 
  @returns An instance of <PF_Twitter> object.
  */
-+ (PF_Twitter *)twitter;
++ (PF_NULLABLE PF_Twitter *)twitter;
 
 /*!
  @abstract Initializes the Twitter singleton.
@@ -48,7 +50,7 @@
 
  @returns `YES` if the user has their account linked to Twitter, otherwise `NO`.
  */
-+ (BOOL)isLinkedWithUser:(PFUser *)user;
++ (BOOL)isLinkedWithUser:(PF_NULLABLE PFUser *)user;
 
 ///--------------------------------------
 /// @name Logging In & Creating Twitter-Linked Users
@@ -73,7 +75,7 @@
  @param block The block to execute.
  It should have the following argument signature: `^(PFUser *user, NSError *error)`.
  */
-+ (void)logInWithBlock:(PFUserResultBlock)block;
++ (void)logInWithBlock:(PF_NULLABLE PFUserResultBlock)block;
 
 /*
  @abstract *Asynchronously* Logs in a user using Twitter.
@@ -85,7 +87,7 @@
  @param selector The selector that will be called when the asynchrounous request is complete.
  It should have the following signature: `(void)callbackWithUser:(PFUser *)user error:(NSError **)error`.
  */
-+ (void)logInWithTarget:(id)target selector:(SEL)selector;
++ (void)logInWithTarget:(PF_NULLABLE_S id)target selector:(PF_NULLABLE_S SEL)selector;
 
 /*!
  @abstract *Asynchronously* logs in a user using Twitter.
@@ -122,7 +124,7 @@
                 screenName:(NSString *)screenName
                  authToken:(NSString *)authToken
            authTokenSecret:(NSString *)authTokenSecret
-                     block:(PFUserResultBlock)block;
+                     block:(PF_NULLABLE PFUserResultBlock)block;
 
 /*
  @abstract Logs in a user using Twitter.
@@ -142,8 +144,8 @@
                 screenName:(NSString *)screenName
                  authToken:(NSString *)authToken
            authTokenSecret:(NSString *)authTokenSecret
-                    target:(id)target
-                  selector:(SEL)selector;
+                    target:(PF_NULLABLE_S id)target
+                  selector:(PF_NULLABLE_S SEL)selector;
 
 ///--------------------------------------
 /// @name Linking Users with Twitter
@@ -181,9 +183,9 @@
 
  @param user User to link to Twitter.
  @param block The block to execute.
- It should have the following argument signature: `^(BOOL *success, NSError *error)`.
+ It should have the following argument signature: `^(BOOL success, NSError *error)`.
  */
-+ (void)linkUser:(PFUser *)user block:(PFBooleanResultBlock)block;
++ (void)linkUser:(PFUser *)user block:(PF_NULLABLE PFBooleanResultBlock)block;
 
 /*
  @abstract *Asynchronously* links Twitter to an existing <PFUser>.
@@ -197,8 +199,8 @@
  It should have the following signature: `(void)callbackWithResult:(NSNumber *)result error:(NSError *)error`.
  */
 + (void)linkUser:(PFUser *)user
-          target:(id)target
-        selector:(SEL)selector;
+          target:(PF_NULLABLE_S id)target
+        selector:(PF_NULLABLE_S SEL)selector;
 
 /*!
  @abstract *Asynchronously* links Twitter to an existing PFUser asynchronously.
@@ -231,14 +233,14 @@
  @param authToken The auth token for the user's session.
  @param authTokenSecret The auth token secret for the user's session.
  @param block The block to execute.
- It should have the following argument signature: `^(BOOL *success, NSError *error)`.
+ It should have the following argument signature: `^(BOOL success, NSError *error)`.
  */
 + (void)linkUser:(PFUser *)user
        twitterId:(NSString *)twitterId
       screenName:(NSString *)screenName
        authToken:(NSString *)authToken
  authTokenSecret:(NSString *)authTokenSecret
-           block:(PFBooleanResultBlock)block;
+           block:(PF_NULLABLE PFBooleanResultBlock)block;
 
 /*
  @abstract Links Twitter to an existing <PFUser>.
@@ -260,8 +262,8 @@
       screenName:(NSString *)screenName
        authToken:(NSString *)authToken
  authTokenSecret:(NSString *)authTokenSecret
-          target:(id)target
-        selector:(SEL)selector;
+          target:(PF_NULLABLE_S id)target
+        selector:(PF_NULLABLE_S SEL)selector;
 
 ///--------------------------------------
 /// @name Unlinking Users from Twitter
@@ -303,7 +305,7 @@
  It should have the following argument signature: `^(BOOL succeeded, NSError *error)`.
  */
 + (void)unlinkUserInBackground:(PFUser *)user
-                         block:(PFBooleanResultBlock)block;
+                         block:(PF_NULLABLE PFBooleanResultBlock)block;
 
 /*
  @abstract Makes an *asynchronous* request to unlink a user from a Twitter account.
@@ -313,7 +315,9 @@
  @param selector The selector that will be called when the asynchrounous request is complete.
  */
 + (void)unlinkUserInBackground:(PFUser *)user
-                        target:(id)target
-                      selector:(SEL)selector;
+                        target:(PF_NULLABLE_S id)target
+                      selector:(PF_NULLABLE_S SEL)selector;
 
 @end
+
+PF_ASSUME_NONNULL_END

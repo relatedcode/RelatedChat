@@ -10,7 +10,8 @@
 // THE SOFTWARE.
 
 #import <Parse/Parse.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 #import "ProgressHUD.h"
 #import "UIImageView+WebCache.h"
 
@@ -102,7 +103,9 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	[ProgressHUD show:@"Signing in..." Interaction:NO];
-	[PFFacebookUtils logInWithPermissions:@[@"public_profile", @"email", @"user_friends"] block:^(PFUser *user, NSError *error)
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSArray *permissionsArray = @[@"public_profile", @"email", @"user_friends"];
+	[PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error)
 	{
 		if (user != nil)
 		{
@@ -120,13 +123,13 @@
 - (void)requestFacebook:(PFUser *)user
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	FBRequest *request = [FBRequest requestForMe];
-	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error)
+	FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me?fields=id,email,name" parameters:nil];
+	[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error)
 	{
 		if (error == nil)
 		{
 			NSDictionary *userData = (NSDictionary *)result;
-			[self processFacebook:user UserData:userData];
+			[self requestFacebookPicture:user UserData:userData];
 		}
 		else
 		{
@@ -137,7 +140,7 @@
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)processFacebook:(PFUser *)user UserData:(NSDictionary *)userData
+- (void)requestFacebookPicture:(PFUser *)user UserData:(NSDictionary *)userData
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	NSString *link = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", userData[@"id"]];
@@ -148,42 +151,55 @@
 	{
 		if (image != nil)
 		{
-			UIImage *picture = ResizeImage(image, 140, 140, 1);
-			UIImage *thumbnail = ResizeImage(image, 60, 60, 1);
-			//-------------------------------------------------------------------------------------------------------------------------------------
-			PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
-			[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-			{
-				if (error != nil) [ProgressHUD showError:@"Network error."];
-			}];
-			//-------------------------------------------------------------------------------------------------------------------------------------
-			PFFile *fileThumbnail = [PFFile fileWithName:@"thumbnail.jpg" data:UIImageJPEGRepresentation(thumbnail, 0.6)];
-			[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-			{
-				if (error != nil) [ProgressHUD showError:@"Network error."];
-			}];
-			//-------------------------------------------------------------------------------------------------------------------------------------
-			user[PF_USER_EMAILCOPY] = userData[@"email"];
-			user[PF_USER_FULLNAME] = userData[@"name"];
-			user[PF_USER_FULLNAME_LOWER] = [userData[@"name"] lowercaseString];
-			user[PF_USER_FACEBOOKID] = userData[@"id"];
-			user[PF_USER_PICTURE] = filePicture;
-			user[PF_USER_THUMBNAIL] = fileThumbnail;
-			[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-			{
-				if (error != nil)
-				{
-					[PFUser logOut];
-					[ProgressHUD showError:error.userInfo[@"error"]];
-				}
-				else [self userLoggedIn:user];
-			}];
+			[self processFacebook:user UserData:userData Image:image];
 		}
 		else
 		{
 			[PFUser logOut];
 			[ProgressHUD showError:@"Failed to fetch Facebook profile picture."];
 		}
+	}];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)processFacebook:(PFUser *)user UserData:(NSDictionary *)userData Image:(UIImage *)image
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	UIImage *picture = ResizeImage(image, 140, 140, 1);
+	UIImage *thumbnail = ResizeImage(image, 60, 60, 1);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
+	[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+	{
+		if (error != nil) NSLog(@"WelcomeView processFacebook picture save error.");
+	}];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	PFFile *fileThumbnail = [PFFile fileWithName:@"thumbnail.jpg" data:UIImageJPEGRepresentation(thumbnail, 0.6)];
+	[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+	{
+		if (error != nil) NSLog(@"WelcomeView processFacebook thumbnail save error.");
+	}];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSString *name = userData[@"name"];
+	NSString *email = userData[@"email"];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	if (name == nil) name = @"";
+	if (email == nil) email = @"";
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	user[PF_USER_EMAILCOPY] = email;
+	user[PF_USER_FULLNAME] = name;
+	user[PF_USER_FULLNAME_LOWER] = [name lowercaseString];
+	user[PF_USER_FACEBOOKID] = userData[@"id"];
+	user[PF_USER_PICTURE] = filePicture;
+	user[PF_USER_THUMBNAIL] = fileThumbnail;
+	[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+	{
+		if (error != nil)
+		{
+			[PFUser logOut];
+			[ProgressHUD showError:error.userInfo[@"error"]];
+		}
+		else [self userLoggedIn:user];
 	}];
 }
 

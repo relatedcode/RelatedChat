@@ -24,10 +24,7 @@ void ParsePushUserAssign(void)
 	installation[PF_INSTALLATION_USER] = [PFUser currentUser];
 	[installation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
-		if (error != nil)
-		{
-			NSLog(@"ParsePushUserAssign save error.");
-		}
+		if (error != nil) NSLog(@"ParsePushUserAssign save error.");
 	}];
 }
 
@@ -39,10 +36,7 @@ void ParsePushUserResign(void)
 	[installation removeObjectForKey:PF_INSTALLATION_USER];
 	[installation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
-		if (error != nil)
-		{
-			NSLog(@"ParsePushUserResign save error.");
-		}
+		if (error != nil) NSLog(@"ParsePushUserResign save error.");
 	}];
 }
 
@@ -83,7 +77,7 @@ void SendPushNotification2(NSArray *members, NSString *text)
 
 	PFPush *push = [[PFPush alloc] init];
 	[push setQuery:queryInstallation];
-	[push setMessage:message];
+	[push setData:@{@"alert":message, @"sound":@"default", @"badge":@"Increment"}];
 	[push sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
 		if (error != nil)

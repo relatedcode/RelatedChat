@@ -89,6 +89,7 @@
 
 /**
  * To modify the data contained by this instance of FMutableData, set this to any of the native types support by Firebase:
+ *
  * * NSNumber (includes BOOL)
  * * NSDictionary
  * * NSArray
@@ -104,6 +105,7 @@
 
 /**
  * Set this property to update the priority of the data at this location. Can be set to the following types:
+ *
  * * NSNumber
  * * NSString
  * * nil / NSNull to remove the priority

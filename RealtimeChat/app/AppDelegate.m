@@ -11,7 +11,9 @@
 
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+#import "CLLocation+Utils.h"
 
 #import "AppConstant.h"
 #import "common.h"
@@ -29,11 +31,11 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[Parse setApplicationId:@"DAZbyoNRo7HoN9Pw1YQmba0YNI3vZyBzqFXM3TSG" clientKey:@"Lgwgf2gZT4OFhPBuNlxoV7mMwL4V9N9pdbZT6i7q"];
+	[Parse setApplicationId:@"Nfzata3X21gyBouyXMeeJjuvEtNnznSCcCPAJtBP" clientKey:@"WORJ1d6vV5sXFBl4S4UbGPdy7KvzWwHrBC1EQWe3"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[PFTwitterUtils initializeWithConsumerKey:@"kS83MvJltZwmfoWVoyE1R6xko" consumerSecret:@"YXSupp9hC2m1rugTfoSyqricST9214TwYapQErBcXlP1BrSfND"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[PFFacebookUtils initializeFacebook];
+	[PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:nil];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if ([application respondsToSelector:@selector(registerUserNotificationSettings:)])
 	{
@@ -53,12 +55,12 @@
 	self.settingsView = [[SettingsView alloc] init];
 
 	NavigationController *navController1 = [[NavigationController alloc] initWithRootViewController:self.recentView];
-	NavigationController *navController2 = [[NavigationController alloc] initWithRootViewController:self.groupsView];
-	NavigationController *navController3 = [[NavigationController alloc] initWithRootViewController:self.peopleView];
-	NavigationController *navController4 = [[NavigationController alloc] initWithRootViewController:self.settingsView];
+	NavigationController *navController3 = [[NavigationController alloc] initWithRootViewController:self.groupsView];
+	NavigationController *navController4 = [[NavigationController alloc] initWithRootViewController:self.peopleView];
+	NavigationController *navController5 = [[NavigationController alloc] initWithRootViewController:self.settingsView];
 
 	self.tabBarController = [[UITabBarController alloc] init];
-	self.tabBarController.viewControllers = @[navController1, navController2, navController3, navController4];
+	self.tabBarController.viewControllers = @[navController1, navController3, navController4, navController5];
 	self.tabBarController.tabBar.translucent = NO;
 	self.tabBarController.selectedIndex = DEFAULT_TAB;
 
@@ -93,9 +95,9 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
+	[FBSDKAppEvents activateApp];
 	PostNotification(NOTIFICATION_APP_STARTED);
 	[self locationManagerStart];
-	[FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -111,7 +113,7 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[PFFacebookUtils session]];
+	return [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
 #pragma mark - Push notification methods
@@ -169,6 +171,22 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	self.coordinate = newLocation.coordinate;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	PFUser *user = [PFUser currentUser];
+	if (user != nil)
+	{
+		PFGeoPoint *geoPoint = user[PF_USER_LOCATION];
+		CLLocation *locationUser = [[CLLocation alloc] initWithLatitude:geoPoint.latitude longitude:geoPoint.longitude];
+		double distance = [newLocation pythagorasEquirectangularDistanceFromLocation:locationUser];
+		if (distance > 100)
+		{
+			user[PF_USER_LOCATION] = [PFGeoPoint geoPointWithLocation:newLocation];
+			[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+			{
+				if (error != nil) NSLog(@"AppDelegate didUpdateToLocation network error.");
+			}];
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------

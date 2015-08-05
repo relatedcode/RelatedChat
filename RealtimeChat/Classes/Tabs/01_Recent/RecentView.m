@@ -130,6 +130,12 @@
 	}
 	UITabBarItem *item = self.tabBarController.tabBar.items[0];
 	item.badgeValue = (total == 0) ? nil : [NSString stringWithFormat:@"%d", total];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[UIApplication sharedApplication].applicationIconBadgeNumber = total;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+	currentInstallation.badge = total;
+	[currentInstallation saveInBackground];
 }
 
 #pragma mark - User actions
@@ -159,7 +165,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-			   otherButtonTitles:@"Single recipient", @"Multiple recipients", @"Address Book", @"Facebook Friends", nil];
+			   otherButtonTitles:@"Single recipient", @"Multiple recipients", @"Address Book", @"Facebook Friends", @"Select by Distance", nil];
 	[action showFromTabBar:[[self tabBarController] tabBar]];
 }
 
@@ -197,6 +203,13 @@
 			FacebookFriendsView *facebookFriendsView = [[FacebookFriendsView alloc] init];
 			facebookFriendsView.delegate = self;
 			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:facebookFriendsView];
+			[self presentViewController:navController animated:YES completion:nil];
+		}
+		if (buttonIndex == 4)
+		{
+			SelectDistanceView *selectDistanceView = [[SelectDistanceView alloc] init];
+			selectDistanceView.delegate = self;
+			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectDistanceView];
 			[self presentViewController:navController animated:YES completion:nil];
 		}
 	}
@@ -238,6 +251,17 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)didSelectFacebookUser:(PFUser *)user2
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	PFUser *user1 = [PFUser currentUser];
+	NSString *groupId = StartPrivateChat(user1, user2);
+	[self actionChat:groupId];
+}
+
+#pragma mark - SelectDistanceDelegate
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)didSelectDistanceUser:(PFUser *)user2
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	PFUser *user1 = [PFUser currentUser];

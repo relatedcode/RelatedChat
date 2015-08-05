@@ -44,16 +44,14 @@ typedef NSUInteger FirebaseHandle;
 
 /** @name Attaching observers to read data */
 
-
 /**
  * observeEventType:withBlock: is used to listen for data changes at a particular location.
  * This is the primary way to read data from Firebase. Your block will be triggered
  * for the initial data and again whenever the data changes.
  *
  * Use removeObserverWithHandle: to stop receiving updates.
- *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates.
+ * @param block The block that should be called with initial data and updates.  It is passed the data as an FDataSnapshot.
  * @return A handle used to unregister this block later using removeObserverWithHandle:
  */
 - (FirebaseHandle) observeEventType:(FEventType)eventType withBlock:(void (^)(FDataSnapshot* snapshot))block;
@@ -68,7 +66,8 @@ typedef NSUInteger FirebaseHandle;
  * Use removeObserverWithHandle: to stop receiving updates.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates, as well as the previous child's key.
+ * @param block The block that should be called with initial data and updates.  It is passed the data as an FDataSnapshot
+ * and the previous child's key.
  * @return A handle used to unregister this block later using removeObserverWithHandle:
  */
 - (FirebaseHandle) observeEventType:(FEventType)eventType andPreviousSiblingKeyWithBlock:(void (^)(FDataSnapshot* snapshot, NSString* prevKey))block;
@@ -84,7 +83,7 @@ typedef NSUInteger FirebaseHandle;
  * Use removeObserverWithHandle: to stop receiving updates.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates.
+ * @param block The block that should be called with initial data and updates.  It is passed the data as an FDataSnapshot.
  * @param cancelBlock The block that should be called if this client no longer has permission to receive these events
  * @return A handle used to unregister this block later using removeObserverWithHandle:
  */
@@ -102,7 +101,8 @@ typedef NSUInteger FirebaseHandle;
  * Use removeObserverWithHandle: to stop receiving updates.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates, as well as the previous child's key.
+ * @param block The block that should be called with initial data and updates.  It is passed the data as an FDataSnapshot
+ * and the previous child's key.
  * @param cancelBlock The block that should be called if this client no longer has permission to receive these events
  * @return A handle used to unregister this block later using removeObserverWithHandle:
  */
@@ -113,7 +113,7 @@ typedef NSUInteger FirebaseHandle;
  * This is equivalent to observeEventType:withBlock:, except the block is immediately canceled after the initial data is returned.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates.
+ * @param block The block that should be called.  It is passed the data as an FDataSnapshot.
  */
 - (void) observeSingleEventOfType:(FEventType)eventType withBlock:(void (^)(FDataSnapshot* snapshot))block;
 
@@ -123,7 +123,7 @@ typedef NSUInteger FirebaseHandle;
  * FEventTypeChildChanged events, your block will be passed the key of the previous node by priority order.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates.
+ * @param block The block that should be called.  It is passed the data as an FDataSnapshot and the previous child's key.
  */
 - (void) observeSingleEventOfType:(FEventType)eventType andPreviousSiblingKeyWithBlock:(void (^)(FDataSnapshot* snapshot, NSString* prevKey))block;
 
@@ -134,7 +134,7 @@ typedef NSUInteger FirebaseHandle;
  * The cancelBlock will be called if you do not have permission to read data at this location.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates.
+ * @param block The block that should be called.  It is passed the data as an FDataSnapshot.
  * @param cancelBlock The block that will be called if you don't have permission to access this data
  */
 - (void) observeSingleEventOfType:(FEventType)eventType withBlock:(void (^)(FDataSnapshot* snapshot))block withCancelBlock:(void (^)(NSError* error))cancelBlock;
@@ -147,7 +147,7 @@ typedef NSUInteger FirebaseHandle;
  * The cancelBlock will be called if you do not have permission to read data at this location.
  *
  * @param eventType The type of event to listen for.
- * @param block The block that should be called with initial data and updates.
+ * @param block The block that should be called.  It is passed the data as an FDataSnapshot and the previous child's key.
  * @param cancelBlock The block that will be called if you don't have permission to access this data
  */
 - (void) observeSingleEventOfType:(FEventType)eventType andPreviousSiblingKeyWithBlock:(void (^)(FDataSnapshot* snapshot, NSString* prevKey))block withCancelBlock:(void (^)(NSError* error))cancelBlock;
@@ -166,6 +166,15 @@ typedef NSUInteger FirebaseHandle;
  * Detach all blocks previously attached to this Firebase location with observeEventType:withBlock:
  */
 - (void) removeAllObservers;
+
+/**
+ * By calling `keepSynced:YES` on a location, the data for that location will automatically be downloaded and
+ * kept in sync, even when no listeners are attached for that location. Additionally, while a location is kept
+ * synced, it will not be evicted from the persistent disk cache.
+ *
+ * @param keepSynced Pass YES to keep this location synchronized, pass NO to stop synchronization.
+*/
+ - (void) keepSynced:(BOOL)keepSynced;
 
 
 /** @name Querying and limiting */
@@ -308,6 +317,15 @@ typedef NSUInteger FirebaseHandle;
 - (FQuery *) queryOrderedByKey;
 
 /**
+ * queryOrderedByValue: is used to generate a reference to a view of the data that's been sorted by child value.
+ * This method is intended to be used in combination with queryStartingAtValue:, queryEndingAtValue:,
+ * or queryEqualToValue:.
+ *
+ * @return An FQuery instance, ordered by child value.
+ */
+- (FQuery *) queryOrderedByValue;
+
+/**
  * queryOrderedByPriority: is used to generate a reference to a view of the data that's been sorted by child
  * priority. This method is intended to be used in combination with queryStartingAtValue:, queryEndingAtValue:,
  * or queryEqualToValue:.
@@ -385,9 +403,9 @@ typedef NSUInteger FirebaseHandle;
 
 
 /**
-* Get a Firebase reference for the location that this data came from
+* Get a Firebase reference for the location of this query.
 *
-* @return A Firebase instance for the location of this data
+* @return A Firebase instance for the location of this query.
 */
 @property (nonatomic, readonly, strong) Firebase* ref;
 

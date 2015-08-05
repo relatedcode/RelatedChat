@@ -12,6 +12,8 @@
 #import <ParseOSX/PFConstants.h>
 #endif
 
+PF_ASSUME_NONNULL_BEGIN
+
 @class BFTask;
 
 /*!
@@ -27,7 +29,7 @@
 
  @returns The response from the cloud function.
  */
-+ (id)callFunction:(NSString *)function withParameters:(NSDictionary *)parameters;
++ (PF_NULLABLE_S id)callFunction:(NSString *)function withParameters:(PF_NULLABLE NSDictionary *)parameters;
 
 /*!
  @abstract Calls the given cloud function *synchronously* with the parameters provided and
@@ -40,7 +42,9 @@
  @returns The response from the cloud function.
  This result could be a `NSDictionary`, an `NSArray`, `NSNumber` or `NSString`.
  */
-+ (id)callFunction:(NSString *)function withParameters:(NSDictionary *)parameters error:(NSError **)error;
++ (PF_NULLABLE_S id)callFunction:(NSString *)function
+                  withParameters:(PF_NULLABLE NSDictionary *)parameters
+                           error:(NSError **)error;
 
 /*!
  @abstract Calls the given cloud function *asynchronously* with the parameters provided.
@@ -50,7 +54,8 @@
 
  @returns The task, that encapsulates the work being done.
  */
-+ (BFTask *)callFunctionInBackground:(NSString *)function withParameters:(NSDictionary *)parameters;
++ (BFTask *)callFunctionInBackground:(NSString *)function
+                      withParameters:(PF_NULLABLE NSDictionary *)parameters;
 
 /*!
  @abstract Calls the given cloud function *asynchronously* with the parameters provided
@@ -62,8 +67,8 @@
  It should have the following argument signature: `^(id result, NSError *error)`.
  */
 + (void)callFunctionInBackground:(NSString *)function
-                  withParameters:(NSDictionary *)parameters
-                           block:(PFIdResultBlock)block;
+                  withParameters:(PF_NULLABLE NSDictionary *)parameters
+                           block:(PF_NULLABLE PFIdResultBlock)block;
 
 /*
  @abstract Calls the given cloud function *asynchronously* with the parameters provided
@@ -77,8 +82,10 @@
  Result will be `nil` if error is set and vice versa.
  */
 + (void)callFunctionInBackground:(NSString *)function
-                  withParameters:(NSDictionary *)parameters
-                          target:(id)target
-                        selector:(SEL)selector;
+                  withParameters:(PF_NULLABLE NSDictionary *)parameters
+                          target:(PF_NULLABLE_S id)target
+                        selector:(PF_NULLABLE_S SEL)selector;
 
 @end
+
+PF_ASSUME_NONNULL_END
