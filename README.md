@@ -41,6 +41,9 @@ This is a full native iPhone app to create realtime, text based group or private
 - Typing indicator - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Message delivery receipt - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Message read receipt - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Save picture message content to device (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Save video message content to device (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Save audio message content to device (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Delete read and unread messages - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Block user functionality - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Report user functionality - **[Premium only](http://relatedcode.com/realtimepremium)**
