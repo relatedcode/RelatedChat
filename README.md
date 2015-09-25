@@ -16,6 +16,11 @@ This is a full native iPhone app to create realtime, text based group or private
 .
 ![Chat](http://relatedcode.com/github/chat819.png)
 
+## WHAT'S NEW in 6.4
+
+- Updated to iOS 9
+- Several changes
+
 ## FEATURES
 
 - Live chat between multiple devices
