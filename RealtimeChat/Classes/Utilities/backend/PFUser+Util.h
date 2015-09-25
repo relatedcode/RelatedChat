@@ -15,6 +15,9 @@
 @interface PFUser (Util)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
++ (NSString *)currentId;
++ (NSString *)currentName;
+
 - (NSString *)fullname;
 
 - (BOOL)isEqualTo:(PFUser *)user;

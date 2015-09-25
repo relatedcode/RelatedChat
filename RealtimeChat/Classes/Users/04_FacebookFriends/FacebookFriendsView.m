@@ -13,7 +13,7 @@
 #import <Parse/Parse.h>
 #import "ProgressHUD.h"
 
-#import "AppConstant.h"
+#import "utilities.h"
 
 #import "FacebookFriendsView.h"
 
@@ -52,7 +52,7 @@
 - (void)loadFacebook
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/friends" parameters:nil];
+	FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/friends?limit=5000" parameters:@{@"fields": @"id, name"}];
 	[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error)
 	{
 		if (error == nil)
@@ -75,10 +75,8 @@
 - (void)loadUsers:(NSMutableArray *)fbids
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFUser *user = [PFUser currentUser];
-
 	PFQuery *query1 = [PFQuery queryWithClassName:PF_BLOCKED_CLASS_NAME];
-	[query1 whereKey:PF_BLOCKED_USER1 equalTo:user];
+	[query1 whereKey:PF_BLOCKED_USER1 equalTo:[PFUser currentUser]];
 
 	PFQuery *query2 = [PFQuery queryWithClassName:PF_USER_CLASS_NAME];
 	[query2 whereKey:PF_USER_OBJECTID doesNotMatchKey:PF_BLOCKED_USERID2 inQuery:query1];

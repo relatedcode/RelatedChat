@@ -13,21 +13,27 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 NSString*		StartPrivateChat		(PFUser *user1, PFUser *user2);
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 NSString*		StartMultipleChat		(NSMutableArray *users);
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 void			StartGroupChat			(PFObject *group, NSMutableArray *users);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void			CreateRecentItem1		(PFUser *user, NSString *groupId, NSArray *members, NSString *description, PFUser *profile);
-void			CreateRecentItem2		(PFUser *user, NSString *groupId, NSArray *members, NSString *description, PFUser *profile);
+void			RestartRecentChat		(NSDictionary *recent);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void			UpdateRecentCounter1	(NSString *groupId, NSInteger amount, NSString *lastMessage);
-void			UpdateRecentCounter2	(NSDictionary *recent, NSInteger amount, NSString *lastMessage);
+void			CreateRecent			(NSString *userId, NSString *groupId, NSArray *members, NSString *desc, NSString *profileId, NSString *type);
+void			CreateRecentItem		(NSString *userId, NSString *groupId, NSArray *members, NSString *desc, NSString *profileId, NSString *type);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void			ClearRecentCounter1		(NSString *groupId);
-void			ClearRecentCounter2		(NSDictionary *recent);
+void			UpdateRecentItems		(NSString *groupId, NSString *lastMessage);
+void			UpdateRecentItem		(NSDictionary *recent, NSString *lastMessage);
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void			ClearRecentCounter		(NSString *groupId);
+void			ClearRecentCounterItem	(NSDictionary *recent);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 void			DeleteRecentItems		(PFUser *user1, PFUser *user2);

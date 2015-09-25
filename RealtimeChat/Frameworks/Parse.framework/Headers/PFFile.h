@@ -1,20 +1,19 @@
-//
-//  PFFile.h
-//
-//  Copyright 2011-present Parse Inc. All rights reserved.
-//
+/**
+ * Copyright (c) 2015-present, Parse, LLC.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_IPHONE
+#import <Bolts/BFTask.h>
+
 #import <Parse/PFConstants.h>
-#else
-#import <ParseOSX/PFConstants.h>
-#endif
 
 PF_ASSUME_NONNULL_BEGIN
-
-@class BFTask;
 
 /*!
  `PFFile` representes a file of binary data stored on the Parse servers.
@@ -147,7 +146,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns Returns whether the save succeeded.
  */
-- (BOOL)save;
+- (BOOL)save PF_SWIFT_UNAVAILABLE;
 
 /*!
  @abstract Saves the file *synchronously* and sets an error if it occurs.
@@ -163,7 +162,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-- (BFTask *)saveInBackground;
+- (BFTask PF_GENERIC(NSNumber *)*)saveInBackground;
 
 /*!
  @abstract Saves the file *asynchronously*
@@ -172,7 +171,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-- (BFTask *)saveInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
+- (BFTask PF_GENERIC(NSNumber *)*)saveInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
 
 /*!
  @abstract Saves the file *asynchronously* and executes the given block.
@@ -218,7 +217,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The `NSData` object containing file data. Returns `nil` if there was an error in fetching.
  */
-- (PF_NULLABLE NSData *)getData;
+- (PF_NULLABLE NSData *)getData PF_SWIFT_UNAVAILABLE;
 
 /*!
  @abstract This method is like <getData> but avoids ever holding the entire `PFFile` contents in memory at once.
@@ -227,7 +226,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A stream containing the data. Returns `nil` if there was an error in fetching.
  */
-- (PF_NULLABLE NSInputStream *)getDataStream;
+- (PF_NULLABLE NSInputStream *)getDataStream PF_SWIFT_UNAVAILABLE;
 
 /*!
  @abstract *Synchronously* gets the data from cache if available or fetches its contents from the network.
@@ -256,7 +255,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-- (BFTask *)getDataInBackground;
+- (BFTask PF_GENERIC(NSData *)*)getDataInBackground;
 
 /*!
  @abstract This method is like <getData> but it fetches asynchronously to avoid blocking the current thread.
@@ -269,7 +268,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-- (BFTask *)getDataInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
+- (BFTask PF_GENERIC(NSData *)*)getDataInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
 
 /*!
  @abstract This method is like <getDataInBackground> but avoids
@@ -279,7 +278,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-- (BFTask *)getDataStreamInBackground;
+- (BFTask PF_GENERIC(NSInputStream *)*)getDataStreamInBackground;
 
 /*!
  @abstract This method is like <getDataStreamInBackground>, but yields a live-updating stream.
@@ -294,7 +293,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A task that produces a *live* stream that is being written to with the data from the server.
  */
-- (BFTask *)getDataDownloadStreamInBackground;
+- (BFTask PF_GENERIC(NSInputStream *)*)getDataDownloadStreamInBackground;
 
 /*!
  @abstract This method is like <getDataInBackground> but avoids
@@ -305,7 +304,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-- (BFTask *)getDataStreamInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
+- (BFTask PF_GENERIC(NSInputStream *)*)getDataStreamInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
 
 /*!
  @abstract This method is like <getDataStreamInBackgroundWithProgrssBlock>, but yields a live-updating stream.
@@ -322,7 +321,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A task that produces a *live* stream that is being written to with the data from the server.
  */
-- (BFTask *)getDataDownloadStreamInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
+- (BFTask PF_GENERIC(NSInputStream *)*)getDataDownloadStreamInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
 
 /*!
  @abstract *Asynchronously* gets the data from cache if available or fetches its contents from the network.

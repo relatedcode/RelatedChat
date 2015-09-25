@@ -12,8 +12,7 @@
 #import "JSQMessage.h"
 #import "UIImageView+WebCache.h"
 
-#import "AppConstant.h"
-#import "converter.h"
+#import "utilities.h"
 
 #import "AudioMediaItem.h"
 #import "EmojiMediaItem.h"
@@ -22,7 +21,6 @@
 #import "JSQLocationMediaItem.h"
 
 #import "Incoming.h"
-#import "ChatView.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 @interface Incoming()

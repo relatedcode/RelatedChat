@@ -16,7 +16,7 @@
 #import "group.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void RemoveGroupMembers(PFUser *user1, PFUser *user2)
+void GroupRemoveMembers(PFUser *user1, PFUser *user2)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	PFQuery *query = [PFQuery queryWithClassName:PF_GROUP_CLASS_NAME];
@@ -28,15 +28,15 @@ void RemoveGroupMembers(PFUser *user1, PFUser *user2)
 		{
 			for (PFObject *group in objects)
 			{
-				RemoveGroupMember(group, user2);
+				GroupRemoveMember(group, user2);
 			}
 		}
-		else NSLog(@"RemoveGroupMembers query error.");
+		else NSLog(@"GroupRemoveMembers query error.");
 	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void RemoveGroupMember(PFObject *group, PFUser *user)
+void GroupRemoveMember(PFObject *group, PFUser *user)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	if ([group[PF_GROUP_MEMBERS] containsObject:user.objectId])
@@ -44,17 +44,17 @@ void RemoveGroupMember(PFObject *group, PFUser *user)
 		[group[PF_GROUP_MEMBERS] removeObject:user.objectId];
 		[group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 		{
-			if (error != nil) NSLog(@"RemoveGroupMember save error.");
+			if (error != nil) NSLog(@"GroupRemoveMember save error.");
 		}];
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void RemoveGroupItem(PFObject *group)
+void GroupDelete(PFObject *group)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	[group deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
-		if (error != nil) NSLog(@"RemoveGroupItem delete error.");
+		if (error != nil) NSLog(@"GroupDelete delete error.");
 	}];
 }

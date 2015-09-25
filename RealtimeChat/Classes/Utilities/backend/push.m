@@ -13,6 +13,7 @@
 #import <Firebase/Firebase.h>
 
 #import "AppConstant.h"
+#import "PFUser+Util.h"
 
 #import "push.h"
 
@@ -64,12 +65,11 @@ void SendPushNotification1(NSString *groupId, NSString *text)
 void SendPushNotification2(NSArray *members, NSString *text)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFUser *user = [PFUser currentUser];
-	NSString *message = [NSString stringWithFormat:@"%@: %@", user[PF_USER_FULLNAME], text];
+	NSString *message = [NSString stringWithFormat:@"%@: %@", [PFUser currentName], text];
 	
 	PFQuery *query = [PFQuery queryWithClassName:PF_USER_CLASS_NAME];
 	[query whereKey:PF_USER_OBJECTID containedIn:members];
-	[query whereKey:PF_USER_OBJECTID notEqualTo:user.objectId];
+	[query whereKey:PF_USER_OBJECTID notEqualTo:[PFUser currentId]];
 	[query setLimit:1000];
 
 	PFQuery *queryInstallation = [PFInstallation query];

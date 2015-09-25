@@ -13,6 +13,7 @@
 #import <ParseUI/ParseUI.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+#import <ParseTwitterUtils/ParseTwitterUtils.h>
 #import "CLLocation+Utils.h"
 
 #import "AppConstant.h"
@@ -31,7 +32,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[Parse setApplicationId:@"Nfzata3X21gyBouyXMeeJjuvEtNnznSCcCPAJtBP" clientKey:@"WORJ1d6vV5sXFBl4S4UbGPdy7KvzWwHrBC1EQWe3"];
+	[Parse setApplicationId:@"yTQEwFqPlJ6XBhLDM9fQS2ow1lN1TW3CDcxfped8" clientKey:@"QINEUgjoc2od8fbJfFplR7d7YcTfgUdSvOBTRR6P"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[PFTwitterUtils initializeWithConsumerKey:@"kS83MvJltZwmfoWVoyE1R6xko" consumerSecret:@"YXSupp9hC2m1rugTfoSyqricST9214TwYapQErBcXlP1BrSfND"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -49,10 +50,10 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-	self.recentView = [[RecentView alloc] init];
-	self.groupsView = [[GroupsView alloc] init];
-	self.peopleView = [[PeopleView alloc] init];
-	self.settingsView = [[SettingsView alloc] init];
+	self.recentView = [[RecentView alloc] initWithNibName:@"RecentView" bundle:nil];
+	self.groupsView = [[GroupsView alloc] initWithNibName:@"GroupsView" bundle:nil];
+	self.peopleView = [[PeopleView alloc] initWithNibName:@"PeopleView" bundle:nil];
+	self.settingsView = [[SettingsView alloc] initWithNibName:@"SettingsView" bundle:nil];
 
 	NavigationController *navController1 = [[NavigationController alloc] initWithRootViewController:self.recentView];
 	NavigationController *navController3 = [[NavigationController alloc] initWithRootViewController:self.groupsView];
@@ -66,6 +67,11 @@
 
 	self.window.rootViewController = self.tabBarController;
 	[self.window makeKeyAndVisible];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[self.recentView view];
+	[self.groupsView view];
+	[self.peopleView view];
+	[self.settingsView view];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return YES;
 }

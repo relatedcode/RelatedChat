@@ -14,16 +14,15 @@
 #import <Parse/Parse.h>
 #import <Firebase/Firebase.h>
 #import "IDMPhotoBrowser.h"
+#import "ProgressHUD.h"
 #import "RNGridMenu.h"
 
-#import "AppConstant.h"
-#import "camera.h"
-#import "common.h"
-#import "recent.h"
+#import "utilities.h"
 
 #import "Incoming.h"
 #import "Outgoing.h"
 
+#import "AudioMediaItem.h"
 #import "PhotoMediaItem.h"
 #import "VideoMediaItem.h"
 
@@ -78,9 +77,8 @@
 	started = [[NSMutableDictionary alloc] init];
 	avatars = [[NSMutableDictionary alloc] init];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	PFUser *user = [PFUser currentUser];
-	self.senderId = user.objectId;
-	self.senderDisplayName = user[PF_USER_FULLNAME];
+	self.senderId = [PFUser currentId];
+	self.senderDisplayName = [PFUser currentName];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	JSQMessagesBubbleImageFactory *bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
 	bubbleImageOutgoing = [bubbleFactory outgoingMessagesBubbleImageWithColor:COLOR_OUTGOING];
@@ -118,7 +116,7 @@
 	[super viewWillDisappear:animated];
 	if (self.isMovingFromParentViewController)
 	{
-		ClearRecentCounter1(groupId);
+		ClearRecentCounter(groupId);
 		[firebase1 removeAllObservers];
 		[firebase2 removeAllObservers];
 	}
@@ -135,10 +133,9 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[firebase1 observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot)
 	{
-		BOOL incoming = [self addMessage:snapshot.value];
-
 		if (initialized)
 		{
+			BOOL incoming = [self addMessage:snapshot.value];
 			if (incoming) [JSQSystemSoundPlayer jsq_playMessageReceivedSound];
 			[self finishReceivingMessage];
 		}

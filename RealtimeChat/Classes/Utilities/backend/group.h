@@ -12,8 +12,8 @@
 #import <Parse/Parse.h>
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void			RemoveGroupMembers		(PFUser *user1, PFUser *user2);
+void			GroupRemoveMembers		(PFUser *user1, PFUser *user2);
+void			GroupRemoveMember		(PFObject *group, PFUser *user);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void			RemoveGroupMember		(PFObject *group, PFUser *user);
-void			RemoveGroupItem			(PFObject *group);
+void			GroupDelete				(PFObject *group);

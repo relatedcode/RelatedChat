@@ -300,7 +300,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
     }
 
     return ((self.title == [object title] || [self.title isEqualToString:[object title]]) &&
-            (self.image == [object image]));
+            (self.image == (UIImage *) [object image]));
 }
 
 - (NSUInteger)hash {
@@ -481,7 +481,7 @@ static RNGridMenu *rn_visibleGridMenu;
     return YES;
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskAll;
 }
 

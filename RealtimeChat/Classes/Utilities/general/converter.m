@@ -16,7 +16,7 @@ NSString* Date2String(NSDate *date)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-	[formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'zzz'"];
+	[formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss"];
 	[formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	return [formatter stringFromDate:date];
 }
@@ -26,7 +26,7 @@ NSDate* String2Date(NSString *dateStr)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-	[formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'zzz'"];
+	[formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss"];
 	[formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	return [formatter dateFromString:dateStr];
 }

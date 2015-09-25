@@ -1,18 +1,18 @@
-//
-//  PFSession.h
-//
-//  Copyright 2011-present Parse Inc. All rights reserved.
-//
+/**
+ * Copyright (c) 2015-present, Parse, LLC.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_IPHONE
+#import <Bolts/BFTask.h>
+
 #import <Parse/PFObject.h>
 #import <Parse/PFSubclassing.h>
-#else
-#import <ParseOSX/PFObject.h>
-#import <ParseOSX/PFSubclassing.h>
-#endif
 
 PF_ASSUME_NONNULL_BEGIN
 
@@ -37,7 +37,7 @@ typedef void(^PFSessionResultBlock)(PFSession *PF_NULLABLE_S session, NSError *P
 
  @returns A task that is `completed` with an instance of `PFSession` class or is `faulted` if the operation fails.
  */
-+ (BFTask *)getCurrentSessionInBackground;
++ (BFTask PF_GENERIC(PFSession *)*)getCurrentSessionInBackground;
 
 /*!
  *Asynchronously* fetches a `PFSession` object related to the current user.

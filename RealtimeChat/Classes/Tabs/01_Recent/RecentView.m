@@ -13,13 +13,11 @@
 #import <Firebase/Firebase.h>
 #import "ProgressHUD.h"
 
-#import "AppConstant.h"
-#import "common.h"
-#import "converter.h"
-#import "recent.h"
+#import "utilities.h"
 
 #import "RecentView.h"
 #import "RecentCell.h"
+#import "MapsView.h"
 #import "ChatView.h"
 #import "SelectSingleView.h"
 #import "SelectMultipleView.h"
@@ -61,6 +59,9 @@
 	[super viewDidLoad];
 	self.title = @"Recent";
 	//---------------------------------------------------------------------------------------------------------------------------------------------
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Maps" style:UIBarButtonItemStylePlain target:self
+																						   action:@selector(actionMaps)];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self
 																						   action:@selector(actionCompose)];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -88,11 +89,10 @@
 - (void)loadRecents
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	PFUser *user = [PFUser currentUser];
-	if ((user != nil) && (firebase == nil))
+	if (([PFUser currentUser] != nil) && (firebase == nil))
 	{
 		firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
-		FQuery *query = [[firebase queryOrderedByChild:@"userId"] queryEqualToValue:user.objectId];
+		FQuery *query = [[firebase queryOrderedByChild:@"userId"] queryEqualToValue:[PFUser currentId]];
 		[query observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
 		{
 			[recents removeAllObjects];
@@ -139,6 +139,16 @@
 }
 
 #pragma mark - User actions
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionMaps
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	MapsView *mapsView = [[MapsView alloc] init];
+	mapsView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:mapsView];
+	[self presentViewController:navController animated:YES completion:nil];
+}
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)actionChat:(NSString *)groupId
@@ -213,6 +223,17 @@
 			[self presentViewController:navController animated:YES completion:nil];
 		}
 	}
+}
+
+#pragma mark - MapsDelegate
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)didSelectMapsUser:(PFUser *)user2
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	PFUser *user1 = [PFUser currentUser];
+	NSString *groupId = StartPrivateChat(user1, user2);
+	[self actionChat:groupId];
 }
 
 #pragma mark - SelectSingleDelegate
@@ -323,6 +344,7 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	NSDictionary *recent = recents[indexPath.row];
+	RestartRecentChat(recent);
 	[self actionChat:recent[@"groupId"]];
 }
 

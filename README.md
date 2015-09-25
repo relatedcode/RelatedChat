@@ -107,14 +107,14 @@ More info about how to [install](https://developers.facebook.com/docs/ios/gettin
 
 **4.,** You also need several external libraries which are included. But if you need, you can download them from here:
 
-https://github.com/AFNetworking/AFNetworking<br>
 https://github.com/ideaismobile/IDMPhotoBrowser<br>
 https://github.com/jessesquires/JSQMessagesViewController<br>
 https://github.com/jessesquires/JSQSystemSoundPlayer<br>
 https://github.com/relatedcode/ProgressHUD<br>
 https://github.com/rnystrom/RNGridMenu<br>
+https://github.com/rs/SDWebImage<br>
 
-To use these libraries, just add AFNetworking, IDMPhotoBrowser, JSQMessagesViewController, JSQSystemSoundPlayer, ProgressHUD and RNGridMenu directories to your project.
+To use these libraries, just add IDMPhotoBrowser, JSQMessagesViewController, JSQSystemSoundPlayer, ProgressHUD, RNGridMenu and SDWebImage directories to your project.
 
 **5.,** You need to [register](https://developers.facebook.com/apps) your app at Facebook. More info about how to [configure](https://developers.facebook.com/docs/ios/getting-started) Facebook.
 

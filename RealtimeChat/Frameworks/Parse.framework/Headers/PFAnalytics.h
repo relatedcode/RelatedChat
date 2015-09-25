@@ -1,20 +1,19 @@
-//
-//  PFAnalytics.h
-//
-//  Copyright 2011-present Parse Inc. All rights reserved.
-//
+/**
+ * Copyright (c) 2015-present, Parse, LLC.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_IPHONE
+#import <Bolts/BFTask.h>
+
 #import <Parse/PFConstants.h>
-#else
-#import <ParseOSX/PFConstants.h>
-#endif
 
 PF_ASSUME_NONNULL_BEGIN
-
-@class BFTask;
 
 /*!
  `PFAnalytics` provides an interface to Parse's logging and analytics backend.
@@ -42,7 +41,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns Returns the task encapsulating the work being done.
  */
-+ (BFTask *)trackAppOpenedWithLaunchOptions:(PF_NULLABLE NSDictionary *)launchOptions;
++ (BFTask PF_GENERIC(NSNumber *)*)trackAppOpenedWithLaunchOptions:(PF_NULLABLE NSDictionary *)launchOptions;
 
 /*!
  @abstract Tracks this application being launched.
@@ -72,7 +71,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns Returns the task encapsulating the work being done.
  */
-+ (BFTask *)trackAppOpenedWithRemoteNotificationPayload:(PF_NULLABLE NSDictionary *)userInfo;
++ (BFTask PF_GENERIC(NSNumber *)*)trackAppOpenedWithRemoteNotificationPayload:(PF_NULLABLE NSDictionary *)userInfo;
 
 /*!
  @abstract Tracks this application being launched. If this happened as the result of the
@@ -101,7 +100,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns Returns the task encapsulating the work being done.
  */
-+ (BFTask *)trackEvent:(NSString *)name;
++ (BFTask PF_GENERIC(NSNumber *)*)trackEvent:(NSString *)name;
 
 /*!
  @abstract Tracks the occurrence of a custom event. Parse will store a data point at the
@@ -135,7 +134,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns Returns the task encapsulating the work being done.
  */
-+ (BFTask *)trackEvent:(NSString *)name dimensions:(PF_NULLABLE NSDictionary *)dimensions;
++ (BFTask PF_GENERIC(NSNumber *)*)trackEvent:(NSString *)name dimensions:(PF_NULLABLE NSDictionary *)dimensions;
 
 /*!
  @abstract Tracks the occurrence of a custom event with additional dimensions. Parse will

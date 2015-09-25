@@ -1,13 +1,15 @@
-// PFConstants.h
-// Copyright 2011 Parse, Inc. All rights reserved.
+/**
+ * Copyright (c) 2015-present, Parse, LLC.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_IPHONE
 #import <Parse/PFNullability.h>
-#else
-#import <ParseOSX/PFNullability.h>
-#endif
 
 @class PFObject;
 @class PFUser;
@@ -16,7 +18,7 @@
 /// @name Version
 ///--------------------------------------
 
-#define PARSE_VERSION @"1.7.5"
+#define PARSE_VERSION @"1.8.5"
 
 extern NSInteger const PARSE_API_VERSION;
 
@@ -33,9 +35,6 @@ extern NSString *const PF_NONNULL_S kPFDeviceType;
 #import <UIKit/UIKit.h>
 #else
 #import <Cocoa/Cocoa.h>
-@compatibility_alias UIImage NSImage;
-@compatibility_alias UIColor NSColor;
-@compatibility_alias UIView NSView;
 #endif
 
 ///--------------------------------------
@@ -387,6 +386,39 @@ typedef void (^PFIdResultBlock)(PF_NULLABLE_S id object, NSError *PF_NULLABLE_S 
 typedef void (^PFProgressBlock)(int percentDone);
 
 ///--------------------------------------
+/// @name Network Notifications
+///--------------------------------------
+
+/*!
+ @abstract The name of the notification that is going to be sent before any URL request is sent.
+ */
+extern NSString *const PF_NONNULL_S PFNetworkWillSendURLRequestNotification;
+
+/*!
+ @abstract The name of the notification that is going to be sent after any URL response is received.
+ */
+extern NSString *const PF_NONNULL_S PFNetworkDidReceiveURLResponseNotification;
+
+/*!
+ @abstract The key of request(NSURLRequest) in the userInfo dictionary of a notification.
+ @note This key is populated in userInfo, only if `PFLogLevel` on `Parse` is set to `PFLogLevelDebug`.
+ */
+extern NSString *const PF_NONNULL_S PFNetworkNotificationURLRequestUserInfoKey;
+
+/*!
+ @abstract The key of response(NSHTTPURLResponse) in the userInfo dictionary of a notification.
+ @note This key is populated in userInfo, only if `PFLogLevel` on `Parse` is set to `PFLogLevelDebug`.
+ */
+extern NSString *const PF_NONNULL_S PFNetworkNotificationURLResponseUserInfoKey;
+
+/*!
+ @abstract The key of repsonse body (usually `NSString` with JSON) in the userInfo dictionary of a notification.
+ @note This key is populated in userInfo, only if `PFLogLevel` on `Parse` is set to `PFLogLevelDebug`.
+ */
+extern NSString *const PF_NONNULL_S PFNetworkNotificationURLResponseBodyUserInfoKey;
+
+
+///--------------------------------------
 /// @name Deprecated Macros
 ///--------------------------------------
 
@@ -420,4 +452,27 @@ typedef void (^PFProgressBlock)(int percentDone);
 #      define PF_EXTENSION_UNAVAILABLE(_msg)
 #    endif
 #  endif
+#endif
+
+///--------------------------------------
+/// @name Swift Macros
+///--------------------------------------
+
+#ifndef PF_SWIFT_UNAVAILABLE
+#  ifdef NS_SWIFT_UNAVAILABLE
+#    define PF_SWIFT_UNAVAILABLE NS_SWIFT_UNAVAILABLE("")
+#  else
+#    define PF_SWIFT_UNAVAILABLE
+#  endif
+#endif
+
+///--------------------------------------
+/// @name Obj-C Generics Macros
+///--------------------------------------
+
+#if __has_feature(objc_generics) || __has_extension(objc_generics)
+#  define PF_GENERIC(...) <__VA_ARGS__>
+#else
+#  define PF_GENERIC(...)
+#  define PFGenericObject PFObject *
 #endif

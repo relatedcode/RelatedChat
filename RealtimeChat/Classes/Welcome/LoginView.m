@@ -12,9 +12,7 @@
 #import <Parse/Parse.h>
 #import "ProgressHUD.h"
 
-#import "AppConstant.h"
-#import "common.h"
-#import "push.h"
+#import "utilities.h"
 
 #import "LoginView.h"
 

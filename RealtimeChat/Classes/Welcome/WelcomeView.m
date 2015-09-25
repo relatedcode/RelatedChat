@@ -12,13 +12,11 @@
 #import <Parse/Parse.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+#import <ParseTwitterUtils/ParseTwitterUtils.h>
 #import "ProgressHUD.h"
 #import "UIImageView+WebCache.h"
 
-#import "AppConstant.h"
-#import "common.h"
-#import "image.h"
-#import "push.h"
+#import "utilities.h"
 
 #import "WelcomeView.h"
 #import "LoginView.h"
@@ -123,7 +121,7 @@
 - (void)requestFacebook:(PFUser *)user
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me?fields=id,email,name" parameters:nil];
+	FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"id, name, email"}];
 	[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error)
 	{
 		if (error == nil)
