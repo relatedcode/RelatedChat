@@ -15,6 +15,8 @@
 @interface AudioMediaItem : JSQMediaItem <JSQMessageMediaData, NSCoding, NSCopying>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
+@property (nonatomic, assign) int status;
+
 @property (nonatomic, strong) NSURL *fileURL;
 @property (nonatomic, strong) NSNumber *duration;
 

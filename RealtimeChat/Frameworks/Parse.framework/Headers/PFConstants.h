@@ -18,7 +18,7 @@
 /// @name Version
 ///--------------------------------------
 
-#define PARSE_VERSION @"1.8.5"
+#define PARSE_VERSION @"1.9.0"
 
 extern NSInteger const PARSE_API_VERSION;
 
@@ -381,6 +381,7 @@ typedef void (^PFSetResultBlock)(NSSet *PF_NULLABLE_S channels, NSError *PF_NULL
 typedef void (^PFUserResultBlock)(PFUser *PF_NULLABLE_S user, NSError *PF_NULLABLE_S error);
 typedef void (^PFDataResultBlock)(NSData *PF_NULLABLE_S data, NSError *PF_NULLABLE_S error);
 typedef void (^PFDataStreamResultBlock)(NSInputStream *PF_NULLABLE_S stream, NSError *PF_NULLABLE_S error);
+typedef void (^PFFilePathResultBlock)(NSString *PF_NULLABLE_S filePath, NSError *PF_NULLABLE_S error);
 typedef void (^PFStringResultBlock)(NSString *PF_NULLABLE_S string, NSError *PF_NULLABLE_S error);
 typedef void (^PFIdResultBlock)(PF_NULLABLE_S id object, NSError *PF_NULLABLE_S error);
 typedef void (^PFProgressBlock)(int percentDone);
@@ -475,4 +476,34 @@ extern NSString *const PF_NONNULL_S PFNetworkNotificationURLResponseBodyUserInfo
 #else
 #  define PF_GENERIC(...)
 #  define PFGenericObject PFObject *
+#endif
+
+///--------------------------------------
+/// @name Platform Availability Defines
+///--------------------------------------
+
+#ifndef TARGET_OS_IOS
+#  define TARGET_OS_IOS TARGET_OS_IPHONE
+#endif
+#ifndef TARGET_OS_WATCH
+#  define TARGET_OS_WATCH 0
+#endif
+#ifndef TARGET_OS_TV
+#  define TARGET_OS_TV 0
+#endif
+
+#ifndef PF_TARGET_OS_OSX
+#  define PF_TARGET_OS_OSX TARGET_OS_MAC && !TARGET_OS_IOS && !TARGET_OS_WATCH && !TARGET_OS_TV
+#endif
+
+///--------------------------------------
+/// @name Avaiability Macros
+///--------------------------------------
+
+#ifndef PF_WATCH_UNAVAILABLE
+#  ifdef __WATCHOS_UNAVAILABLE
+#    define PF_WATCH_UNAVAILABLE __WATCHOS_UNAVAILABLE
+#  else
+#    define PF_WATCH_UNAVAILABLE
+#  endif
 #endif

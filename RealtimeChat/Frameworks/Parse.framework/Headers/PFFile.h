@@ -25,6 +25,9 @@ PF_ASSUME_NONNULL_BEGIN
 /// @name Creating a PFFile
 ///--------------------------------------
 
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+
 /*!
  @abstract Creates a file with given data. A name will be assigned to it by the server.
 
@@ -32,7 +35,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A new `PFFile`.
  */
-+ (instancetype)fileWithData:(NSData *)data;
++ (PF_NULLABLE instancetype)fileWithData:(NSData *)data;
 
 /*!
  @abstract Creates a file with given data and name.
@@ -44,7 +47,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A new `PFFile` object.
  */
-+ (instancetype)fileWithName:(PF_NULLABLE NSString *)name data:(NSData *)data;
++ (PF_NULLABLE instancetype)fileWithName:(PF_NULLABLE NSString *)name data:(NSData *)data;
 
 /*!
  @abstract Creates a file with the contents of another file.
@@ -58,7 +61,8 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A new `PFFile` instance.
  */
-+ (instancetype)fileWithName:(PF_NULLABLE NSString *)name contentsAtPath:(NSString *)path;
++ (PF_NULLABLE instancetype)fileWithName:(PF_NULLABLE NSString *)name
+                          contentsAtPath:(NSString *)path PF_SWIFT_UNAVAILABLE;
 
 /*!
  @abstract Creates a file with the contents of another file.
@@ -72,7 +76,9 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A new `PFFile` instance or `nil` if the error occured.
  */
-+ (instancetype)fileWithName:(PF_NULLABLE NSString *)name contentsAtPath:(NSString *)path error:(NSError **)error;
++ (PF_NULLABLE instancetype)fileWithName:(PF_NULLABLE NSString *)name
+                          contentsAtPath:(NSString *)path
+                                   error:(NSError **)error;
 
 /*!
  @abstract Creates a file with given data, name and content type.
@@ -86,9 +92,9 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A new `PFFile` instance.
  */
-+ (instancetype)fileWithName:(PF_NULLABLE NSString *)name
-                        data:(NSData *)data
-                 contentType:(PF_NULLABLE NSString *)contentType;
++ (PF_NULLABLE instancetype)fileWithName:(PF_NULLABLE NSString *)name
+                                    data:(NSData *)data
+                             contentType:(PF_NULLABLE NSString *)contentType PF_SWIFT_UNAVAILABLE;
 
 /*!
  @abstract Creates a file with given data, name and content type.
@@ -103,10 +109,10 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns A new `PFFile` instance or `nil` if the error occured.
  */
-+ (instancetype)fileWithName:(PF_NULLABLE NSString *)name
-                        data:(NSData *)data
-                 contentType:(PF_NULLABLE NSString *)contentType
-                       error:(NSError **)error;
++ (PF_NULLABLE instancetype)fileWithName:(PF_NULLABLE NSString *)name
+                                    data:(NSData *)data
+                             contentType:(PF_NULLABLE NSString *)contentType
+                                   error:(NSError **)error;
 
 /*!
  @abstract Creates a file with given data and content type.
@@ -117,6 +123,10 @@ PF_ASSUME_NONNULL_BEGIN
  @returns A new `PFFile` object.
  */
 + (instancetype)fileWithData:(NSData *)data contentType:(PF_NULLABLE NSString *)contentType;
+
+///--------------------------------------
+/// @name File Properties
+///--------------------------------------
 
 /*!
  @abstract The name of the file.
@@ -132,14 +142,14 @@ PF_ASSUME_NONNULL_BEGIN
  */
 @property (PF_NULLABLE_PROPERTY nonatomic, copy, readonly) NSString *url;
 
-///--------------------------------------
-/// @name Storing Data with Parse
-///--------------------------------------
-
 /*!
  @abstract Whether the file has been uploaded for the first time.
  */
 @property (nonatomic, assign, readonly) BOOL isDirty;
+
+///--------------------------------------
+/// @name Storing Data with Parse
+///--------------------------------------
 
 /*!
  @abstract Saves the file *synchronously*.
@@ -373,6 +383,54 @@ PF_ASSUME_NONNULL_BEGIN
  `error` will be `nil` on success and set if there was an error.
  */
 - (void)getDataInBackgroundWithTarget:(PF_NULLABLE_S id)target selector:(PF_NULLABLE_S SEL)selector;
+
+/*!
+ @abstract *Asynchronously* gets the file path for file from cache if available or fetches its contents from the network.
+
+ @note The file path may change between versions of SDK.
+ @note If you overwrite the contents of the file at returned path it will persist those change
+ until the file cache is cleared.
+
+ @returns The task, with the result set to `NSString` representation of a file path.
+ */
+- (BFTask PF_GENERIC(NSString *)*)getFilePathInBackground;
+
+/*!
+ @abstract *Asynchronously* gets the file path for file from cache if available or fetches its contents from the network.
+
+ @note The file path may change between versions of SDK.
+ @note If you overwrite the contents of the file at returned path it will persist those change
+ until the file cache is cleared.
+
+ @param progressBlock The block should have the following argument signature: `^(int percentDone)`.
+
+ @returns The task, with the result set to `NSString` representation of a file path.
+ */
+- (BFTask PF_GENERIC(NSString *)*)getFilePathInBackgroundWithProgressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
+
+/*!
+ @abstract *Asynchronously* gets the file path for file from cache if available or fetches its contents from the network.
+
+ @note The file path may change between versions of SDK.
+ @note If you overwrite the contents of the file at returned path it will persist those change
+ until the file cache is cleared.
+
+ @param block The block should have the following argument signature: `^(NSString *filePath, NSError *error)`.
+ */
+- (void)getFilePathInBackgroundWithBlock:(PF_NULLABLE PFFilePathResultBlock)block;
+
+/*!
+ @abstract *Asynchronously* gets the file path for file from cache if available or fetches its contents from the network.
+
+ @note The file path may change between versions of SDK.
+ @note If you overwrite the contents of the file at returned path it will persist those change
+ until the file cache is cleared.
+
+ @param block The block should have the following argument signature: `^(NSString *filePath, NSError *error)`.
+ @param progressBlock The block should have the following argument signature: `^(int percentDone)`.
+ */
+- (void)getFilePathInBackgroundWithBlock:(PF_NULLABLE PFFilePathResultBlock)block
+                           progressBlock:(PF_NULLABLE PFProgressBlock)progressBlock;
 
 ///--------------------------------------
 /// @name Interrupting a Transfer

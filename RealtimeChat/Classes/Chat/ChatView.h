@@ -13,9 +13,10 @@
 
 #import "JSQMessages.h"
 #import "RNGridMenu.h"
+#import "IQAudioRecorderController.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface ChatView : JSQMessagesViewController <RNGridMenuDelegate, UIImagePickerControllerDelegate>
+@interface ChatView : JSQMessagesViewController <RNGridMenuDelegate, UIImagePickerControllerDelegate, IQAudioRecorderControllerDelegate>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 - (id)initWith:(NSString *)groupId_;

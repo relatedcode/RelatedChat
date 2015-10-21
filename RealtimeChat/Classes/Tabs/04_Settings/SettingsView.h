@@ -12,7 +12,7 @@
 #import <UIKit/UIKit.h>
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface SettingsView : UITableViewController <UIActionSheetDelegate, UIImagePickerControllerDelegate>
+@interface SettingsView : UITableViewController <UIImagePickerControllerDelegate>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 @end

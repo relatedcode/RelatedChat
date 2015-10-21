@@ -10,7 +10,6 @@
 // THE SOFTWARE.
 
 #import <Parse/Parse.h>
-#import <ParseUI/ParseUI.h>
 
 #import "utilities.h"
 
@@ -22,7 +21,7 @@
 	NSDictionary *recent;
 }
 
-@property (strong, nonatomic) IBOutlet PFImageView *imageUser;
+@property (strong, nonatomic) IBOutlet UIImageView *imageUser;
 @property (strong, nonatomic) IBOutlet UILabel *labelDescription;
 @property (strong, nonatomic) IBOutlet UILabel *labelLastMessage;
 @property (strong, nonatomic) IBOutlet UILabel *labelElapsed;
@@ -54,13 +53,15 @@
 		if (error == nil)
 		{
 			PFUser *user = [objects firstObject];
-			[imageUser setFile:user[PF_USER_PICTURE]];
-			[imageUser loadInBackground];
+			[AFDownload start:user[PF_USER_PICTURE] complete:^(NSString *path, NSError *error, BOOL network)
+			{
+				if (error == nil) imageUser.image = [[UIImage alloc] initWithContentsOfFile:path];
+			}];
 		}
 	}];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	labelDescription.text = recent[@"description"];
-	labelLastMessage.text = recent[@"lastMessage"];
+	labelLastMessage.text = DecryptText(recent[@"groupId"], recent[@"lastMessage"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	NSDate *date = String2Date(recent[@"date"]);
 	NSTimeInterval seconds = [[NSDate date] timeIntervalSinceDate:date];

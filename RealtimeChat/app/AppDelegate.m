@@ -10,7 +10,6 @@
 // THE SOFTWARE.
 
 #import <Parse/Parse.h>
-#import <ParseUI/ParseUI.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 #import <ParseTwitterUtils/ParseTwitterUtils.h>
@@ -32,7 +31,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[Parse setApplicationId:@"yTQEwFqPlJ6XBhLDM9fQS2ow1lN1TW3CDcxfped8" clientKey:@"QINEUgjoc2od8fbJfFplR7d7YcTfgUdSvOBTRR6P"];
+	[Parse setApplicationId:@"roeLftHfpCP25HbQATB4pJJiagPYYXqekccnXo1l" clientKey:@"QsvHcijsJ4PZHMYvHT9sO2FcvMOg7r93vU7UwxC9"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[PFTwitterUtils initializeWithConsumerKey:@"kS83MvJltZwmfoWVoyE1R6xko" consumerSecret:@"YXSupp9hC2m1rugTfoSyqricST9214TwYapQErBcXlP1BrSfND"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -45,8 +44,6 @@
 		[application registerUserNotificationSettings:settings];
 		[application registerForRemoteNotifications];
 	}
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	[PFImageView class];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 

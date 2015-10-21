@@ -1,17 +1,20 @@
-//
-//  PFTwitterUtils.h
-//
-//  Copyright 2011-present Parse Inc. All rights reserved.
-//
+/**
+ * Copyright (c) 2015-present, Parse, LLC.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 
 #import <Foundation/Foundation.h>
 
 #import <Parse/PFConstants.h>
 #import <Parse/PFUser.h>
 
-PF_ASSUME_NONNULL_BEGIN
+NS_ASSUME_NONNULL_BEGIN
 
-@class BFTask;
+@class BFTask PF_GENERIC(__covariant BFGenericType);
 @class PF_Twitter;
 
 /*!
@@ -30,7 +33,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns An instance of <PF_Twitter> object.
  */
-+ (PF_NULLABLE PF_Twitter *)twitter;
++ (nullable PF_Twitter *)twitter;
 
 /*!
  @abstract Initializes the Twitter singleton.
@@ -40,8 +43,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param consumerKey Your Twitter application's consumer key.
  @param consumerSecret Your Twitter application's consumer secret.
  */
-+ (void)initializeWithConsumerKey:(NSString *)consumerKey
-                   consumerSecret:(NSString *)consumerSecret;
++ (void)initializeWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret;
 
 /*!
  @abstract Whether the user has their account linked to Twitter.
@@ -50,7 +52,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns `YES` if the user has their account linked to Twitter, otherwise `NO`.
  */
-+ (BOOL)isLinkedWithUser:(PF_NULLABLE PFUser *)user;
++ (BOOL)isLinkedWithUser:(nullable PFUser *)user;
 
 ///--------------------------------------
 /// @name Logging In & Creating Twitter-Linked Users
@@ -64,7 +66,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-+ (BFTask *)logInInBackground;
++ (BFTask PF_GENERIC(PFUser *)*)logInInBackground;
 
 /*!
  @abstract *Asynchronously* logs in a user using Twitter.
@@ -75,7 +77,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param block The block to execute.
  It should have the following argument signature: `^(PFUser *user, NSError *error)`.
  */
-+ (void)logInWithBlock:(PF_NULLABLE PFUserResultBlock)block;
++ (void)logInWithBlock:(nullable PFUserResultBlock)block;
 
 /*
  @abstract *Asynchronously* Logs in a user using Twitter.
@@ -87,7 +89,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param selector The selector that will be called when the asynchrounous request is complete.
  It should have the following signature: `(void)callbackWithUser:(PFUser *)user error:(NSError **)error`.
  */
-+ (void)logInWithTarget:(PF_NULLABLE_S id)target selector:(PF_NULLABLE_S SEL)selector;
++ (void)logInWithTarget:(nullable id)target selector:(nullable SEL)selector;
 
 /*!
  @abstract *Asynchronously* logs in a user using Twitter.
@@ -102,10 +104,10 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-+ (BFTask *)logInWithTwitterIdInBackground:(NSString *)twitterId
-                                screenName:(NSString *)screenName
-                                 authToken:(NSString *)authToken
-                           authTokenSecret:(NSString *)authTokenSecret;
++ (BFTask PF_GENERIC(PFUser *)*)logInWithTwitterIdInBackground:(NSString *)twitterId
+                                                    screenName:(NSString *)screenName
+                                                     authToken:(NSString *)authToken
+                                               authTokenSecret:(NSString *)authTokenSecret;
 
 /*!
  @abstract Logs in a user using Twitter.
@@ -124,7 +126,7 @@ PF_ASSUME_NONNULL_BEGIN
                 screenName:(NSString *)screenName
                  authToken:(NSString *)authToken
            authTokenSecret:(NSString *)authTokenSecret
-                     block:(PF_NULLABLE PFUserResultBlock)block;
+                     block:(nullable PFUserResultBlock)block;
 
 /*
  @abstract Logs in a user using Twitter.
@@ -144,8 +146,8 @@ PF_ASSUME_NONNULL_BEGIN
                 screenName:(NSString *)screenName
                  authToken:(NSString *)authToken
            authTokenSecret:(NSString *)authTokenSecret
-                    target:(PF_NULLABLE_S id)target
-                  selector:(PF_NULLABLE_S SEL)selector;
+                    target:(nullable id)target
+                  selector:(nullable SEL)selector;
 
 ///--------------------------------------
 /// @name Linking Users with Twitter
@@ -173,7 +175,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-+ (BFTask *)linkUserInBackground:(PFUser *)user;
++ (BFTask PF_GENERIC(NSNumber *)*)linkUserInBackground:(PFUser *)user;
 
 /*!
  @abstract *Asynchronously* links Twitter to an existing <PFUser>.
@@ -185,7 +187,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param block The block to execute.
  It should have the following argument signature: `^(BOOL success, NSError *error)`.
  */
-+ (void)linkUser:(PFUser *)user block:(PF_NULLABLE PFBooleanResultBlock)block;
++ (void)linkUser:(PFUser *)user block:(nullable PFBooleanResultBlock)block;
 
 /*
  @abstract *Asynchronously* links Twitter to an existing <PFUser>.
@@ -198,9 +200,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param selector The selector that will be called when the asynchrounous request is complete.
  It should have the following signature: `(void)callbackWithResult:(NSNumber *)result error:(NSError *)error`.
  */
-+ (void)linkUser:(PFUser *)user
-          target:(PF_NULLABLE_S id)target
-        selector:(PF_NULLABLE_S SEL)selector;
++ (void)linkUser:(PFUser *)user target:(nullable id)target selector:(nullable SEL)selector;
 
 /*!
  @abstract *Asynchronously* links Twitter to an existing PFUser asynchronously.
@@ -215,11 +215,11 @@ PF_ASSUME_NONNULL_BEGIN
  @param authTokenSecret The auth token secret for the user's session.
  @returns The task, that encapsulates the work being done.
  */
-+ (BFTask *)linkUserInBackground:(PFUser *)user
-                       twitterId:(NSString *)twitterId
-                      screenName:(NSString *)screenName
-                       authToken:(NSString *)authToken
-                 authTokenSecret:(NSString *)authTokenSecret;
++ (BFTask PF_GENERIC(NSNumber *)*)linkUserInBackground:(PFUser *)user
+                                             twitterId:(NSString *)twitterId
+                                            screenName:(NSString *)screenName
+                                             authToken:(NSString *)authToken
+                                       authTokenSecret:(NSString *)authTokenSecret;
 
 /*!
  @abstract *Asynchronously* links Twitter to an existing <PFUser>.
@@ -240,7 +240,7 @@ PF_ASSUME_NONNULL_BEGIN
       screenName:(NSString *)screenName
        authToken:(NSString *)authToken
  authTokenSecret:(NSString *)authTokenSecret
-           block:(PF_NULLABLE PFBooleanResultBlock)block;
+           block:(nullable PFBooleanResultBlock)block;
 
 /*
  @abstract Links Twitter to an existing <PFUser>.
@@ -262,8 +262,8 @@ PF_ASSUME_NONNULL_BEGIN
       screenName:(NSString *)screenName
        authToken:(NSString *)authToken
  authTokenSecret:(NSString *)authTokenSecret
-          target:(PF_NULLABLE_S id)target
-        selector:(PF_NULLABLE_S SEL)selector;
+          target:(nullable id)target
+        selector:(nullable SEL)selector;
 
 ///--------------------------------------
 /// @name Unlinking Users from Twitter
@@ -295,7 +295,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task, that encapsulates the work being done.
  */
-+ (BFTask *)unlinkUserInBackground:(PFUser *)user;
++ (BFTask PF_GENERIC(NSNumber *)*)unlinkUserInBackground:(PFUser *)user;
 
 /*!
  @abstract Makes an *asynchronous* request to unlink a user from a Twitter account.
@@ -304,8 +304,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param block The block to execute.
  It should have the following argument signature: `^(BOOL succeeded, NSError *error)`.
  */
-+ (void)unlinkUserInBackground:(PFUser *)user
-                         block:(PF_NULLABLE PFBooleanResultBlock)block;
++ (void)unlinkUserInBackground:(PFUser *)user block:(nullable PFBooleanResultBlock)block;
 
 /*
  @abstract Makes an *asynchronous* request to unlink a user from a Twitter account.
@@ -314,9 +313,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param target Target object for the selector
  @param selector The selector that will be called when the asynchrounous request is complete.
  */
-+ (void)unlinkUserInBackground:(PFUser *)user
-                        target:(PF_NULLABLE_S id)target
-                      selector:(PF_NULLABLE_S SEL)selector;
++ (void)unlinkUserInBackground:(PFUser *)user target:(nullable id)target selector:(nullable SEL)selector;
 
 @end
 

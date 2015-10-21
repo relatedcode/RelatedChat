@@ -10,10 +10,13 @@
 // THE SOFTWARE.
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-#define HEXCOLOR(c) [UIColor colorWithRed:((c>>24)&0xFF)/255.0 green:((c>>16)&0xFF)/255.0 blue:((c>>8)&0xFF)/255.0 alpha:((c)&0xFF)/255.0]
+#define		HEXCOLOR(c) [UIColor colorWithRed:((c>>24)&0xFF)/255.0 green:((c>>16)&0xFF)/255.0 blue:((c>>8)&0xFF)/255.0 alpha:((c)&0xFF)/255.0]
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-#define		FIREBASE							@"https://realtime64.firebaseio.com"
+#define		NSERROR(text, number)				[NSError errorWithDomain:text code:number userInfo:nil]
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#define		FIREBASE							@"https://realtime70.firebaseio.com"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		DEFAULT_TAB							0
@@ -23,6 +26,14 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		VIDEO_LENGTH						5
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#define		AFDOWNLOAD_TIMEOUT					300
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#define		STATUS_LOADING						1
+#define		STATUS_FAILED						2
+#define		STATUS_SUCCEED						3
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		COLOR_OUTGOING						HEXCOLOR(0x007AFFFF)
@@ -37,7 +48,10 @@
 #define		SCREEN_HEIGHT						[UIScreen mainScreen].bounds.size.height
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-#define		PREMIUM_LINK						@"http://www.relatedcode.com/realtimepremium"
+#define		LINK_PREMIUM						@"http://www.relatedcode.com/premium"
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#define		LINK_PARSE							@"https://files.parsetfss.com"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 #define		MESSAGE_INVITE						@"Check out chatexamples.com"
@@ -57,8 +71,8 @@
 #define		PF_USER_FULLNAME_LOWER				@"fullname_lower"		//	String
 #define		PF_USER_TWITTERID					@"twitterId"			//	String
 #define		PF_USER_FACEBOOKID					@"facebookId"			//	String
-#define		PF_USER_PICTURE						@"picture"				//	File
-#define		PF_USER_THUMBNAIL					@"thumbnail"			//	File
+#define		PF_USER_PICTURE						@"picture"				//	String
+#define		PF_USER_THUMBNAIL					@"thumbnail"			//	String
 #define		PF_USER_LOCATION					@"location"				//	GeoPoint
 //-----------------------------------------------------------------------
 #define		PF_BLOCKED_CLASS_NAME				@"Blocked"				//	Class name

@@ -10,7 +10,6 @@
 // THE SOFTWARE.
 
 #import <Parse/Parse.h>
-#import <ParseUI/ParseUI.h>
 #import "ProgressHUD.h"
 
 #import "utilities.h"
@@ -26,7 +25,7 @@
 }
 
 @property (strong, nonatomic) IBOutlet UIView *viewHeader;
-@property (strong, nonatomic) IBOutlet PFImageView *imageUser;
+@property (strong, nonatomic) IBOutlet UIImageView *imageUser;
 @property (strong, nonatomic) IBOutlet UILabel *labelName;
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *cellChat;
@@ -103,9 +102,11 @@
 - (void)showUserDetails
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[imageUser setFile:user[PF_USER_PICTURE]];
-	[imageUser loadInBackground];
-
+	[AFDownload start:user[PF_USER_PICTURE] complete:^(NSString *path, NSError *error, BOOL network)
+	{
+		if (error == nil) imageUser.image = [[UIImage alloc] initWithContentsOfFile:path];
+	}];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	labelName.text = user[PF_USER_FULLNAME];
 }
 
@@ -128,57 +129,45 @@
 - (void)actionReport
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"
-										  destructiveButtonTitle:nil otherButtonTitles:@"Report user", nil];
-	action.tag = 1;
-	[action showInView:self.view];
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+	UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Report user" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionReportUser]; }];
+	UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+	[alert addAction:action1]; [alert addAction:action2];
+	[self presentViewController:alert animated:YES completion:nil];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionReportUser
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	ActionPremium(self);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)actionBlock
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"
-										  destructiveButtonTitle:@"Block user" otherButtonTitles:nil];
-	action.tag = 2;
-	[action showInView:self.view];
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+	UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Block user" style:UIAlertActionStyleDestructive
+													handler:^(UIAlertAction *action) { [self actionBlockUser]; }];
+	UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+	[alert addAction:action1]; [alert addAction:action2];
+	[self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - UIActionSheetDelegate
-
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionBlockUser
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (actionSheet.tag == 1) [self actionSheet:actionSheet clickedButtonAtIndex1:buttonIndex];
-	if (actionSheet.tag == 2) [self actionSheet:actionSheet clickedButtonAtIndex2:buttonIndex];
+	ActionPremium(self);
 }
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex1:(NSInteger)buttonIndex
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	if (buttonIndex != actionSheet.cancelButtonIndex)
-	{
-		if (user != nil)
-		{
-			ActionPremium(self);
-		}
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex2:(NSInteger)buttonIndex
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	if (buttonIndex != actionSheet.cancelButtonIndex)
-	{
-		if (user != nil)
-		{
-			ActionPremium(self);
-		}
-	}
-}
+#pragma mark - Helper methods
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)delayedPopToRootViewController

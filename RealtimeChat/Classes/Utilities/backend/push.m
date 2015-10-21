@@ -14,6 +14,7 @@
 
 #import "AppConstant.h"
 #import "PFUser+Util.h"
+#import "encryption.h"
 
 #import "push.h"
 
@@ -55,7 +56,7 @@ void SendPushNotification1(NSString *groupId, NSString *text)
 			NSDictionary *recent = [recents firstObject];
 			if (recent != nil)
 			{
-				SendPushNotification2(recent[@"members"], text);
+				SendPushNotification2(recent[@"members"], DecryptText(recent[@"groupId"], text));
 			}
 		}
 	}];

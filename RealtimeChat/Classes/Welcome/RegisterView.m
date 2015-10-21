@@ -20,21 +20,21 @@
 @interface RegisterView()
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *cellName;
-@property (strong, nonatomic) IBOutlet UITableViewCell *cellPassword;
 @property (strong, nonatomic) IBOutlet UITableViewCell *cellEmail;
+@property (strong, nonatomic) IBOutlet UITableViewCell *cellPassword;
 @property (strong, nonatomic) IBOutlet UITableViewCell *cellButton;
 
 @property (strong, nonatomic) IBOutlet UITextField *fieldName;
-@property (strong, nonatomic) IBOutlet UITextField *fieldPassword;
 @property (strong, nonatomic) IBOutlet UITextField *fieldEmail;
+@property (strong, nonatomic) IBOutlet UITextField *fieldPassword;
 
 @end
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 @implementation RegisterView
 
-@synthesize cellName, cellPassword, cellEmail, cellButton;
-@synthesize fieldName, fieldPassword, fieldEmail;
+@synthesize cellName, cellEmail, cellPassword, cellButton;
+@synthesize fieldName, fieldEmail, fieldPassword;
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
@@ -70,19 +70,19 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	NSString *name		= fieldName.text;
-	NSString *password	= fieldPassword.text;
 	NSString *email		= [fieldEmail.text lowercaseString];
+	NSString *password	= fieldPassword.text;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if ([name length] < 8)		{ [ProgressHUD showError:@"Name is too short."]; return; }
-	if ([password length] == 0)	{ [ProgressHUD showError:@"Password must be set."]; return; }
 	if ([email length] == 0)	{ [ProgressHUD showError:@"Email must be set."]; return; }
+	if ([password length] == 0)	{ [ProgressHUD showError:@"Password must be set."]; return; }
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[ProgressHUD show:@"Please wait..." Interaction:NO];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	PFUser *user = [PFUser user];
+	user.email = email;
 	user.username = email;
 	user.password = password;
-	user.email = email;
 	user[PF_USER_EMAILCOPY] = email;
 	user[PF_USER_FULLNAME] = name;
 	user[PF_USER_FULLNAME_LOWER] = [name lowercaseString];
@@ -120,8 +120,8 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	if (indexPath.row == 0) return cellName;
-	if (indexPath.row == 1) return cellPassword;
-	if (indexPath.row == 2) return cellEmail;
+	if (indexPath.row == 1) return cellEmail;
+	if (indexPath.row == 2) return cellPassword;
 	if (indexPath.row == 3) return cellButton;
 	return nil;
 }
@@ -145,13 +145,13 @@
 {
 	if (textField == fieldName)
 	{
-		[fieldPassword becomeFirstResponder];
-	}
-	if (textField == fieldPassword)
-	{
 		[fieldEmail becomeFirstResponder];
 	}
 	if (textField == fieldEmail)
+	{
+		[fieldPassword becomeFirstResponder];
+	}
+	if (textField == fieldPassword)
 	{
 		[self actionRegister];
 	}

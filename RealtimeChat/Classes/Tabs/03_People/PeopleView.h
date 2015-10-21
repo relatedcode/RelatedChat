@@ -17,7 +17,7 @@
 #import "FacebookFriendsView.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface PeopleView : UITableViewController <UIActionSheetDelegate, SelectSingleDelegate, SelectMultipleDelegate, AddressBookDelegate, FacebookFriendsDelegate>
+@interface PeopleView : UITableViewController <SelectSingleDelegate, SelectMultipleDelegate, AddressBookDelegate, FacebookFriendsDelegate>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 @end

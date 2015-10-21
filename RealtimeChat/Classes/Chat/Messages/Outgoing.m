@@ -11,6 +11,7 @@
 
 #import <Parse/Parse.h>
 #import <Firebase/Firebase.h>
+#import "AiChecksum.h"
 #import "MBProgressHUD.h"
 
 #import "utilities.h"
@@ -79,19 +80,31 @@
 	UIImage *picture = VideoThumbnail(video);
 	UIImage *squared = SquareImage(picture, 320);
 	NSNumber *duration = VideoDuration(video);
-	PFFile *fileThumbnail = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(squared, 0.6)];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSData *dataThumbnail = UIImageJPEGRepresentation(squared, 0.6);
+	NSData *dataVideo = [NSData dataWithContentsOfFile:video.path];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSData *cryptedThumbnail = EncryptData(groupId, dataThumbnail);
+	NSData *cryptedVideo = EncryptData(groupId, dataVideo);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSString *md5Video = [AiChecksum md5HashOfData:cryptedVideo];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	PFFile *fileThumbnail = [PFFile fileWithName:@"picture.jpg" data:cryptedThumbnail];
 	[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
 		if (error == nil)
 		{
-			PFFile *fileVideo = [PFFile fileWithName:@"video.mp4" data:[[NSFileManager defaultManager] contentsAtPath:video.path]];
+			PFFile *fileVideo = [PFFile fileWithName:@"video.mp4" data:cryptedVideo];
 			[fileVideo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 			{
 				[hud hide:YES];
 				if (error == nil)
 				{
+					[self saveLocal:fileVideo.url Data:dataVideo];
+					[self saveLocal:fileThumbnail.url Data:dataThumbnail];
 					item[@"video"] = fileVideo.url;
 					item[@"video_duration"] = duration;
+					item[@"video_md5hash"] = md5Video;
 					item[@"thumbnail"] = fileThumbnail.url;
 					item[@"text"] = @"[Video message]";
 					item[@"type"] = @"video";
@@ -104,7 +117,7 @@
 				hud.progress = (float) percentDone/100;
 			}];
 		}
-		else NSLog(@"Outgoing sendVideoMessage picture save error.");
+		else NSLog(@"Outgoing sendVideoMessage thumbnail save error.");
 	}];
 }
 
@@ -117,15 +130,24 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	int width = (int) picture.size.width;
 	int height = (int) picture.size.height;
-	PFFile *file = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSData *dataPicture = UIImageJPEGRepresentation(picture, 0.6);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSData *cryptedPicture = EncryptData(groupId, dataPicture);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSString *md5Picture = [AiChecksum md5HashOfData:cryptedPicture];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	PFFile *file = [PFFile fileWithName:@"picture.jpg" data:cryptedPicture];
 	[file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
 		[hud hide:YES];
 		if (error == nil)
 		{
+			[self saveLocal:file.url Data:dataPicture];
 			item[@"picture"] = file.url;
 			item[@"picture_width"] = [NSNumber numberWithInt:width];
 			item[@"picture_height"] = [NSNumber numberWithInt:height];
+			item[@"picture_md5hash"] = md5Picture;
 			item[@"text"] = @"[Picture message]";
 			item[@"type"] = @"picture";
 			[self sendMessage:item];
@@ -142,20 +164,57 @@
 - (void)sendAudioMessage:(NSMutableDictionary *)item Audio:(NSString *)audio
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-
+	MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+	hud.mode = MBProgressHUDModeDeterminateHorizontalBar;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSNumber *duration = AudioDuration(audio);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSData *dataAudio = [NSData dataWithContentsOfFile:audio];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSData *cryptedAudio = EncryptData(groupId, dataAudio);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	NSString *md5Audio = [AiChecksum md5HashOfData:cryptedAudio];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	PFFile *file = [PFFile fileWithName:@"audio.m4a" data:cryptedAudio];
+	[file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+	{
+		[hud hide:YES];
+		if (error == nil)
+		{
+			[self saveLocal:file.url Data:dataAudio];
+			item[@"audio"] = file.url;
+			item[@"audio_duration"] = duration;
+			item[@"audio_md5hash"] = md5Audio;
+			item[@"text"] = @"[Audio message]";
+			item[@"type"] = @"audio";
+			[self sendMessage:item];
+		}
+		else NSLog(@"Outgoing sendAudioMessage audio save error.");
+	}
+	progressBlock:^(int percentDone)
+	{
+		hud.progress = (float) percentDone/100;
+	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)sendLoactionMessage:(NSMutableDictionary *)item
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-
+	AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+	item[@"latitude"] = [NSNumber numberWithDouble:app.coordinate.latitude];
+	item[@"longitude"] = [NSNumber numberWithDouble:app.coordinate.longitude];
+	item[@"text"] = @"[Location message]";
+	item[@"type"] = @"location";
+	[self sendMessage:item];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)sendMessage:(NSMutableDictionary *)item
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
+	item[@"text"] = EncryptText(groupId, item[@"text"]);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Message/%@", FIREBASE, groupId]];
 	Firebase *reference = [firebase childByAutoId];
 	item[@"messageId"] = reference.key;
@@ -166,7 +225,17 @@
 	}];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	SendPushNotification1(groupId, item[@"text"]);
-	UpdateRecentItems(groupId, item[@"text"]);
+	UpdateRecents(groupId, item[@"text"]);
+}
+
+#pragma mark - Helper methods
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)saveLocal:(NSString *)link Data:(NSData *)data
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	NSString *file = [link stringByReplacingOccurrencesOfString:LINK_PARSE withString:@""];
+	[data writeToFile:Documents(file) atomically:NO];
 }
 
 @end

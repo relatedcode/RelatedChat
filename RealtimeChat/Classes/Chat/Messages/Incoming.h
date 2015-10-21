@@ -13,12 +13,20 @@
 
 #import "JSQMessages.h"
 
+#import "AudioMediaItem.h"
+#import "PhotoMediaItem.h"
+#import "VideoMediaItem.h"
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 @interface Incoming : NSObject
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
-- (id)initWith:(NSString *)senderId_ CollectionView:(JSQMessagesCollectionView *)collectionView_;
+- (id)initWith:(NSString *)groupId_ CollectionView:(JSQMessagesCollectionView *)collectionView_;
 
 - (JSQMessage *)create:(NSDictionary *)item;
+
+- (void)loadVideoMedia:(NSDictionary *)item MediaItem:(VideoMediaItem *)mediaItem;
+- (void)loadPictureMedia:(NSDictionary *)item MediaItem:(PhotoMediaItem *)mediaItem;
+- (void)loadAudioMedia:(NSDictionary *)item MediaItem:(AudioMediaItem *)mediaItem;
 
 @end

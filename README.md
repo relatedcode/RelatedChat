@@ -26,32 +26,37 @@ This is a full native iPhone app to create realtime, text based group or private
 - No backend programming needed
 - Native and easy to customize user interface
 - Push Notification support
-- Deep linking for Push Notification (<i>coming soon</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Deep linking for Push Notification (<i>coming soon</i>)
 - Login with Email
 - Login with Facebook
 - Login with Twitter
 - Sending text messages
 - Sending pictures
 - Sending videos
-- Sending audio messages - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Sending location - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Sending stickers - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Sending audio messages
+- Sending location
+- Sending stickers - **[Premium only](http://relatedcode.com/premium)**
 - Sending large emojis
-- Load earlier messages (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Typing indicator - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Message delivery receipt - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Message read receipt - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Save picture message content to device (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Save video message content to device (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Save audio message content to device (<i>new</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Delete read and unread messages - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Block user functionality - **[Premium only](http://relatedcode.com/realtimepremium)**
-- Report user functionality - **[Premium only](http://relatedcode.com/realtimepremium)**
+- MD5 checksum for media messages
+- Media message reload option if download is failed - **[Premium only](http://relatedcode.com/premium)**
+- Media files cached locally
+- AES-256 encryption
+- Dynamic password generation - **[Premium only](http://relatedcode.com/premium)**
+- Load earlier messages - **[Premium only](http://relatedcode.com/premium)**
+- Typing indicator - **[Premium only](http://relatedcode.com/premium)**
+- Message delivery receipt - **[Premium only](http://relatedcode.com/premium)**
+- Message read receipt - **[Premium only](http://relatedcode.com/premium)**
+- Save picture messages to device - **[Premium only](http://relatedcode.com/premium)**
+- Save video messages to device - **[Premium only](http://relatedcode.com/premium)**
+- Save audio messages to device - **[Premium only](http://relatedcode.com/premium)**
+- Delete read and unread messages - **[Premium only](http://relatedcode.com/premium)**
+- Block user functionality - **[Premium only](http://relatedcode.com/premium)**
+- Report user functionality - **[Premium only](http://relatedcode.com/premium)**
 - Address Book friend list
 - Invite functionality - SMS, email
 - Facebook friend list (list only registered users)
 - Realtime recent view for ongoing chats
-- Map view for shared locations - **[Premium only](http://relatedcode.com/realtimepremium)**
+- Map view for shared locations
 - Picture view for pictures
 - Basic Settings view included
 - Profile view for users
@@ -59,9 +64,7 @@ This is a full native iPhone app to create realtime, text based group or private
 - Blocked view for blocked users
 - Privacy Policy view
 - Terms of Service view
-- In-app push notification settings (<i>coming soon</i>) - **[Premium only](http://relatedcode.com/realtimepremium)**
 - Facebook profile picture grabbed automatically
-- Twitter profile picture grabbed automatically (<i>coming soon</i>)
 - Picture, video and audio upload progress indicator
 - Video length limit possibility
 - Copy and paste text messages
@@ -72,8 +75,8 @@ This is a full native iPhone app to create realtime, text based group or private
 - Hide keyboard with swipe down
 - Smooth animations
 - Send/Receive sound effects
-- Deployment target: iOS 8
-- Supported devices: iPhone 4S/5/5C/5S/6/6 Plus
+- Deployment target: iOS 8+
+- Supported devices: iPhone 4S/5/5C/5S/6/6 Plus/6S/6S Plus
 
 ---
 
@@ -85,57 +88,57 @@ This is a full native iPhone app to create realtime, text based group or private
 
 ## REQUIREMENTS
 
-- Xcode 7
-- iOS 8
+- Xcode 7+
+- iOS 8+
 - ARC
 
 ## INSTALLATION
 
 **1.,** All source files located in *Classes* directory. Vendor files located in *Vendor* directory and external Frameworks in *Framework* directory. Some resource files can be found in *Resources* directory. Simply add *Classes*, *Resources*, *Vendor* and *Framework* directories to your project.
 
-**2.,** You also need the latest Parse SDK. (Already included, but you can download from [here](https://www.parse.com/docs/downloads)).
-
-To add Parse.framework just unzip the downloaded file and drag the Parse.framework folder into your Xcode project under 'Frameworks'.
+**2.,** You need the latest Parse SDK. (Already included, but you can download from [here](https://www.parse.com/docs/downloads)).
 
 More info about how to [install](https://www.parse.com/apps/quickstart#parse_data/mobile/ios/native/existing) Parse SDK.
 
-**3.,** You also need the latest Facebook SDK. (Already included, but you can download from [here](https://developers.facebook.com/docs/ios)).
+**3.,** You also need the latest Firebase SDK. (Already included, but you can download from [here](https://www.firebase.com/docs/ios/alternate-setup.html)).
 
-To add FacebookSDK.framework just drag the FacebookSDK.framework folder into your Xcode project under 'Frameworks'.
+More info about how to [install](https://www.firebase.com/docs/ios/alternate-setup.html) Firebase SDK.
+
+**4.,** You also need the latest Facebook SDK. (Already included, but you can download from [here](https://developers.facebook.com/docs/ios)).
 
 More info about how to [install](https://developers.facebook.com/docs/ios/getting-started) Facebook SDK.
 
-**4.,** You also need several external libraries which are included. But if you need, you can download them from here:
+**5.,** You also need several external libraries which are included. But if you need, you can download them from here:
 
+https://github.com/AFNetworking/AFNetworking<br>
+https://github.com/fernandospr/CoreLocationUtils<br>
 https://github.com/ideaismobile/IDMPhotoBrowser<br>
+https://github.com/hackiftekhar/IQAudioRecorderController<br>
 https://github.com/jessesquires/JSQMessagesViewController<br>
 https://github.com/jessesquires/JSQSystemSoundPlayer<br>
+https://github.com/jdg/MBProgressHUD<br>
 https://github.com/relatedcode/ProgressHUD<br>
+https://github.com/RNCryptor/RNCryptor<br>
 https://github.com/rnystrom/RNGridMenu<br>
 https://github.com/rs/SDWebImage<br>
 
-To use these libraries, just add IDMPhotoBrowser, JSQMessagesViewController, JSQSystemSoundPlayer, ProgressHUD, RNGridMenu and SDWebImage directories to your project.
+To use these libraries, just add the downloaded directories to your project.
 
-**5.,** You need to [register](https://developers.facebook.com/apps) your app at Facebook. More info about how to [configure](https://developers.facebook.com/docs/ios/getting-started) Facebook.
+**6.,** You need to [register](https://developers.facebook.com/apps) your app at Facebook. More info about how to [configure](https://developers.facebook.com/docs/ios/getting-started) Facebook.
 
-**6.,** You need to use your own [Parse account](https://www.parse.com/#signup).
+**7.,** You need to use your own [Parse account](https://www.parse.com/#signup).
 
-**7.,** You need to [configure](https://www.parse.com/tutorials/ios-push-notifications) Push Notification.
+**8.,** You need to use your own [Firebase account](https://www.firebase.com/signup).
 
-**8.,** Please replace the existing Parse account details in *AppDelegate.m*.
+**9.,** You need to [configure](https://www.parse.com/tutorials/ios-push-notifications) Push Notification.
 
-**9.,** Please replace the existing Facebook account details in *Info.plist*.
+**10.,** Please replace the existing Parse account details in *AppDelegate.m*.
 
-**10.,** You also need the latest Firebase SDK. (Already included, but you can download from [here](https://www.firebase.com/docs/ios/quickstart.html#section-download)).
+**11.,** Please replace the existing Firebase account details in *AppConstant.h*.
 
-To add Firebase.framework just unzip the downloaded file and drag the Firebase.framework folder into your Xcode project under 'Frameworks'.
+**12.,** Please replace the existing Facebook account details in *Info.plist*.
 
-More info about how to [install](https://www.firebase.com/docs/ios/quickstart.html#section-install) Firebase SDK.
-
-**11.,** You need to use your own [Firebase account](https://www.firebase.com/signup).
-
-**12.,** Please replace the existing Firebase account details in *AppConstant.h*.
-
+**13.,** Please replace the existing Twitter account details in *AppDelegate.m*.
 
 ## CONTACT
 

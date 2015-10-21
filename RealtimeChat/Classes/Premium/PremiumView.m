@@ -42,11 +42,6 @@
 {
 	[super viewWillAppear:animated];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	CGFloat width = viewBox.frame.size.width;
-	CGFloat height = viewBox.frame.size.height;
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	viewBox.frame = CGRectMake((SCREEN_WIDTH-width)/2, (SCREEN_HEIGHT-height)/2, width, height);
-	//---------------------------------------------------------------------------------------------------------------------------------------------
 	NSUInteger rand = arc4random_uniform(11)+1;
 	NSString *image = [NSString stringWithFormat:@"premium%02d", (int) rand];
 	imageIcon.image = [UIImage imageNamed:image];
@@ -59,7 +54,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	[self dismissViewControllerAnimated:YES completion:^{
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:PREMIUM_LINK]];
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:LINK_PREMIUM]];
 	}];
 }
 

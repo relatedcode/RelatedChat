@@ -9,6 +9,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "AppConstant.h"
+
 #import "VideoMediaItem.h"
 
 #import "JSQMessagesMediaPlaceholderView.h"
@@ -29,14 +31,13 @@
 #pragma mark - Initialization
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (instancetype)initWithFileURL:(NSURL *)fileURL isReadyToPlay:(BOOL)isReadyToPlay
+- (instancetype)initWithFileURL:(NSURL *)fileURL
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	self = [super init];
 	if (self)
 	{
 		_fileURL = [fileURL copy];
-		_isReadyToPlay = isReadyToPlay;
 		_cachedVideoImageView = nil;
 	}
 	return self;
@@ -57,14 +58,6 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	_fileURL = [fileURL copy];
-	_cachedVideoImageView = nil;
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)setIsReadyToPlay:(BOOL)isReadyToPlay
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	_isReadyToPlay = isReadyToPlay;
 	_cachedVideoImageView = nil;
 }
 
@@ -90,18 +83,38 @@
 - (UIView *)mediaView
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (self.fileURL == nil || !self.isReadyToPlay)
+	if (self.status == STATUS_LOADING)
 	{
 		return nil;
 	}
-	
-	if (self.cachedVideoImageView == nil)
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	if ((self.status == STATUS_FAILED) && (self.cachedVideoImageView == nil))
 	{
 		CGSize size = [self mediaViewDisplaySize];
 		BOOL outgoing = self.appliesMediaViewMaskAsOutgoing;
 
-		UIImage *playIcon = [[UIImage jsq_defaultPlayImage] jsq_imageMaskedWithColor:[UIColor whiteColor]];
-		UIImageView *iconView = [[UIImageView alloc] initWithImage:playIcon];
+		UIImage *icon = [UIImage imageNamed:@"videomediaitem_reload"];
+		UIImageView *iconView = [[UIImageView alloc] initWithImage:icon];
+		CGFloat ypos = (size.height - icon.size.height) / 2;
+		CGFloat xpos = (size.width - icon.size.width) / 2;
+		iconView.frame = CGRectMake(xpos, ypos, icon.size.width, icon.size.height);
+
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, size.width, size.height)];
+		imageView.backgroundColor = [UIColor lightGrayColor];
+		imageView.clipsToBounds = YES;
+		[imageView addSubview:iconView];
+
+		[JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:outgoing];
+		self.cachedVideoImageView = imageView;
+	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	if ((self.status == STATUS_SUCCEED) && (self.cachedVideoImageView == nil))
+	{
+		CGSize size = [self mediaViewDisplaySize];
+		BOOL outgoing = self.appliesMediaViewMaskAsOutgoing;
+
+		UIImage *icon = [[UIImage jsq_defaultPlayImage] jsq_imageMaskedWithColor:[UIColor whiteColor]];
+		UIImageView *iconView = [[UIImageView alloc] initWithImage:icon];
 		iconView.frame = CGRectMake(0.0f, 0.0f, size.width, size.height);
 		iconView.contentMode = UIViewContentModeCenter;
 
@@ -114,7 +127,7 @@
 		[JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:outgoing];
 		self.cachedVideoImageView = imageView;
 	}
-	
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return self.cachedVideoImageView;
 }
 
@@ -138,7 +151,7 @@
 	
 	VideoMediaItem *videoItem = (VideoMediaItem *)object;
 	
-	return [self.fileURL isEqual:videoItem.fileURL] && self.isReadyToPlay == videoItem.isReadyToPlay;
+	return [self.fileURL isEqual:videoItem.fileURL];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -152,8 +165,8 @@
 - (NSString *)description
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	return [NSString stringWithFormat:@"<%@: fileURL=%@, isReadyToPlay=%@, appliesMediaViewMaskAsOutgoing=%@>",
-			[self class], self.fileURL, @(self.isReadyToPlay), @(self.appliesMediaViewMaskAsOutgoing)];
+	return [NSString stringWithFormat:@"<%@: fileURL=%@, appliesMediaViewMaskAsOutgoing=%@>",
+			[self class], self.fileURL, @(self.appliesMediaViewMaskAsOutgoing)];
 }
 
 #pragma mark - NSCoding
@@ -166,7 +179,6 @@
 	if (self)
 	{
 		_fileURL = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(fileURL))];
-		_isReadyToPlay = [aDecoder decodeBoolForKey:NSStringFromSelector(@selector(isReadyToPlay))];
 	}
 	return self;
 }
@@ -177,7 +189,6 @@
 {
 	[super encodeWithCoder:aCoder];
 	[aCoder encodeObject:self.fileURL forKey:NSStringFromSelector(@selector(fileURL))];
-	[aCoder encodeBool:self.isReadyToPlay forKey:NSStringFromSelector(@selector(isReadyToPlay))];
 }
 
 #pragma mark - NSCopying
@@ -186,7 +197,7 @@
 - (instancetype)copyWithZone:(NSZone *)zone
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	VideoMediaItem *copy = [[[self class] allocWithZone:zone] initWithFileURL:self.fileURL isReadyToPlay:self.isReadyToPlay];
+	VideoMediaItem *copy = [[[self class] allocWithZone:zone] initWithFileURL:self.fileURL];
 	copy.appliesMediaViewMaskAsOutgoing = self.appliesMediaViewMaskAsOutgoing;
 	return copy;
 }

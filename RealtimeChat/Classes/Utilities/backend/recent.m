@@ -16,6 +16,7 @@
 #import "AppConstant.h"
 #import "PFUser+Util.h"
 #import "converter.h"
+#import "password.h"
 
 #import "recent.h"
 
@@ -69,10 +70,7 @@ NSString* StartMultipleChat(NSMutableArray *users)
 		description = [description stringByAppendingString:user[PF_USER_FULLNAME]];
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	for (PFUser *user in users)
-	{
-		CreateRecent(user.objectId, groupId, userIds, description, [PFUser currentId], @"multiple");
-	}
+	CreateRecents(groupId, userIds, description, [PFUser currentId], @"multiple");
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return groupId;
 }
@@ -80,13 +78,10 @@ NSString* StartMultipleChat(NSMutableArray *users)
 #pragma mark - Group Chat methods
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void StartGroupChat(PFObject *group, NSMutableArray *users)
+void StartGroupChat(PFObject *group)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	for (PFUser *user in users)
-	{
-		CreateRecent(user.objectId, group.objectId, group[PF_GROUP_MEMBERS], group[PF_GROUP_NAME], [PFUser currentId], @"group");
-	}
+	CreateRecents(group.objectId, group[PF_GROUP_MEMBERS], group[PF_GROUP_NAME], [PFUser currentId], @"group");
 }
 
 #pragma mark - Restart Recent Chat methods
@@ -100,24 +95,18 @@ void RestartRecentChat(NSDictionary *recent)
 		for (NSString *userId in recent[@"members"])
 		{
 			if ([userId isEqualToString:[PFUser currentId]] == NO)
-				CreateRecent(userId, recent[@"groupId"], recent[@"members"], [PFUser currentName], [PFUser currentId], recent[@"type"]);
+				CreateRecent(userId, recent[@"groupId"], recent[@"members"], [PFUser currentName], [PFUser currentId], @"private");
 		}
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if ([recent[@"type"] isEqualToString:@"multiple"])
 	{
-		for (NSString *userId in recent[@"members"])
-		{
-			CreateRecent(userId, recent[@"groupId"], recent[@"members"], recent[@"description"], recent[@"profileId"], recent[@"type"]);
-		}
+		CreateRecents(recent[@"groupId"], recent[@"members"], recent[@"description"], recent[@"profileId"], @"multiple");
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if ([recent[@"type"] isEqualToString:@"group"])
 	{
-		for (NSString *userId in recent[@"members"])
-		{
-			CreateRecent(userId, recent[@"groupId"], recent[@"members"], recent[@"description"], recent[@"profileId"], recent[@"type"]);
-		}
+		CreateRecents(recent[@"groupId"], recent[@"members"], recent[@"description"], recent[@"profileId"], @"group");
 	}
 }
 
@@ -132,6 +121,7 @@ void CreateRecent(NSString *userId, NSString *groupId, NSArray *members, NSStrin
 	[query observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
 	{
 		BOOL create = YES;
+		//-----------------------------------------------------------------------------------------------------------------------------------------
 		if (snapshot.value != [NSNull null])
 		{
 			for (NSDictionary *recent in [snapshot.value allValues])
@@ -139,7 +129,34 @@ void CreateRecent(NSString *userId, NSString *groupId, NSArray *members, NSStrin
 				if ([recent[@"userId"] isEqualToString:userId]) create = NO;
 			}
 		}
+		//-----------------------------------------------------------------------------------------------------------------------------------------
 		if (create) CreateRecentItem(userId, groupId, members, description, profileId, type);
+	}];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+void CreateRecents(NSString *groupId, NSArray *members, NSString *description, NSString *profileId, NSString *type)
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+	FQuery *query = [[firebase queryOrderedByChild:@"groupId"] queryEqualToValue:groupId];
+	[query observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
+	{
+		NSMutableArray *userIds = [[NSMutableArray alloc] initWithArray:members];
+		//-----------------------------------------------------------------------------------------------------------------------------------------
+		if (snapshot.value != [NSNull null])
+		{
+			for (NSDictionary *recent in [snapshot.value allValues])
+			{
+				if ([members containsObject:recent[@"userId"]])
+					[userIds removeObject:recent[@"userId"]];
+			}
+		}
+		//-----------------------------------------------------------------------------------------------------------------------------------------
+		for (NSString *userId in userIds)
+		{
+			CreateRecentItem(userId, groupId, members, description, profileId, type);
+		}
 	}];
 }
 
@@ -154,7 +171,7 @@ void CreateRecentItem(NSString *userId, NSString *groupId, NSArray *members, NSS
 	NSString *date = Date2String([NSDate date]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	NSDictionary *recent = @{@"recentId":recentId, @"userId":userId, @"groupId":groupId, @"members":members, @"description":description,
-								@"lastMessage":@"", @"counter":@0, @"date":date, @"profileId":profileId, @"type":type};
+								@"lastMessage":@"", @"counter":@0, @"date":date, @"profileId":profileId, @"type":type, @"password":@""};
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[reference setValue:recent withCompletionBlock:^(NSError *error, Firebase *ref)
 	{
@@ -165,7 +182,7 @@ void CreateRecentItem(NSString *userId, NSString *groupId, NSArray *members, NSS
 #pragma mark - Update Recent methods
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void UpdateRecentItems(NSString *groupId, NSString *lastMessage)
+void UpdateRecents(NSString *groupId, NSString *lastMessage)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
@@ -236,7 +253,7 @@ void ClearRecentCounterItem(NSDictionary *recent)
 #pragma mark - Delete Recent methods
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-void DeleteRecentItems(PFUser *user1, PFUser *user2)
+void DeleteRecents(PFUser *user1, PFUser *user2)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	Firebase *firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];

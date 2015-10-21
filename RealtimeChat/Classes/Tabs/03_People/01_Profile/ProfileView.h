@@ -13,7 +13,7 @@
 #import <Parse/Parse.h>
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface ProfileView : UITableViewController <UIActionSheetDelegate>
+@interface ProfileView : UITableViewController
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 - (id)initWith:(NSString *)userId_ User:(PFUser *)user_;

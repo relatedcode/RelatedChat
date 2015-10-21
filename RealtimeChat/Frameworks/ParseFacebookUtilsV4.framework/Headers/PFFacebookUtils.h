@@ -1,8 +1,11 @@
-//
-//  PFFacebookUtils.h
-//
-//  Copyright 2011-present Parse Inc. All rights reserved.
-//
+/**
+ * Copyright (c) 2015-present, Parse, LLC.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
 
 #import <Foundation/Foundation.h>
 
@@ -16,7 +19,7 @@
 #import <Parse/PFNullability.h>
 #import <Parse/PFUser.h>
 
-PF_ASSUME_NONNULL_BEGIN
+NS_ASSUME_NONNULL_BEGIN
 
 /*!
  The `PFFacebookUtils` class provides utility functions for using Facebook authentication with <PFUser>s.
@@ -36,10 +39,10 @@ PF_ASSUME_NONNULL_BEGIN
  as described here: https://developers.facebook.com/docs/getting-started/facebook-sdk-for-ios/
 
  @warning You must invoke this in order to use the Facebook functionality in Parse.
- 
+
  @param launchOptions The launchOptions as passed to [UIApplicationDelegate application:didFinishLaunchingWithOptions:].
  */
-+ (void)initializeFacebookWithApplicationLaunchOptions:(PF_NULLABLE NSDictionary *)launchOptions;
++ (void)initializeFacebookWithApplicationLaunchOptions:(nullable NSDictionary *)launchOptions;
 
 /*!
  @abstract `FBSDKLoginManager` provides methods for configuring login behavior, default audience
@@ -63,7 +66,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task that has will a have `result` set to <PFUser> if operation succeeds.
  */
-+ (BFTask *)logInInBackgroundWithReadPermissions:(PF_NULLABLE NSArray *)permissions;
++ (BFTask PF_GENERIC(PFUser *)*)logInInBackgroundWithReadPermissions:(nullable NSArray PF_GENERIC(NSString *)*)permissions;
 
 /*!
  @abstract *Asynchronously* logs in a user using Facebook with read permissions.
@@ -75,8 +78,8 @@ PF_ASSUME_NONNULL_BEGIN
  @param block       The block to execute when the log in completes.
  It should have the following signature: `^(PFUser *user, NSError *error)`.
  */
-+ (void)logInInBackgroundWithReadPermissions:(PF_NULLABLE NSArray *)permissions
-                                       block:(PF_NULLABLE PFUserResultBlock)block;
++ (void)logInInBackgroundWithReadPermissions:(nullable NSArray PF_GENERIC(NSString *)*)permissions
+                                       block:(nullable PFUserResultBlock)block;
 
 /*!
  @abstract *Asynchronously* logs in a user using Facebook with publish permissions.
@@ -88,7 +91,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task that has will a have `result` set to <PFUser> if operation succeeds.
  */
-+ (BFTask *)logInInBackgroundWithPublishPermissions:(PF_NULLABLE NSArray *)permissions;
++ (BFTask PF_GENERIC(PFUser *)*)logInInBackgroundWithPublishPermissions:(nullable NSArray PF_GENERIC(NSString *)*)permissions;
 
 /*!
  @abstract *Asynchronously* logs in a user using Facebook with publish permissions.
@@ -100,8 +103,8 @@ PF_ASSUME_NONNULL_BEGIN
  @param block       The block to execute when the log in completes.
  It should have the following signature: `^(PFUser *user, NSError *error)`.
  */
-+ (void)logInInBackgroundWithPublishPermissions:(PF_NULLABLE NSArray *)permissions
-                                          block:(PF_NULLABLE PFUserResultBlock)block;
++ (void)logInInBackgroundWithPublishPermissions:(nullable NSArray PF_GENERIC(NSString *)*)permissions
+                                          block:(nullable PFUserResultBlock)block;
 
 /*!
  @abstract *Asynchronously* logs in a user using given Facebook Acess Token.
@@ -113,7 +116,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task that has will a have `result` set to <PFUser> if operation succeeds.
  */
-+ (BFTask *)logInInBackgroundWithAccessToken:(FBSDKAccessToken *)accessToken;
++ (BFTask PF_GENERIC(PFUser *)*)logInInBackgroundWithAccessToken:(FBSDKAccessToken *)accessToken;
 
 /*!
  @abstract *Asynchronously* logs in a user using given Facebook Acess Token.
@@ -126,7 +129,7 @@ PF_ASSUME_NONNULL_BEGIN
  It should have the following signature: `^(PFUser *user, NSError *error)`.
  */
 + (void)logInInBackgroundWithAccessToken:(FBSDKAccessToken *)accessToken
-                                   block:(PF_NULLABLE PFUserResultBlock)block;
+                                   block:(nullable PFUserResultBlock)block;
 
 ///--------------------------------------
 /// @name Linking Users
@@ -144,7 +147,8 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task that will have a `result` set to `@YES` if operation succeeds.
  */
-+ (BFTask *)linkUserInBackground:(PFUser *)user withReadPermissions:(PF_NULLABLE NSArray *)permissions;
++ (BFTask PF_GENERIC(NSNumber *)*)linkUserInBackground:(PFUser *)user
+                                   withReadPermissions:(nullable NSArray PF_GENERIC(NSString *)*)permissions;
 
 /*!
  @abstract *Asynchronously* links Facebook with read permissions to an existing <PFUser>.
@@ -159,8 +163,8 @@ PF_ASSUME_NONNULL_BEGIN
  It should have the following signature: `^(BOOL succeeded, NSError *error)`.
  */
 + (void)linkUserInBackground:(PFUser *)user
-         withReadPermissions:(PF_NULLABLE NSArray *)permissions
-                       block:(PF_NULLABLE PFBooleanResultBlock)block;
+         withReadPermissions:(nullable NSArray PF_GENERIC(NSString *)*)permissions
+                       block:(nullable PFBooleanResultBlock)block;
 
 /*!
  @abstract *Asynchronously* links Facebook with publish permissions to an existing <PFUser>.
@@ -174,7 +178,8 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task that will have a `result` set to `@YES` if operation succeeds.
  */
-+ (BFTask *)linkUserInBackground:(PFUser *)user withPublishPermissions:(NSArray *)permissions;
++ (BFTask PF_GENERIC(NSNumber *)*)linkUserInBackground:(PFUser *)user
+                                withPublishPermissions:(NSArray PF_GENERIC(NSString *)*)permissions;
 
 /*!
  @abstract *Asynchronously* links Facebook with publish permissions to an existing <PFUser>.
@@ -189,8 +194,8 @@ PF_ASSUME_NONNULL_BEGIN
  It should have the following signature: `^(BOOL succeeded, NSError *error)`.
  */
 + (void)linkUserInBackground:(PFUser *)user
-      withPublishPermissions:(NSArray *)permissions
-                       block:(PF_NULLABLE PFBooleanResultBlock)block;
+      withPublishPermissions:(NSArray PF_GENERIC(NSString *)*)permissions
+                       block:(nullable PFBooleanResultBlock)block;
 
 /*!
  @abstract *Asynchronously* links Facebook Access Token to an existing <PFUser>.
@@ -204,7 +209,7 @@ PF_ASSUME_NONNULL_BEGIN
 
  @returns The task that will have a `result` set to `@YES` if operation succeeds.
  */
-+ (BFTask *)linkUserInBackground:(PFUser *)user withAccessToken:(FBSDKAccessToken *)accessToken;
++ (BFTask PF_GENERIC(NSNumber *)*)linkUserInBackground:(PFUser *)user withAccessToken:(FBSDKAccessToken *)accessToken;
 
 /*!
  @abstract *Asynchronously* links Facebook Access Token to an existing <PFUser>.
@@ -220,7 +225,7 @@ PF_ASSUME_NONNULL_BEGIN
  */
 + (void)linkUserInBackground:(PFUser *)user
              withAccessToken:(FBSDKAccessToken *)accessToken
-                       block:(PF_NULLABLE PFBooleanResultBlock)block;
+                       block:(nullable PFBooleanResultBlock)block;
 
 ///--------------------------------------
 /// @name Unlinking Users
@@ -232,7 +237,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param user User to unlink from Facebook.
  @returns The task, that encapsulates the work being done.
  */
-+ (BFTask *)unlinkUserInBackground:(PFUser *)user;
++ (BFTask PF_GENERIC(NSNumber *)*)unlinkUserInBackground:(PFUser *)user;
 
 /*!
  @abstract Unlinks the <PFUser> from a Facebook account *asynchronously*.
@@ -241,7 +246,7 @@ PF_ASSUME_NONNULL_BEGIN
  @param block The block to execute.
  It should have the following argument signature: `^(BOOL succeeded, NSError *error)`.
  */
-+ (void)unlinkUserInBackground:(PFUser *)user block:(PF_NULLABLE PFBooleanResultBlock)block;
++ (void)unlinkUserInBackground:(PFUser *)user block:(nullable PFBooleanResultBlock)block;
 
 ///--------------------------------------
 /// @name Getting Linked State
@@ -258,4 +263,4 @@ PF_ASSUME_NONNULL_BEGIN
 
 @end
 
-PF_ASSUME_NONNULL_END
+NS_ASSUME_NONNULL_END

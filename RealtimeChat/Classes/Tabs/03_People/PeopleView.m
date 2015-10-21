@@ -151,49 +151,31 @@
 - (void)actionAdd
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-								   otherButtonTitles:@"Search user", @"Select users", @"Address Book", @"Facebook Friends", nil];
-	[action showFromTabBar:[[self tabBarController] tabBar]];
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+	UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Search user" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionSelectSingle]; }];
+	UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Select users" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionSelectMultiple]; }];
+	UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"Address Book" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionAddressBook]; }];
+	UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"Facebook Friends" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionFacebookFriends]; }];
+	UIAlertAction *action5 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+	[alert addAction:action1]; [alert addAction:action2]; [alert addAction:action3]; [alert addAction:action4]; [alert addAction:action5];
+	[self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - UIActionSheetDelegate
-
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionSelectSingle
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (buttonIndex != actionSheet.cancelButtonIndex)
-	{
-		skipLoading = YES;
-		if (buttonIndex == 0)
-		{
-			SelectSingleView *selectSingleView = [[SelectSingleView alloc] init];
-			selectSingleView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectSingleView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-		if (buttonIndex == 1)
-		{
-			SelectMultipleView *selectMultipleView = [[SelectMultipleView alloc] init];
-			selectMultipleView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectMultipleView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-		if (buttonIndex == 2)
-		{
-			AddressBookView *addressBookView = [[AddressBookView alloc] init];
-			addressBookView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:addressBookView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-		if (buttonIndex == 3)
-		{
-			FacebookFriendsView *facebookFriendsView = [[FacebookFriendsView alloc] init];
-			facebookFriendsView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:facebookFriendsView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-	}
+	skipLoading = YES;
+	SelectSingleView *selectSingleView = [[SelectSingleView alloc] init];
+	selectSingleView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectSingleView];
+	[self presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - SelectSingleDelegate
@@ -203,6 +185,17 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	[self addUser:user];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionSelectMultiple
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	skipLoading = YES;
+	SelectMultipleView *selectMultipleView = [[SelectMultipleView alloc] init];
+	selectMultipleView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectMultipleView];
+	[self presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - SelectMultipleDelegate
@@ -217,6 +210,17 @@
 	}
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionAddressBook
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	skipLoading = YES;
+	AddressBookView *addressBookView = [[AddressBookView alloc] init];
+	addressBookView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:addressBookView];
+	[self presentViewController:navController animated:YES completion:nil];
+}
+
 #pragma mark - AddressBookDelegate
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -224,6 +228,17 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	[self addUser:user];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionFacebookFriends
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	skipLoading = YES;
+	FacebookFriendsView *facebookFriendsView = [[FacebookFriendsView alloc] init];
+	facebookFriendsView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:facebookFriendsView];
+	[self presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - FacebookFriendsDelegate

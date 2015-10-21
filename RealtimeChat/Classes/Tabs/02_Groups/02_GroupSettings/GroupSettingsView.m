@@ -53,6 +53,9 @@
 	[super viewDidLoad];
 	self.title = @"Group Settings";
 	//---------------------------------------------------------------------------------------------------------------------------------------------
+	UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:nil action:nil];
+	[self.navigationItem setBackBarButtonItem:backButton];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"groupsettings_more"]
 																	  style:UIBarButtonItemStylePlain target:self action:@selector(actionMore)];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -104,22 +107,16 @@
 - (void)actionMore
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"
-										  destructiveButtonTitle:nil otherButtonTitles:@"Rename group", @"Add members", nil];
-	[action showInView:self.view];
-}
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
-#pragma mark - UIActionSheetDelegate
+	UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Rename group" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionRenameGroup]; }];
+	UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Add members" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionAddMembers]; }];
+	UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	if (buttonIndex != actionSheet.cancelButtonIndex)
-	{
-		if (buttonIndex == 0) [self actionRenameGroup];
-		if (buttonIndex == 1) [self actionAddMembers];
-	}
+	[alert addAction:action1]; [alert addAction:action2]; [alert addAction:action3];
+	[self presentViewController:alert animated:YES completion:nil];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -172,11 +169,9 @@
 - (void)actionChat
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	NSString *groupId = group.objectId;
+	StartGroupChat(group);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	StartGroupChat(group, users);
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	ChatView *chatView = [[ChatView alloc] initWith:groupId];
+	ChatView *chatView = [[ChatView alloc] initWith:group.objectId];
 	[self.navigationController pushViewController:chatView animated:YES];
 }
 

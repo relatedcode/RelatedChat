@@ -22,8 +22,8 @@
 	NSMutableArray *users;
 }
 
-@property (strong, nonatomic) IBOutlet UIView *viewHeader;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
 
 @end
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@
 @implementation SelectSingleView
 
 @synthesize delegate;
-@synthesize viewHeader, searchBar;
+@synthesize searchBar;
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)viewDidLoad
@@ -43,7 +43,7 @@
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self
 																						  action:@selector(actionCancel)];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	self.tableView.tableHeaderView = viewHeader;
+	self.tableView.tableFooterView = [[UIView alloc] init];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	users = [[NSMutableArray alloc] init];
 	//---------------------------------------------------------------------------------------------------------------------------------------------

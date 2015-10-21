@@ -20,7 +20,7 @@
 @end
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface SelectSingleView : UITableViewController <UISearchBarDelegate>
+@interface SelectSingleView : UIViewController <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 @property (nonatomic, assign) IBOutlet id<SelectSingleDelegate>delegate;

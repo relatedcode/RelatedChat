@@ -23,6 +23,7 @@
 #import "SelectMultipleView.h"
 #import "AddressBookView.h"
 #import "FacebookFriendsView.h"
+#import "SelectDistanceView.h"
 #import "NavigationController.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -89,32 +90,31 @@
 - (void)loadRecents
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (([PFUser currentUser] != nil) && (firebase == nil))
+	if (([PFUser currentUser] == nil) || (firebase != nil)) return;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
+	FQuery *query = [[firebase queryOrderedByChild:@"userId"] queryEqualToValue:[PFUser currentId]];
+	[query observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
 	{
-		firebase = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"%@/Recent", FIREBASE]];
-		FQuery *query = [[firebase queryOrderedByChild:@"userId"] queryEqualToValue:[PFUser currentId]];
-		[query observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot)
+		[recents removeAllObjects];
+		if (snapshot.value != [NSNull null])
 		{
-			[recents removeAllObjects];
-			if (snapshot.value != [NSNull null])
+			NSArray *sorted = [[snapshot.value allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
 			{
-				NSArray *sorted = [[snapshot.value allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-				{
-					NSDictionary *recent1 = (NSDictionary *)obj1;
-					NSDictionary *recent2 = (NSDictionary *)obj2;
-					NSDate *date1 = String2Date(recent1[@"date"]);
-					NSDate *date2 = String2Date(recent2[@"date"]);
-					return [date2 compare:date1];
-				}];
-				for (NSDictionary *recent in sorted)
-				{
-					[recents addObject:recent];
-				}
+				NSDictionary *recent1 = (NSDictionary *)obj1;
+				NSDictionary *recent2 = (NSDictionary *)obj2;
+				NSDate *date1 = String2Date(recent1[@"date"]);
+				NSDate *date2 = String2Date(recent2[@"date"]);
+				return [date2 compare:date1];
+			}];
+			for (NSDictionary *recent in sorted)
+			{
+				[recents addObject:recent];
 			}
-			[self.tableView reloadData];
-			[self updateTabCounter];
-		}];
-	}
+		}
+		[self.tableView reloadData];
+		[self updateTabCounter];
+	}];
 }
 
 #pragma mark - Helper methods
@@ -124,10 +124,12 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	int total = 0;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	for (PFObject *recent in recents)
 	{
 		total += [recent[@"counter"] intValue];
 	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	UITabBarItem *item = self.tabBarController.tabBar.items[0];
 	item.badgeValue = (total == 0) ? nil : [NSString stringWithFormat:@"%d", total];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -150,6 +152,17 @@
 	[self presentViewController:navController animated:YES completion:nil];
 }
 
+#pragma mark - MapsDelegate
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)didSelectMapsUser:(PFUser *)user2
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	PFUser *user1 = [PFUser currentUser];
+	NSString *groupId = StartPrivateChat(user1, user2);
+	[self actionChat:groupId];
+}
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)actionChat:(NSString *)groupId
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -160,80 +173,36 @@
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionCleanup
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	[firebase removeAllObservers];
-	firebase = nil;
-	[recents removeAllObjects];
-	[self.tableView reloadData];
-	[self updateTabCounter];
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)actionCompose
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-			   otherButtonTitles:@"Single recipient", @"Multiple recipients", @"Address Book", @"Facebook Friends", @"Select by Distance", nil];
-	[action showFromTabBar:[[self tabBarController] tabBar]];
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+	UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Single recipient" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionSelectSingle]; }];
+	UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Multiple recipients" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionSelectMultiple]; }];
+	UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"Address Book" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionAddressBook]; }];
+	UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"Facebook Friends" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionFacebookFriends]; }];
+	UIAlertAction *action5 = [UIAlertAction actionWithTitle:@"Select by Distance" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction *action) { [self actionSelectDistance]; }];
+	UIAlertAction *action6 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+	[alert addAction:action1]; [alert addAction:action2]; [alert addAction:action3];
+	[alert addAction:action4]; [alert addAction:action5]; [alert addAction:action6];
+	[self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - UIActionSheetDelegate
-
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionSelectSingle
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (buttonIndex != actionSheet.cancelButtonIndex)
-	{
-		if (buttonIndex == 0)
-		{
-			SelectSingleView *selectSingleView = [[SelectSingleView alloc] init];
-			selectSingleView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectSingleView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-		if (buttonIndex == 1)
-		{
-			SelectMultipleView *selectMultipleView = [[SelectMultipleView alloc] init];
-			selectMultipleView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectMultipleView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-		if (buttonIndex == 2)
-		{
-			AddressBookView *addressBookView = [[AddressBookView alloc] init];
-			addressBookView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:addressBookView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-		if (buttonIndex == 3)
-		{
-			FacebookFriendsView *facebookFriendsView = [[FacebookFriendsView alloc] init];
-			facebookFriendsView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:facebookFriendsView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-		if (buttonIndex == 4)
-		{
-			SelectDistanceView *selectDistanceView = [[SelectDistanceView alloc] init];
-			selectDistanceView.delegate = self;
-			NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectDistanceView];
-			[self presentViewController:navController animated:YES completion:nil];
-		}
-	}
-}
-
-#pragma mark - MapsDelegate
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)didSelectMapsUser:(PFUser *)user2
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	PFUser *user1 = [PFUser currentUser];
-	NSString *groupId = StartPrivateChat(user1, user2);
-	[self actionChat:groupId];
+	SelectSingleView *selectSingleView = [[SelectSingleView alloc] init];
+	selectSingleView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectSingleView];
+	[self presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - SelectSingleDelegate
@@ -247,6 +216,16 @@
 	[self actionChat:groupId];
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionSelectMultiple
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	SelectMultipleView *selectMultipleView = [[SelectMultipleView alloc] init];
+	selectMultipleView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectMultipleView];
+	[self presentViewController:navController animated:YES completion:nil];
+}
+
 #pragma mark - SelectMultipleDelegate
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -255,6 +234,16 @@
 {
 	NSString *groupId = StartMultipleChat(users);
 	[self actionChat:groupId];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionAddressBook
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	AddressBookView *addressBookView = [[AddressBookView alloc] init];
+	addressBookView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:addressBookView];
+	[self presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - AddressBookDelegate
@@ -268,6 +257,16 @@
 	[self actionChat:groupId];
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionFacebookFriends
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	FacebookFriendsView *facebookFriendsView = [[FacebookFriendsView alloc] init];
+	facebookFriendsView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:facebookFriendsView];
+	[self presentViewController:navController animated:YES completion:nil];
+}
+
 #pragma mark - FacebookFriendsDelegate
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -279,6 +278,16 @@
 	[self actionChat:groupId];
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionSelectDistance
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	SelectDistanceView *selectDistanceView = [[SelectDistanceView alloc] init];
+	selectDistanceView.delegate = self;
+	NavigationController *navController = [[NavigationController alloc] initWithRootViewController:selectDistanceView];
+	[self presentViewController:navController animated:YES completion:nil];
+}
+
 #pragma mark - SelectDistanceDelegate
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -288,6 +297,17 @@
 	PFUser *user1 = [PFUser currentUser];
 	NSString *groupId = StartPrivateChat(user1, user2);
 	[self actionChat:groupId];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionCleanup
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	[firebase removeAllObservers];
+	firebase = nil;
+	[recents removeAllObjects];
+	[self.tableView reloadData];
+	[self updateTabCounter];
 }
 
 #pragma mark - Table view data source
@@ -327,7 +347,9 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	NSDictionary *recent = recents[indexPath.row];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[recents removeObject:recent];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self updateTabCounter];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -344,7 +366,9 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	NSDictionary *recent = recents[indexPath.row];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	RestartRecentChat(recent);
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self actionChat:recent[@"groupId"]];
 }
 

@@ -84,23 +84,43 @@
 - (UIView *)mediaView
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (self.fileURL == nil)
+	if (self.status == STATUS_LOADING)
 	{
 		return nil;
 	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	if ((self.status == STATUS_FAILED) && (self.cachedAudioImageView == nil))
+	{
+		CGSize size = [self mediaViewDisplaySize];
+		BOOL outgoing = self.appliesMediaViewMaskAsOutgoing;
 
-	if (self.cachedAudioImageView == nil)
+		UIImage *icon = [UIImage imageNamed:@"audiomediaitem_reload"];
+		UIImageView *iconView = [[UIImageView alloc] initWithImage:icon];
+		CGFloat ypos = (size.height - icon.size.height) / 2;
+		CGFloat xpos = (size.width - icon.size.width) / 2;
+		iconView.frame = CGRectMake(xpos, ypos, icon.size.width, icon.size.height);
+
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, size.width, size.height)];
+		imageView.backgroundColor = [UIColor lightGrayColor];
+		imageView.clipsToBounds = YES;
+		[imageView addSubview:iconView];
+
+		[JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:outgoing];
+		self.cachedAudioImageView = imageView;
+	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	if ((self.status == STATUS_SUCCEED) && (self.cachedAudioImageView == nil))
 	{
 		CGSize size = [self mediaViewDisplaySize];
 		BOOL outgoing = self.appliesMediaViewMaskAsOutgoing;
 		UIColor *colorBackground = outgoing ? COLOR_OUTGOING : COLOR_INCOMING;
 		UIColor *colorContent = outgoing ? [UIColor whiteColor] : [UIColor grayColor];
 
-		UIImage *playIcon = [[UIImage jsq_defaultPlayImage] jsq_imageMaskedWithColor:colorContent];
-		UIImageView *iconView = [[UIImageView alloc] initWithImage:playIcon];
-		CGFloat ypos = (size.height - playIcon.size.height) / 2;
+		UIImage *icon = [[UIImage jsq_defaultPlayImage] jsq_imageMaskedWithColor:colorContent];
+		UIImageView *iconView = [[UIImageView alloc] initWithImage:icon];
+		CGFloat ypos = (size.height - icon.size.height) / 2;
 		CGFloat xpos = outgoing ? ypos : ypos + 6;
-		iconView.frame = CGRectMake(xpos, ypos, playIcon.size.width, playIcon.size.height);
+		iconView.frame = CGRectMake(xpos, ypos, icon.size.width, icon.size.height);
 
 		CGRect frame = outgoing ? CGRectMake(45, 10, 60, 20) : CGRectMake(51, 10, 60, 20);
 		UILabel *label = [[UILabel alloc] initWithFrame:frame];
@@ -119,7 +139,7 @@
 		[JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:outgoing];
 		self.cachedAudioImageView = imageView;
 	}
-
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return self.cachedAudioImageView;
 }
 

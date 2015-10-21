@@ -10,12 +10,12 @@
 // THE SOFTWARE.
 
 #import <Parse/Parse.h>
-#import <ParseUI/ParseUI.h>
 #import "ProgressHUD.h"
 
 #import "utilities.h"
 
 #import "SettingsView.h"
+#import "BlockedView.h"
 #import "PrivacyView.h"
 #import "TermsView.h"
 #import "NavigationController.h"
@@ -24,7 +24,7 @@
 @interface SettingsView()
 
 @property (strong, nonatomic) IBOutlet UIView *viewHeader;
-@property (strong, nonatomic) IBOutlet PFImageView *imageUser;
+@property (strong, nonatomic) IBOutlet UIImageView *imageUser;
 @property (strong, nonatomic) IBOutlet UILabel *labelName;
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *cellBlocked;
@@ -87,20 +87,31 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	PFUser *user = [PFUser currentUser];
-
-	[imageUser setFile:user[PF_USER_PICTURE]];
-	[imageUser loadInBackground];
-
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[AFDownload start:user[PF_USER_PICTURE] complete:^(NSString *path, NSError *error, BOOL network)
+	{
+		if (error == nil) imageUser.image = [[UIImage alloc] initWithContentsOfFile:path];
+	}];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	labelName.text = user[PF_USER_FULLNAME];
 }
 
 #pragma mark - User actions
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
+- (IBAction)actionPhoto:(id)sender
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	PresentPhotoLibrary(self, YES);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)actionBlocked
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	ActionPremium(self);
+	BlockedView *blockedView = [[BlockedView alloc] init];
+	blockedView.hidesBottomBarWhenPushed = YES;
+	[self.navigationController pushViewController:blockedView animated:YES];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -122,43 +133,36 @@
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionLogout
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+	UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Log out" style:UIAlertActionStyleDestructive
+													handler:^(UIAlertAction *action) { [self actionLogoutUser]; }];
+	UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+	[alert addAction:action1]; [alert addAction:action2];
+	[self presentViewController:alert animated:YES completion:nil];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)actionLogoutUser
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	[PFUser logOut];
+	ParsePushUserResign();
+	PostNotification(NOTIFICATION_USER_LOGGED_OUT);
+	[self actionCleanup];
+	LoginUser(self);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 - (void)actionCleanup
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	imageUser.image = [UIImage imageNamed:@"settings_blank"];
 	labelName.text = nil;
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionLogout
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"
-										  destructiveButtonTitle:@"Log out" otherButtonTitles:nil];
-	[action showFromTabBar:[[self tabBarController] tabBar]];
-}
-
-#pragma mark - UIActionSheetDelegate
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	if (buttonIndex != actionSheet.cancelButtonIndex)
-	{
-		[PFUser logOut];
-		ParsePushUserResign();
-		PostNotification(NOTIFICATION_USER_LOGGED_OUT);
-		[self actionCleanup];
-		LoginUser(self);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (IBAction)actionPhoto:(id)sender
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	PresentPhotoLibrary(self, YES);
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -174,24 +178,28 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	imageUser.image = picture;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
-	[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-	{
-		if (error != nil) [ProgressHUD showError:@"Network error."];
-	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
 	PFFile *fileThumbnail = [PFFile fileWithName:@"thumbnail.jpg" data:UIImageJPEGRepresentation(thumbnail, 0.6)];
 	[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
-		if (error != nil) [ProgressHUD showError:@"Network error."];
-	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	PFUser *user = [PFUser currentUser];
-	user[PF_USER_PICTURE] = filePicture;
-	user[PF_USER_THUMBNAIL] = fileThumbnail;
-	[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-	{
-		if (error != nil) [ProgressHUD showError:@"Network error."];
+		if (error == nil)
+		{
+			PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
+			[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+			{
+				if (error == nil)
+				{
+					PFUser *user = [PFUser currentUser];
+					user[PF_USER_PICTURE] = filePicture.url;
+					user[PF_USER_THUMBNAIL] = fileThumbnail.url;
+					[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+					{
+						if (error != nil) [ProgressHUD showError:@"Network error."];
+					}];
+				}
+				else [ProgressHUD showError:@"Network error."];
+			}];
+		}
+		else [ProgressHUD showError:@"Network error."];
 	}];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[picker dismissViewControllerAnimated:YES completion:nil];

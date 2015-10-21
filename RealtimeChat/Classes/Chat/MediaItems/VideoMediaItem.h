@@ -15,11 +15,11 @@
 @interface VideoMediaItem : JSQMediaItem <JSQMessageMediaData, NSCoding, NSCopying>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
-@property (nonatomic, strong) NSURL *fileURL;
-@property (nonatomic, assign) BOOL isReadyToPlay;
+@property (nonatomic, assign) int status;
 
+@property (nonatomic, strong) NSURL *fileURL;
 @property (copy, nonatomic) UIImage *image;
 
-- (instancetype)initWithFileURL:(NSURL *)fileURL isReadyToPlay:(BOOL)isReadyToPlay;
+- (instancetype)initWithFileURL:(NSURL *)fileURL;
 
 @end

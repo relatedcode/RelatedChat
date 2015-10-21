@@ -209,7 +209,7 @@ that will automatically be populated by the Firebase Server.
 - (void) setPriority:(id)priority withCompletionBlock:(void (^)(NSError* error, Firebase* ref))block;
 
 /**
- * Update changes the values of the keys specified in the dictionary without overwriting other
+ * Update changes the values at the specified paths in the dictionary without overwriting other
  * keys at this location.
  *
  * @param values A dictionary of the keys to change and their new values
@@ -356,7 +356,8 @@ that will automatically be populated by the Firebase Server.
 
 
 /**
- * Detach all blocks previously attached to this Firebase location with observeEventType:withBlock:
+ * Calling removeAllObservers does not remove any observers at child references.
+ * removeAllObservers must be called again for each child reference where a listener was established to remove the observers.
  */
 - (void) removeAllObservers;
 

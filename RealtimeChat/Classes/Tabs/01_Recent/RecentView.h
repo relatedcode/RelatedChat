@@ -19,7 +19,7 @@
 #import "SelectDistanceView.h"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-@interface RecentView : UITableViewController <UIActionSheetDelegate, MapsDelegate, SelectSingleDelegate, SelectMultipleDelegate, AddressBookDelegate, FacebookFriendsDelegate, SelectDistanceDelegate>
+@interface RecentView : UITableViewController <MapsDelegate, SelectSingleDelegate, SelectMultipleDelegate, AddressBookDelegate, FacebookFriendsDelegate, SelectDistanceDelegate>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 @end

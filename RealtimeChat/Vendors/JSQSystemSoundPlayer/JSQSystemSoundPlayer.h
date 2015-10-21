@@ -18,6 +18,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //! Project version number for JSQSystemSoundPlayer.
 FOUNDATION_EXPORT double JSQSystemSoundPlayerVersionNumber;
 
@@ -74,9 +76,25 @@ typedef void(^JSQSystemSoundPlayerCompletionBlock)(void);
 /**
  *  Returns the shared `JSQSystemSoundPlayer` object. This method always returns the same sound system player object.
  *
- *  @return An initialized `JSQSystemSoundPlayer` object if successful, `nil` otherwise.
+ *  @return A shared instance of`JSQSystemSoundPlayer`.
  */
 + (JSQSystemSoundPlayer *)sharedPlayer;
+
+/**
+ *  Returns a new `JSQSystemSoundPlayer` instance with the specified bundle.
+ *
+ *  @param bundle The bundle in which the sound player uses to search for sound file resources.
+ *
+ *  @return  An initialized `JSQSystemSoundPlayer` object.
+ */
+- (instancetype)initWithBundle:(NSBundle *)bundle;
+
+/**
+ *  Returns a new `JSQSystemSoundPlayer` instance using the main bundle.
+ *
+ *  @return An initialized `JSQSystemSoundPlayer` object.
+ */
+- (instancetype)init;
 
 /**
  *  Toggles the sound player on or off by setting the `kJSQSystemSoundPlayerUserDefaultsKey` key in `NSUserDefaults` to the given value.
@@ -107,7 +125,7 @@ typedef void(^JSQSystemSoundPlayerCompletionBlock)(void);
  */
 - (void)playSoundWithFilename:(NSString *)filename
                 fileExtension:(NSString *)fileExtension
-                   completion:(JSQSystemSoundPlayerCompletionBlock)completionBlock;
+                   completion:(nullable JSQSystemSoundPlayerCompletionBlock)completionBlock;
 
 /**
  *  Plays a system sound object *as an alert* corresponding to an audio file with the given filename and extension,
@@ -129,7 +147,7 @@ typedef void(^JSQSystemSoundPlayerCompletionBlock)(void);
  */
 - (void)playAlertSoundWithFilename:(NSString *)filename
                      fileExtension:(NSString *)fileExtension
-                        completion:(JSQSystemSoundPlayerCompletionBlock)completionBlock;
+                        completion:(nullable JSQSystemSoundPlayerCompletionBlock)completionBlock;
 
 /**
  *  Available on iOS only. On some iOS devices, you can call this method to invoke vibration.
@@ -166,6 +184,9 @@ typedef void(^JSQSystemSoundPlayerCompletionBlock)(void);
  *  This parameter must be one of `kJSQSystemSoundTypeCAF`, `kJSQSystemSoundTypeAIF`, `kJSQSystemSoundTypeAIFF`, or `kJSQSystemSoundTypeWAV`.
  *
  */
-- (void)preloadSoundWithFilename:(NSString *)filename fileExtension:(NSString *)fileExtension;
+- (void)preloadSoundWithFilename:(NSString *)filename
+                   fileExtension:(NSString *)fileExtension;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -67,7 +67,11 @@ static NSString *const kCompletedCallbackKey = @"completed";
         _downloadQueue = [NSOperationQueue new];
         _downloadQueue.maxConcurrentOperationCount = 6;
         _URLCallbacks = [NSMutableDictionary new];
-        _HTTPHeaders = [NSMutableDictionary dictionaryWithObject:@"image/webp,image/*;q=0.8" forKey:@"Accept"];
+#ifdef SD_WEBP
+        _HTTPHeaders = [@{@"Accept": @"image/webp,image/*;q=0.8"} mutableCopy];
+#else
+        _HTTPHeaders = [@{@"Accept": @"image/*;q=0.8"} mutableCopy];
+#endif
         _barrierQueue = dispatch_queue_create("com.hackemist.SDWebImageDownloaderBarrierQueue", DISPATCH_QUEUE_CONCURRENT);
         _downloadTimeout = 15.0;
     }
@@ -138,8 +142,10 @@ static NSString *const kCompletedCallbackKey = @"completed";
                                                                  callbacksForURL = [sself.URLCallbacks[url] copy];
                                                              });
                                                              for (NSDictionary *callbacks in callbacksForURL) {
-                                                                 SDWebImageDownloaderProgressBlock callback = callbacks[kProgressCallbackKey];
-                                                                 if (callback) callback(receivedSize, expectedSize);
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     SDWebImageDownloaderProgressBlock callback = callbacks[kProgressCallbackKey];
+                                                                     if (callback) callback(receivedSize, expectedSize);
+                                                                 });
                                                              }
                                                          }
                                                         completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {

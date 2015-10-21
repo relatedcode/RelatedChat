@@ -13,9 +13,7 @@
 #import "ProgressHUD.h"
 #import "CLLocation+Utils.h"
 
-#import "AppConstant.h"
-#import "common.h"
-#import "image.h"
+#import "utilities.h"
 
 #import "MapsView.h"
 
@@ -56,15 +54,6 @@
 	userIds = [[NSMutableDictionary alloc] init];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[self locationManagerStart];
-}
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)viewWillAppear:(BOOL)animated
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	[super viewWillAppear:animated];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	mapView.frame = self.view.bounds;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -200,12 +189,11 @@
 	pinView.image = [UIImage imageNamed:@"maps_blank"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	PFUser *user = users2[userId];
-	PFFile *fileThumbnail = user[PF_USER_THUMBNAIL];
-	[fileThumbnail getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error)
+	[AFDownload start:user[PF_USER_THUMBNAIL] complete:^(NSString *path, NSError *error, BOOL network)
 	{
 		if (error == nil)
 		{
-			UIImage *image = [UIImage imageWithData:imageData];
+			UIImage *image = [[UIImage alloc] initWithContentsOfFile:path];
 			UIImage *resized = ResizeImage(image, 25, 25, 2);
 			pinView.image = [self roundedImage:resized withRadious:3.5];
 		}

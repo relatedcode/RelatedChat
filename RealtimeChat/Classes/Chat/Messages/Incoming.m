@@ -10,7 +10,6 @@
 // THE SOFTWARE.
 
 #import "JSQMessage.h"
-#import "UIImageView+WebCache.h"
 
 #import "utilities.h"
 
@@ -25,7 +24,8 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 @interface Incoming()
 {
-	NSString *senderId;
+	BOOL maskOutgoing;
+	NSString *groupId;
 	JSQMessagesCollectionView *collectionView;
 }
 @end
@@ -34,11 +34,11 @@
 @implementation Incoming
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (id)initWith:(NSString *)senderId_ CollectionView:(JSQMessagesCollectionView *)collectionView_
+- (id)initWith:(NSString *)groupId_ CollectionView:(JSQMessagesCollectionView *)collectionView_
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	self = [super init];
-	senderId = senderId_;
+	groupId = groupId_;
 	collectionView = collectionView_;
 	return self;
 }
@@ -48,6 +48,8 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	JSQMessage *message;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	maskOutgoing = [[PFUser currentId] isEqualToString:item[@"userId"]];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if ([item[@"type"] isEqualToString:@"text"])		message = [self createTextMessage:item];
 	if ([item[@"type"] isEqualToString:@"emoji"])		message = [self createEmojiMessage:item];
@@ -67,10 +69,9 @@
 	NSString *userId = item[@"userId"];
 	NSDate *date = String2Date(item[@"date"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	NSString *text = item[@"text"];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date text:text];
+	NSString *text = DecryptText(groupId, item[@"text"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
+	return [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date text:text];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -81,11 +82,11 @@
 	NSString *userId = item[@"userId"];
 	NSDate *date = String2Date(item[@"date"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	EmojiMediaItem *mediaItem = [[EmojiMediaItem alloc] initWithText:item[@"text"]];
-	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:senderId];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+	NSString *text = DecryptText(groupId, item[@"text"]);
+	EmojiMediaItem *mediaItem = [[EmojiMediaItem alloc] initWithText:text];
+	mediaItem.appliesMediaViewMaskAsOutgoing = maskOutgoing;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
+	return [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -96,24 +97,41 @@
 	NSString *userId = item[@"userId"];
 	NSDate *date = String2Date(item[@"date"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	VideoMediaItem *mediaItem = [[VideoMediaItem alloc] initWithFileURL:[NSURL URLWithString:item[@"video"]] isReadyToPlay:NO];
-	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:senderId];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+	VideoMediaItem *mediaItem = [[VideoMediaItem alloc] initWithMaskAsOutgoing:maskOutgoing];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	SDWebImageManager *manager = [SDWebImageManager sharedManager];
-	[manager downloadImageWithURL:[NSURL URLWithString:item[@"thumbnail"]] options:0 progress:nil
-	completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL)
+	[self loadVideoMedia:item MediaItem:mediaItem];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	return [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)loadVideoMedia:(NSDictionary *)item MediaItem:(VideoMediaItem *)mediaItem
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	mediaItem.status = STATUS_LOADING;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[AFDownload start:item[@"video"] md5:item[@"video_md5hash"] complete:^(NSString *path, NSError *error, BOOL network)
 	{
-		if (image != nil)
+		if (error == nil)
 		{
-			mediaItem.isReadyToPlay = YES;
-			mediaItem.image = image;
-			[collectionView reloadData];
+			mediaItem.status = STATUS_SUCCEED;
+			if (network) DecryptFile(groupId, path);
+			mediaItem.fileURL = [NSURL fileURLWithPath:path];
 		}
-		else NSLog(@"Incoming createVideoMessage picture load error.");
+		else mediaItem.status = STATUS_FAILED;
+		if (network) [collectionView reloadData];
 	}];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
+	[AFDownload start:item[@"thumbnail"] complete:^(NSString *path, NSError *error, BOOL network)
+	{
+		if (error == nil)
+		{
+			if (network) DecryptFile(groupId, path);
+			mediaItem.image = [[UIImage alloc] initWithContentsOfFile:path];
+		}
+		else mediaItem.status = STATUS_FAILED;
+		if (network) [collectionView reloadData];
+	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -125,22 +143,30 @@
 	NSDate *date = String2Date(item[@"date"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	PhotoMediaItem *mediaItem = [[PhotoMediaItem alloc] initWithImage:nil Width:item[@"picture_width"] Height:item[@"picture_height"]];
-	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:senderId];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+	mediaItem.appliesMediaViewMaskAsOutgoing = maskOutgoing;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	SDWebImageManager *manager = [SDWebImageManager sharedManager];
-	[manager downloadImageWithURL:[NSURL URLWithString:item[@"picture"]] options:0 progress:nil
-	completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL)
+	[self loadPictureMedia:item MediaItem:mediaItem];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	return [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)loadPictureMedia:(NSDictionary *)item MediaItem:(PhotoMediaItem *)mediaItem
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	mediaItem.status = STATUS_LOADING;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[AFDownload start:item[@"picture"] md5:item[@"picture_md5hash"] complete:^(NSString *path, NSError *error, BOOL network)
 	{
-		if (image != nil)
+		if (error == nil)
 		{
-			mediaItem.image = image;
-			[collectionView reloadData];
+			mediaItem.status = STATUS_SUCCEED;
+			if (network) DecryptFile(groupId, path);
+			mediaItem.image = [[UIImage alloc] initWithContentsOfFile:path];
 		}
-		else NSLog(@"Incoming createPictureMessage picture load error.");
+		else mediaItem.status = STATUS_FAILED;
+		if (network) [collectionView reloadData];
 	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -151,11 +177,31 @@
 	NSString *userId = item[@"userId"];
 	NSDate *date = String2Date(item[@"date"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	AudioMediaItem *mediaItem = [[AudioMediaItem alloc] initWithFileURL:[NSURL URLWithString:item[@"audio"]] Duration:item[@"audio_duration"]];
-	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:senderId];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+	AudioMediaItem *mediaItem = [[AudioMediaItem alloc] initWithFileURL:nil Duration:item[@"audio_duration"]];
+	mediaItem.appliesMediaViewMaskAsOutgoing = maskOutgoing;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
+	[self loadAudioMedia:item MediaItem:mediaItem];
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	return [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)loadAudioMedia:(NSDictionary *)item MediaItem:(AudioMediaItem *)mediaItem
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	mediaItem.status = STATUS_LOADING;
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	[AFDownload start:item[@"audio"] md5:item[@"audio_md5hash"] complete:^(NSString *path, NSError *error, BOOL network)
+	{
+		if (error == nil)
+		{
+			mediaItem.status = STATUS_SUCCEED;
+			if (network) DecryptFile(groupId, path);
+			mediaItem.fileURL = [NSURL fileURLWithPath:path];
+		}
+		else mediaItem.status = STATUS_FAILED;
+		if (network) [collectionView reloadData];
+	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -167,15 +213,14 @@
 	NSDate *date = String2Date(item[@"date"]);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	JSQLocationMediaItem *mediaItem = [[JSQLocationMediaItem alloc] initWithLocation:nil];
-	mediaItem.appliesMediaViewMaskAsOutgoing = [userId isEqualToString:senderId];
-	JSQMessage *message = [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
+	mediaItem.appliesMediaViewMaskAsOutgoing = maskOutgoing;
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	CLLocation *location = [[CLLocation alloc] initWithLatitude:[item[@"latitude"] doubleValue] longitude:[item[@"longitude"] doubleValue]];
 	[mediaItem setLocation:location withCompletionHandler:^{
 		[collectionView reloadData];
 	}];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	return message;
+	return [[JSQMessage alloc] initWithSenderId:userId senderDisplayName:name date:date media:mediaItem];
 }
 
 @end

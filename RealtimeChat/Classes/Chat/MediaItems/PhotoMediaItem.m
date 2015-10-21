@@ -91,24 +91,45 @@
 - (UIView *)mediaView
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	if (self.image == nil)
+	if (self.status == STATUS_LOADING)
 	{
 		return nil;
 	}
-
-	if (self.cachedImageView == nil)
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	if ((self.status == STATUS_FAILED) && (self.cachedImageView == nil))
 	{
 		CGSize size = [self mediaViewDisplaySize];
+		BOOL outgoing = self.appliesMediaViewMaskAsOutgoing;
+
+		UIImage *icon = [UIImage imageNamed:@"photomediaitem_reload"];
+		UIImageView *iconView = [[UIImageView alloc] initWithImage:icon];
+		CGFloat ypos = (size.height - icon.size.height) / 2;
+		CGFloat xpos = (size.width - icon.size.width) / 2;
+		iconView.frame = CGRectMake(xpos, ypos, icon.size.width, icon.size.height);
+
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, size.width, size.height)];
+		imageView.backgroundColor = [UIColor lightGrayColor];
+		imageView.clipsToBounds = YES;
+		[imageView addSubview:iconView];
+
+		[JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:outgoing];
+		self.cachedImageView = imageView;
+	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	if ((self.status == STATUS_SUCCEED) && (self.cachedImageView == nil))
+	{
+		CGSize size = [self mediaViewDisplaySize];
+		BOOL outgoing = self.appliesMediaViewMaskAsOutgoing;
 
 		UIImageView *imageView = [[UIImageView alloc] initWithImage:self.image];
 		imageView.frame = CGRectMake(0, 0, size.width, size.height);
 		imageView.contentMode = UIViewContentModeScaleAspectFill;
 		imageView.clipsToBounds = YES;
 
-		[JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:self.appliesMediaViewMaskAsOutgoing];
+		[JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:outgoing];
 		self.cachedImageView = imageView;
 	}
-
+	//---------------------------------------------------------------------------------------------------------------------------------------------
 	return self.cachedImageView;
 }
 

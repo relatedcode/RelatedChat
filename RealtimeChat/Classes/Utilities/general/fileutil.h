@@ -15,3 +15,10 @@
 NSString*		Applications			(NSString *file);
 NSString*		Documents				(NSString *file);
 NSString*		Caches					(NSString *file);
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+BOOL			DirCreate				(NSString *dir);
+BOOL			FileExist				(NSString *path);
+BOOL			FileDelete				(NSString *path);
+void			FileCopy				(NSString *path1, NSString *path2, BOOL overwrite);
+NSUInteger		FileSize				(NSString *path);

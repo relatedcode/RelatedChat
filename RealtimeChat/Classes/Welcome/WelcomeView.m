@@ -64,11 +64,11 @@
 	{
 		if (user != nil)
 		{
-			if (user[PF_USER_TWITTERID] == nil)
+			if (user[PF_USER_TWITTERID] != nil)
 			{
-				[self processTwitter:user];
+				[self userLoggedIn:user];
 			}
-			else [self userLoggedIn:user];
+			else [self processTwitter:user];
 		}
 		else [ProgressHUD showError:@"Twitter login error."];
 	}];
@@ -85,12 +85,11 @@
 	user[PF_USER_TWITTERID] = twitter.userId;
 	[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
-		if (error != nil)
+		if (error == nil)
 		{
-			[PFUser logOut];
-			[ProgressHUD showError:error.userInfo[@"error"]];
+			[self userLoggedIn:user];
 		}
-		else [self userLoggedIn:user];
+		else [self loginFailed:@"Failed to save user data."];
 	}];
 }
 
@@ -102,23 +101,23 @@
 {
 	[ProgressHUD show:@"Signing in..." Interaction:NO];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	NSArray *permissionsArray = @[@"public_profile", @"email", @"user_friends"];
-	[PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error)
+	NSArray *permissions = @[@"public_profile", @"email", @"user_friends"];
+	[PFFacebookUtils logInInBackgroundWithReadPermissions:permissions block:^(PFUser *user, NSError *error)
 	{
 		if (user != nil)
 		{
-			if (user[PF_USER_FACEBOOKID] == nil)
+			if (user[PF_USER_FACEBOOKID] != nil)
 			{
-				[self requestFacebook:user];
+				[self userLoggedIn:user];
 			}
-			else [self userLoggedIn:user];
+			else [self requestFacebookUser:user];
 		}
 		else [ProgressHUD showError:@"Facebook login error."];
 	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)requestFacebook:(PFUser *)user
+- (void)requestFacebookUser:(PFUser *)user
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"id, name, email"}];
@@ -129,11 +128,7 @@
 			NSDictionary *userData = (NSDictionary *)result;
 			[self requestFacebookPicture:user UserData:userData];
 		}
-		else
-		{
-			[PFUser logOut];
-			[ProgressHUD showError:@"Failed to fetch Facebook user data."];
-		}
+		else [self loginFailed:@"Failed to fetch Facebook user data."];
 	}];
 }
 
@@ -149,35 +144,42 @@
 	{
 		if (image != nil)
 		{
-			[self processFacebook:user UserData:userData Image:image];
+			[self saveFacebookPicture:user UserData:userData Image:image];
 		}
-		else
-		{
-			[PFUser logOut];
-			[ProgressHUD showError:@"Failed to fetch Facebook profile picture."];
-		}
+		else [self loginFailed:@"Failed to fetch Facebook profile picture."];
 	}];
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)processFacebook:(PFUser *)user UserData:(NSDictionary *)userData Image:(UIImage *)image
+- (void)saveFacebookPicture:(PFUser *)user UserData:(NSDictionary *)userData Image:(UIImage *)image
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	UIImage *picture = ResizeImage(image, 140, 140, 1);
 	UIImage *thumbnail = ResizeImage(image, 60, 60, 1);
 	//---------------------------------------------------------------------------------------------------------------------------------------------
-	PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
-	[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-	{
-		if (error != nil) NSLog(@"WelcomeView processFacebook picture save error.");
-	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
 	PFFile *fileThumbnail = [PFFile fileWithName:@"thumbnail.jpg" data:UIImageJPEGRepresentation(thumbnail, 0.6)];
 	[fileThumbnail saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
-		if (error != nil) NSLog(@"WelcomeView processFacebook thumbnail save error.");
+		if (error == nil)
+		{
+			PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
+			[filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+			{
+				if (error == nil)
+				{
+					[self saveFacebookUser:user UserData:userData Picture:filePicture.url Thumbnail:fileThumbnail.url];
+				}
+				else [self loginFailed:@"Failed to save profile picture."];
+			}];
+		}
+		else [self loginFailed:@"Failed to save profile thumbnail."];
 	}];
-	//---------------------------------------------------------------------------------------------------------------------------------------------
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)saveFacebookUser:(PFUser *)user UserData:(NSDictionary *)userData Picture:(NSString *)pictureUrl Thumbnail:(NSString *)thumbnailUrl
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
 	NSString *name = userData[@"name"];
 	NSString *email = userData[@"email"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
@@ -188,16 +190,15 @@
 	user[PF_USER_FULLNAME] = name;
 	user[PF_USER_FULLNAME_LOWER] = [name lowercaseString];
 	user[PF_USER_FACEBOOKID] = userData[@"id"];
-	user[PF_USER_PICTURE] = filePicture;
-	user[PF_USER_THUMBNAIL] = fileThumbnail;
+	user[PF_USER_PICTURE] = pictureUrl;
+	user[PF_USER_THUMBNAIL] = thumbnailUrl;
 	[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
 	{
-		if (error != nil)
+		if (error == nil)
 		{
-			[PFUser logOut];
-			[ProgressHUD showError:error.userInfo[@"error"]];
+			[self userLoggedIn:user];
 		}
-		else [self userLoggedIn:user];
+		else [self loginFailed:@"Failed to save user data."];
 	}];
 }
 
@@ -211,6 +212,14 @@
 	PostNotification(NOTIFICATION_USER_LOGGED_IN);
 	[ProgressHUD showSuccess:[NSString stringWithFormat:@"Welcome back %@!", user[PF_USER_FULLNAME]]];
 	[self dismissViewControllerAnimated:YES completion:nil];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)loginFailed:(NSString *)message
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+	[PFUser logOut];
+	[ProgressHUD showError:message];
 }
 
 @end

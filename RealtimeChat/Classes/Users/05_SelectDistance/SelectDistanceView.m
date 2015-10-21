@@ -59,8 +59,7 @@
 	PFQuery *query2 = [PFQuery queryWithClassName:PF_USER_CLASS_NAME];
 	[query2 whereKey:PF_USER_OBJECTID notEqualTo:[PFUser currentId]];
 	[query2 whereKey:PF_USER_OBJECTID doesNotMatchKey:PF_BLOCKED_USERID2 inQuery:query1];
-	[query2 whereKey:PF_USER_LOCATION nearGeoPoint:geoPoint withinMiles:1.0];
-	[query2 orderByAscending:PF_USER_FULLNAME_LOWER];
+	[query2 whereKey:PF_USER_LOCATION nearGeoPoint:geoPoint];
 	[query2 setLimit:1000];
 	[query2 findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
 	{

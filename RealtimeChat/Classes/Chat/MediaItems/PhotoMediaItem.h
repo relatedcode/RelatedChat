@@ -15,6 +15,8 @@
 @interface PhotoMediaItem : JSQMediaItem <JSQMessageMediaData, NSCoding, NSCopying>
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
+@property (nonatomic, assign) int status;
+
 @property (copy, nonatomic) UIImage *image;
 @property (nonatomic, strong) NSNumber *width;
 @property (nonatomic, strong) NSNumber *height;

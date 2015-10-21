@@ -25,8 +25,6 @@
 {
 	NSMutableArray *users1;
 	NSMutableArray *users2;
-
-	NSIndexPath *indexSelected;
 }
 @end
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -247,7 +245,6 @@
 	}
 	if (indexPath.section == 1)
 	{
-		indexSelected = indexPath;
 		[self inviteUser:users1[indexPath.row]];
 	}
 }
@@ -260,9 +257,16 @@
 {
 	if (([user[@"emails"] count] != 0) && ([user[@"phones"] count] != 0))
 	{
-		UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel"
-											  destructiveButtonTitle:nil otherButtonTitles:@"Email invitation", @"SMS invitation", nil];
-		[action showInView:self.view];
+		UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+		UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Email invitation" style:UIAlertActionStyleDefault
+														handler:^(UIAlertAction *action) { [self sendMail:user]; }];
+		UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"SMS invitation" style:UIAlertActionStyleDefault
+														handler:^(UIAlertAction *action) { [self sendSMS:user]; }];
+		UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+		[alert addAction:action1]; [alert addAction:action2]; [alert addAction:action3];
+		[self presentViewController:alert animated:YES completion:nil];
 	}
 	else if (([user[@"emails"] count] != 0) && ([user[@"phones"] count] == 0))
 	{
@@ -273,19 +277,6 @@
 		[self sendSMS:user];
 	}
 	else [ProgressHUD showError:@"This contact does not have enough information to be invited."];
-}
-
-#pragma mark - UIActionSheetDelegate
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-{
-	if (buttonIndex == actionSheet.cancelButtonIndex) return;
-	//---------------------------------------------------------------------------------------------------------------------------------------------
-	NSDictionary *user = users1[indexSelected.row];
-	if (buttonIndex == 0) [self sendMail:user];
-	if (buttonIndex == 1) [self sendSMS:user];
 }
 
 #pragma mark - Mail sending method
