@@ -124,11 +124,11 @@ https://github.com/rs/SDWebImage<br>
 
 To use these libraries, just add the downloaded directories to your project.
 
-**6.,** You need to [register](https://developers.facebook.com/apps) your app at Facebook. More info about how to [configure](https://developers.facebook.com/docs/ios/getting-started) Facebook.
+**6.,** You need to use your own [Parse account](https://www.parse.com/#signup).
 
-**7.,** You need to use your own [Parse account](https://www.parse.com/#signup).
+**7.,** You need to use your own [Firebase account](https://www.firebase.com/signup).
 
-**8.,** You need to use your own [Firebase account](https://www.firebase.com/signup).
+**8.,** You need to [register](https://developers.facebook.com/apps) your app at Facebook. More info about how to [configure](https://developers.facebook.com/docs/ios/getting-started) Facebook.
 
 **9.,** You need to [configure](https://www.parse.com/tutorials/ios-push-notifications) Push Notification.
 
