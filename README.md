@@ -124,7 +124,9 @@ https://github.com/rs/SDWebImage<br>
 
 To use these libraries, just add the downloaded directories to your project.
 
-**6.,** You need to use your own [Parse account](https://www.parse.com/#signup).
+**6.,** Parse is now open-source, so you can't create an account anymore. You need to setup your own [Parse server](https://github.com/ParsePlatform/parse-server).
+
+*I suggest clicking the **Deploy to Heroku** button on that page and following the instructions, it's the easiest and quickest way to setup a development server to test this code. You'll need a valid credit card to sign up for Heroku (don't worry, after signing up you can host a simple instance for free).*
 
 **7.,** You need to use your own [Firebase account](https://www.firebase.com/signup).
 
