@@ -31,7 +31,18 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-	[Parse setApplicationId:@"roeLftHfpCP25HbQATB4pJJiagPYYXqekccnXo1l" clientKey:@"QsvHcijsJ4PZHMYvHT9sO2FcvMOg7r93vU7UwxC9"];
+    // HOW TO QUICKLY SETUP AN OPEN-SOURCE PARSE SERVER FOR DEVELOPMENT
+    //
+    // 1. Go to: https://github.com/ParsePlatform/parse-server
+    // 2. Click on "Deploy to Heroku" and follow the instructions to configure the server.
+    // (You can also deploy to AWS or Azure, but Heroku is probably the easiest. It's free but you'll need a credit card to sign up.)
+    // 3. Fill the values bellow with the ones you setup during the server configuration.
+    //
+    [Parse initializeWithConfiguration:[ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration> configuration) {
+        configuration.applicationId = @"my-parse-application-id";
+        configuration.clientKey = @"my-parse-application-id"; // set the `clientKey` to equal your `applicationId`, otherwise the SDK will crash with a "clientKey cannot be null error"
+        configuration.server = @"https://my-parse-heroku-app-name.herokuapp.com/parse"; // note the "/parse" path here
+    }]];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	[PFTwitterUtils initializeWithConsumerKey:@"kS83MvJltZwmfoWVoyE1R6xko" consumerSecret:@"YXSupp9hC2m1rugTfoSyqricST9214TwYapQErBcXlP1BrSfND"];
 	//---------------------------------------------------------------------------------------------------------------------------------------------
