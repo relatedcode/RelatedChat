@@ -13,54 +13,54 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class BFTask PF_GENERIC(__covariant BFGenericType);
+@class BFTask<__covariant BFGenericType>;
 
-/*!
+/**
  The `PF_Twitter` class is a simple interface for interacting with the Twitter REST API,
  automating sign-in and OAuth signing of requests against the API.
  */
 @interface PF_Twitter : NSObject
 
-/*!
- @abstract Consumer key of the application that is used to authorize with Twitter.
+/**
+ Consumer key of the application that is used to authorize with Twitter.
  */
 @property (nullable, nonatomic, copy) NSString *consumerKey;
 
-/*!
- @abstract Consumer secret of the application that is used to authorize with Twitter.
+/**
+ Consumer secret of the application that is used to authorize with Twitter.
  */
 @property (nullable, nonatomic, copy) NSString *consumerSecret;
 
-/*!
- @abstract Auth token for the current user.
+/**
+ Auth token for the current user.
  */
 @property (nullable, nonatomic, copy) NSString *authToken;
 
-/*!
- @abstract Auth token secret for the current user.
+/**
+ Auth token secret for the current user.
  */
 @property (nullable, nonatomic, copy) NSString *authTokenSecret;
 
-/*!
- @abstract Twitter user id of the currently signed in user.
+/**
+ Twitter user id of the currently signed in user.
  */
 @property (nullable, nonatomic, copy) NSString *userId;
 
-/*!
- @abstract Twitter screen name of the currently signed in user.
+/**
+ Twitter screen name of the currently signed in user.
  */
 @property (nullable, nonatomic, copy) NSString *screenName;
 
-/*!
- @abstract Displays an auth dialog and populates the authToken, authTokenSecret, userId, and screenName properties
+/**
+ Displays an auth dialog and populates the authToken, authTokenSecret, userId, and screenName properties
  if the Twitter user grants permission to the application.
 
- @returns The task, that encapsulates the work being done.
+ @return The task, that encapsulates the work being done.
  */
 - (BFTask *)authorizeInBackground;
 
-/*!
- @abstract Displays an auth dialog and populates the authToken, authTokenSecret, userId, and screenName properties
+/**
+ Displays an auth dialog and populates the authToken, authTokenSecret, userId, and screenName properties
  if the Twitter user grants permission to the application.
 
  @param success Invoked upon successful authorization.
@@ -71,11 +71,11 @@ NS_ASSUME_NONNULL_BEGIN
                      failure:(nullable void (^)(NSError *__nullable error))failure
                       cancel:(nullable void (^)(void))cancel;
 
-/*!
- @abstract Adds a 3-legged OAuth signature to an `NSMutableURLRequest` based
+/**
+ Adds a 3-legged OAuth signature to an `NSMutableURLRequest` based
  upon the properties set for the Twitter object.
 
- @discussion Use this function to sign requests being made to the Twitter API.
+ Use this function to sign requests being made to the Twitter API.
 
  @param request Request to sign.
  */
