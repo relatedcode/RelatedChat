@@ -1,0 +1,20 @@
+
+Copyright (c) 2018 Related Code - http://relatedcode.com
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+1. This License grants you, the purchaser, an ongoing, non-exclusive, worldwide license to make use of Premium Chat.
+2. You are licensed to use Premium Chat to create one single End Product for yourself or for one client, and the End Product may be Sold.
+3. You can create the End Product for a client, and this license is then transferred from you to your client.
+4. You can Sell and make any number of copies of the single End Product.
+5. You can modify or manipulate Premium Chat. You can combine Premium Chat with other works and make a derivative work from it. The resulting works are subject to the terms of this license.
+6. This license is a “single application” license and not a “multi-use” license, which means that you can’t use Premium Chat to create more than one unique End Product.
+7. You can’t re-distribute Premium Chat with source files. You can’t do this with Premium Chat either on its own or bundled with other items, and even if you modify Premium Chat. You can’t re-distribute or make available Premium Chat as-is or with superficial modifications.
+8. This license can be terminated if you breach it. If that happens, you must stop making copies of or distributing the End Product until you remove Premium Chat from it.
+9. The author of Premium Chat retains ownership of Premium Chat but grants you the license on these terms. This license is between the author of Premium Chat and you.

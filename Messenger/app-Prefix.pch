@@ -1,0 +1,9 @@
+//
+// Prefix header for all source files of all targets in the '0' project.
+//
+#ifdef __OBJC__
+    // Added by Swiftify: import the Swift Bridging Header from the .pch file
+    // to make it accessible from all Objective-C source files
+    #import <app-Swift.h>
+
+#endif

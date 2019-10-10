@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="WallpapersCell" customModule="app">
+            <rect key="frame" x="0.0" y="0.0" width="100" height="170"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="100" height="170"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8nd-tE-MF4">
+                        <rect key="frame" x="0.0" y="0.0" width="100" height="170"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6GU-lc-VQ8">
+                                <rect key="frame" x="5" y="5" width="90" height="160"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wallpaper_selected.png" translatesAutoresizingMaskIntoConstraints="NO" id="ols-6D-cBR">
+                                <rect key="frame" x="75" y="145" width="15" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="EQ6-0J-Vho"/>
+                                    <constraint firstAttribute="width" constant="15" id="nLt-4N-LzV"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6GU-lc-VQ8" firstAttribute="leading" secondItem="8nd-tE-MF4" secondAttribute="leading" constant="5" id="2ef-rw-LQC"/>
+                            <constraint firstAttribute="bottom" secondItem="ols-6D-cBR" secondAttribute="bottom" constant="10" id="3Hl-YW-sZu"/>
+                            <constraint firstAttribute="trailing" secondItem="6GU-lc-VQ8" secondAttribute="trailing" constant="5" id="MuY-Pm-icd"/>
+                            <constraint firstAttribute="trailing" secondItem="ols-6D-cBR" secondAttribute="trailing" constant="10" id="SCt-RN-NkW"/>
+                            <constraint firstAttribute="bottom" secondItem="6GU-lc-VQ8" secondAttribute="bottom" constant="5" id="eLK-eL-kqW"/>
+                            <constraint firstItem="6GU-lc-VQ8" firstAttribute="top" secondItem="8nd-tE-MF4" secondAttribute="top" constant="5" id="knK-j4-Xew"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="8nd-tE-MF4" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="3Uq-H4-yo6"/>
+                <constraint firstAttribute="bottom" secondItem="8nd-tE-MF4" secondAttribute="bottom" id="EQA-Ue-6Hp"/>
+                <constraint firstItem="8nd-tE-MF4" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="eQL-Fn-6Is"/>
+                <constraint firstAttribute="trailing" secondItem="8nd-tE-MF4" secondAttribute="trailing" id="pMC-pg-5tG"/>
+            </constraints>
+            <connections>
+                <outlet property="imageItem" destination="6GU-lc-VQ8" id="5pR-uT-BNC"/>
+                <outlet property="imageSelected" destination="ols-6D-cBR" id="m5R-mZ-NZT"/>
+            </connections>
+            <point key="canvasLocation" x="16" y="50"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="wallpaper_selected.png" width="15" height="15"/>
+    </resources>
+</document>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CallVideoView">
+            <connections>
+                <outlet property="buttonMute" destination="AW3-7M-3qX" id="fcH-W0-Hub"/>
+                <outlet property="buttonSwitch" destination="NQ2-UN-SbC" id="dCE-C4-xOj"/>
+                <outlet property="imageUser" destination="3Dn-fS-ES4" id="Yh8-XH-6Tt"/>
+                <outlet property="labelInitials" destination="qUo-VN-lF5" id="jhY-q2-NqA"/>
+                <outlet property="labelName" destination="B31-qG-HXG" id="W1h-oG-EqS"/>
+                <outlet property="labelStatus" destination="g21-s9-4FN" id="B4x-r0-6sj"/>
+                <outlet property="view" destination="UT9-Nv-lbz" id="kPH-Mz-aOJ"/>
+                <outlet property="viewBackground" destination="4xH-2r-f6Q" id="ti4-bc-LPS"/>
+                <outlet property="viewButtons1" destination="bsc-ZX-ncE" id="9cb-Vk-cMa"/>
+                <outlet property="viewButtons2" destination="Gaf-ab-Y7P" id="Kka-UR-A22"/>
+                <outlet property="viewDetails" destination="aty-bH-sVM" id="gxV-7J-dle"/>
+                <outlet property="viewEnded" destination="73p-HQ-VN9" id="cyc-eN-Yfm"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="UT9-Nv-lbz">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i5M-Pr-FkT">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4xH-2r-f6Q">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                        </view>
+                        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aty-bH-sVM">
+                            <rect key="frame" x="0.0" y="54" width="320" height="460"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="callvideo_blank.png" translatesAutoresizingMaskIntoConstraints="NO" id="3Dn-fS-ES4">
+                                    <rect key="frame" x="125" y="20" width="70" height="70"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                            <integer key="value" value="5"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                    </userDefinedRuntimeAttributes>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qUo-VN-lF5">
+                                    <rect key="frame" x="125" y="20" width="70" height="70"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B31-qG-HXG">
+                                    <rect key="frame" x="0.0" y="100" width="320" height="40"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="32"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g21-s9-4FN">
+                                    <rect key="frame" x="0.0" y="140" width="320" height="21"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="320" id="5sX-sS-iFE"/>
+                                <constraint firstAttribute="height" constant="460" id="llW-dv-VYm"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bsc-ZX-ncE">
+                            <rect key="frame" x="0.0" y="480" width="320" height="88"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nPO-so-kJh">
+                                    <rect key="frame" x="16" y="0.0" width="72" height="72"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="72" id="IQy-Bj-TcH"/>
+                                        <constraint firstAttribute="width" constant="72" id="nic-rC-sGy"/>
+                                    </constraints>
+                                    <state key="normal" image="callvideo_answer.png"/>
+                                    <connections>
+                                        <action selector="actionAnswer:" destination="-1" eventType="touchUpInside" id="BB8-Bf-4DP"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CeO-Yx-oBe">
+                                    <rect key="frame" x="232" y="0.0" width="72" height="72"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="72" id="vkU-26-7Qh"/>
+                                        <constraint firstAttribute="width" constant="72" id="vr9-I6-QAT"/>
+                                    </constraints>
+                                    <state key="normal" image="callvideo_hangup.png"/>
+                                    <connections>
+                                        <action selector="actionHangup:" destination="-1" eventType="touchUpInside" id="cCa-bS-G1L"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="CeO-Yx-oBe" firstAttribute="top" secondItem="bsc-ZX-ncE" secondAttribute="top" id="0Or-AM-XJh"/>
+                                <constraint firstItem="nPO-so-kJh" firstAttribute="leading" secondItem="bsc-ZX-ncE" secondAttribute="leading" constant="16" id="LLT-fm-RdP"/>
+                                <constraint firstAttribute="trailing" secondItem="CeO-Yx-oBe" secondAttribute="trailing" constant="16" id="YKA-gI-azl"/>
+                                <constraint firstItem="nPO-so-kJh" firstAttribute="top" secondItem="bsc-ZX-ncE" secondAttribute="top" id="c5S-gZ-ebY"/>
+                                <constraint firstAttribute="height" constant="88" id="csy-cz-caV"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gaf-ab-Y7P">
+                            <rect key="frame" x="0.0" y="480" width="320" height="88"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AW3-7M-3qX">
+                                    <rect key="frame" x="16" y="0.0" width="72" height="72"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="72" id="iF3-lC-b2b"/>
+                                        <constraint firstAttribute="width" constant="72" id="pq6-qf-Oqg"/>
+                                    </constraints>
+                                    <state key="normal" image="callvideo_mute1.png">
+                                        <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="actionMute:" destination="-1" eventType="touchUpInside" id="OgB-wA-DF8"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cGz-6l-KdA">
+                                    <rect key="frame" x="124" y="0.0" width="72" height="72"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="72" id="LXt-tA-jH2"/>
+                                        <constraint firstAttribute="width" constant="72" id="ofZ-Qi-0Cb"/>
+                                    </constraints>
+                                    <state key="normal" image="callvideo_hangup.png"/>
+                                    <connections>
+                                        <action selector="actionHangup:" destination="-1" eventType="touchUpInside" id="9dm-t3-WCv"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NQ2-UN-SbC">
+                                    <rect key="frame" x="232" y="0.0" width="72" height="72"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="72" id="6dS-LH-8N7"/>
+                                        <constraint firstAttribute="width" constant="72" id="Sy0-9K-4Cf"/>
+                                    </constraints>
+                                    <state key="normal" image="callvideo_switch1.png"/>
+                                    <connections>
+                                        <action selector="actionSwitch:" destination="-1" eventType="touchUpInside" id="Ibw-hq-L0f"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="AW3-7M-3qX" firstAttribute="top" secondItem="Gaf-ab-Y7P" secondAttribute="top" id="5Lv-QB-Bo5"/>
+                                <constraint firstItem="NQ2-UN-SbC" firstAttribute="top" secondItem="Gaf-ab-Y7P" secondAttribute="top" id="5Vz-OK-H4N"/>
+                                <constraint firstItem="AW3-7M-3qX" firstAttribute="leading" secondItem="Gaf-ab-Y7P" secondAttribute="leading" constant="16" id="DCX-nO-qPd"/>
+                                <constraint firstItem="cGz-6l-KdA" firstAttribute="centerX" secondItem="Gaf-ab-Y7P" secondAttribute="centerX" id="FrH-v2-6dS"/>
+                                <constraint firstAttribute="trailing" secondItem="NQ2-UN-SbC" secondAttribute="trailing" constant="16" id="bqh-iv-RNJ"/>
+                                <constraint firstAttribute="height" constant="88" id="hTI-8L-zKQ"/>
+                                <constraint firstItem="cGz-6l-KdA" firstAttribute="top" secondItem="Gaf-ab-Y7P" secondAttribute="top" id="xR6-OL-TPc"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="73p-HQ-VN9">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="Gaf-ab-Y7P" secondAttribute="bottom" id="6mM-70-nxg"/>
+                        <constraint firstAttribute="bottom" secondItem="73p-HQ-VN9" secondAttribute="bottom" id="8LT-Qj-poF"/>
+                        <constraint firstItem="73p-HQ-VN9" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="BCe-dd-LvM"/>
+                        <constraint firstAttribute="trailing" secondItem="bsc-ZX-ncE" secondAttribute="trailing" id="FAN-kw-nSU"/>
+                        <constraint firstItem="4xH-2r-f6Q" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="IjN-Wx-tVZ"/>
+                        <constraint firstAttribute="bottom" secondItem="4xH-2r-f6Q" secondAttribute="bottom" id="Iu8-Ut-2kZ"/>
+                        <constraint firstItem="4xH-2r-f6Q" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="JKV-c8-a7W"/>
+                        <constraint firstAttribute="trailing" secondItem="73p-HQ-VN9" secondAttribute="trailing" id="LmS-Kf-MPT"/>
+                        <constraint firstItem="aty-bH-sVM" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="Q7m-K7-L8C"/>
+                        <constraint firstItem="Gaf-ab-Y7P" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="gpL-q1-ZyG"/>
+                        <constraint firstItem="aty-bH-sVM" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="mCC-wq-dqC"/>
+                        <constraint firstItem="bsc-ZX-ncE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="n3a-kC-1sQ"/>
+                        <constraint firstAttribute="bottom" secondItem="bsc-ZX-ncE" secondAttribute="bottom" id="w4k-Om-pE0"/>
+                        <constraint firstAttribute="trailing" secondItem="Gaf-ab-Y7P" secondAttribute="trailing" id="wfX-bG-BUa"/>
+                        <constraint firstAttribute="trailing" secondItem="4xH-2r-f6Q" secondAttribute="trailing" id="xvj-q8-6e4"/>
+                        <constraint firstItem="73p-HQ-VN9" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="yAt-xb-KVe"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="Mqm-46-MqP" firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="BM9-bE-80x"/>
+                <constraint firstItem="Mqm-46-MqP" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="LVA-3M-RfV"/>
+                <constraint firstItem="i5M-Pr-FkT" firstAttribute="leading" secondItem="Mqm-46-MqP" secondAttribute="leading" id="S0s-Kp-3G9"/>
+                <constraint firstItem="i5M-Pr-FkT" firstAttribute="top" secondItem="Mqm-46-MqP" secondAttribute="top" id="TVP-F3-VCv"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="Mqm-46-MqP"/>
+            <point key="canvasLocation" x="262" y="112"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="callvideo_answer.png" width="72" height="72"/>
+        <image name="callvideo_blank.png" width="70" height="70"/>
+        <image name="callvideo_hangup.png" width="72" height="72"/>
+        <image name="callvideo_mute1.png" width="72" height="72"/>
+        <image name="callvideo_switch1.png" width="72" height="72"/>
+    </resources>
+</document>

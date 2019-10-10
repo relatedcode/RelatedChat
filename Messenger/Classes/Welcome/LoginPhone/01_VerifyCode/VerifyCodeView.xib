@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VerifyCodeView">
+            <connections>
+                <outlet property="fieldCode" destination="s54-xx-P4e" id="Cdt-Yt-9NS"/>
+                <outlet property="labelHeader" destination="b09-06-kBx" id="Wiw-SW-PrP"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="320" translatesAutoresizingMaskIntoConstraints="NO" id="b09-06-kBx">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="120"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="120" id="USQ-MF-0q2"/>
+                    </constraints>
+                    <string key="text">Enter the verification code sent to
+
+**********</string>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tCD-LJ-9NT">
+                    <rect key="frame" x="0.0" y="120" width="320" height="1"/>
+                    <color key="backgroundColor" systemColor="quaternaryLabelColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.17999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="7MU-Rm-0qo"/>
+                    </constraints>
+                </view>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="code" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="s54-xx-P4e">
+                    <rect key="frame" x="25" y="120" width="270" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="dM4-Y5-Qpt"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                    <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="go"/>
+                    <connections>
+                        <outlet property="delegate" destination="-1" id="RLy-UV-btA"/>
+                    </connections>
+                </textField>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rjx-fg-kNP">
+                    <rect key="frame" x="0.0" y="164" width="320" height="1"/>
+                    <color key="backgroundColor" systemColor="quaternaryLabelColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.17999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="6h1-14-dbx"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="tCD-LJ-9NT" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="7jT-Ef-raL"/>
+                <constraint firstItem="tCD-LJ-9NT" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="120" id="7vM-eO-08P"/>
+                <constraint firstAttribute="trailing" secondItem="tCD-LJ-9NT" secondAttribute="trailing" id="AVe-Ge-3vR"/>
+                <constraint firstItem="s54-xx-P4e" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="120" id="Dyv-e9-a4h"/>
+                <constraint firstAttribute="trailing" secondItem="rjx-fg-kNP" secondAttribute="trailing" id="SRt-7f-ilA"/>
+                <constraint firstItem="s54-xx-P4e" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="25" id="WSR-Hp-9JN"/>
+                <constraint firstItem="b09-06-kBx" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="aUh-dS-3kO"/>
+                <constraint firstAttribute="trailing" secondItem="b09-06-kBx" secondAttribute="trailing" id="e5S-GL-qED"/>
+                <constraint firstItem="rjx-fg-kNP" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="164" id="i82-5c-8s6"/>
+                <constraint firstAttribute="trailing" secondItem="s54-xx-P4e" secondAttribute="trailing" constant="25" id="nyX-Kc-zXr"/>
+                <constraint firstItem="rjx-fg-kNP" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="yJw-Ml-Z90"/>
+                <constraint firstItem="b09-06-kBx" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="z72-3P-rDN"/>
+            </constraints>
+            <point key="canvasLocation" x="-236" y="-23"/>
+        </view>
+    </objects>
+</document>
