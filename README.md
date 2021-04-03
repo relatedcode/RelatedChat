@@ -1,4 +1,4 @@
-![GraphQLite](Header.png)
+![GraphQLite](Headerx.png)
 
 ---
 
