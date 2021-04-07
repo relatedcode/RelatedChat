@@ -1,4 +1,4 @@
-![GraphQLite](Headerx.png)
+<img src="https://related.chat/github/header32.png" width="880">
 
 ---
 
