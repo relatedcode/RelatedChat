@@ -257,6 +257,7 @@ extension GQLDatabase {
   public func count(_ table: Swift.String, _ condition: Swift.String, _ arguments: [Swift.String : Any]) -> Swift.Int
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class GQLNetwork : ObjectiveC.NSObject {
+  public class func setup()
   public class func notReachable() -> Swift.Bool
   public class func isReachable() -> Swift.Bool
   public class func isCellular() -> Swift.Bool
