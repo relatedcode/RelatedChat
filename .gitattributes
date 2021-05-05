@@ -1,3 +1,4 @@
-Framework/* linguist-detectable=false
+Framework/* linguist-vendored
 
+*.xcframework linguist-detectable=false
 *.podspec linguist-detectable=false
