@@ -6,6 +6,8 @@
 
 GraphQLite is a toolkit to work with GraphQL servers easily. It also provides several other features to make life easier during iOS application development.
 
+You can also read some more about the why [here](https://graphqlite.io/why-is-graphqlite).
+
 ---
 
 ## Features
