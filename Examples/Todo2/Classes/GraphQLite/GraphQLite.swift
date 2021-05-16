@@ -40,8 +40,11 @@ class GraphQLite: NSObject {
 
 		gqldb = GQLDatabase()
 
-		let key = "da2-af2vcmhckjelri4jjxuxklv67i"
-		let link = "https://34rle7userfklfhpcqashdlqua.appsync-api.us-east-2.amazonaws.com/graphql"
+		#warning("Please add your AWS AppSync API details below.")
+		// Some more info -> https://graphqlite.io/simple-todo-server-configuration
+
+		let key = "..."
+		let link = "..."
 		gqlserver = GQLServer(AppSync: link, key: key)
 	}
 }
