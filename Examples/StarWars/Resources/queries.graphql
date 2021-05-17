@@ -1,0 +1,8 @@
+
+query GetAllData {
+	allPeople {
+		totalCount
+		pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
+		people { id name gender birthYear eyeColor hairColor height mass skinColor created edited }
+	}
+}
