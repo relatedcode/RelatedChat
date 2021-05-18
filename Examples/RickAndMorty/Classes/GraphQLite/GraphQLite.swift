@@ -19,23 +19,20 @@ var gqldb: GQLDatabase!
 class GraphQLite: NSObject {
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
-	static let shared = GraphQLite()
-
-	//-------------------------------------------------------------------------------------------------------------------------------------------
 	class func setup() {
 
-		shared.initDatabase()
-		shared.initServer()
+		initDatabase()
+		initServer()
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
-	private func initDatabase() {
+	private class func initDatabase() {
 
 		gqldb = GQLDatabase()
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
-	private func initServer() {
+	private class func initServer() {
 
 		let link = "https://rickandmortyapi.com/graphql"
 

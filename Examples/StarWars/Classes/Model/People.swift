@@ -15,17 +15,17 @@ import GraphQLite
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 class People: NSObject, GQLObject {
 
-	@objc var id: String = ""
-	@objc var name: String = ""
-	@objc var gender: String = ""
-	@objc var birthYear: String = ""
-	@objc var eyeColor: String = ""
-	@objc var hairColor: String = ""
-	@objc var height: Int = 0
-	@objc var mass: Int = 0
-	@objc var skinColor: String = ""
-	@objc var created: String = ""
-	@objc var edited: String = ""
+	@objc var id = ""
+	@objc var name = ""
+	@objc var gender = ""
+	@objc var birthYear = ""
+	@objc var eyeColor = ""
+	@objc var hairColor = ""
+	@objc var height = 0
+	@objc var mass = 0
+	@objc var skinColor = ""
+	@objc var created = ""
+	@objc var edited = ""
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 	static func primaryKey() -> String {
