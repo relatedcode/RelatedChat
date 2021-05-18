@@ -9,43 +9,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-import GraphQLite
+import UIKit
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
-var gqldb: GQLDatabase!
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------
-class GraphQLite: NSObject {
-
-	//-------------------------------------------------------------------------------------------------------------------------------------------
-	static let shared = GraphQLite()
+	var window: UIWindow?
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
-	class func setup() {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 
-		shared.initDatabase()
-		shared.initServer()
+		GraphQLite.setup()
+
+		let baseView = BaseView()
+		let navController = UINavigationController(rootViewController: baseView)
+
+		window = UIWindow(frame: UIScreen.main.bounds)
+		window?.rootViewController = navController
+		window?.makeKeyAndVisible()
+
+		return true
+	}
+
+	// MARK: -
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func applicationWillResignActive(_ application: UIApplication) {
+
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
-	private func initDatabase() {
+	func applicationDidEnterBackground(_ application: UIApplication) {
 
-		gqldb = GQLDatabase()
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
-	private func initServer() {
+	func applicationWillEnterForeground(_ application: UIApplication) {
 
-		#warning("Please add your Yelp API details below.")
-		let token = "..."
+	}
 
-		let link = "https://api.yelp.com/v3/graphql"
-		let headers = ["Authorization": "Bearer " + token, "Accept-Language": "en-US"]
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func applicationDidBecomeActive(_ application: UIApplication) {
 
-		let server = GQLServer(HTTP: link, headers: headers)
+	}
 
-		ServerData.setup(server)
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func applicationWillTerminate(_ application: UIApplication) {
+
 	}
 }
