@@ -29,7 +29,7 @@ class ServerData: NSObject {
 		let query = GQLQuery["SearchRestaurants"]
 
 		let offset = Restaurant.count(gqldb)
-		let variables: [String: Any] = ["term": "Restaurants", "location": "san francisco", "limit": 10, "offset": offset + 1]
+		let variables: [String: Any] = ["term": "Restaurants", "location": "San Francisco", "limit": 10, "offset": offset + 1]
 
 		fetch(query, variables)
 	}
@@ -55,6 +55,7 @@ extension ServerData {
 			}
 		}
 	}
+
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 	private class func updateDatabase(_ values: [String: Any]) {
 
@@ -72,7 +73,7 @@ extension ServerData {
 
 		if let reviews = values["reviews"] as? [[String: Any]] {
 			for review in reviews {
-				updateReviewsDatabase(review, restaurantId)
+				updateReview(review, restaurantId)
 			}
 		}
 
@@ -86,7 +87,7 @@ extension ServerData {
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
-	private class func updateReviewsDatabase(_ review: [String: Any], _ restaurantId: String) {
+	private class func updateReview(_ review: [String: Any], _ restaurantId: String) {
 
 		var review = review
 

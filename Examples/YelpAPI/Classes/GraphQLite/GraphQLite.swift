@@ -35,10 +35,10 @@ class GraphQLite: NSObject {
 	private class func initServer() {
 
 		#warning("Please add your Yelp API details below.")
-		let token = "..."
+		let api_key = "..."
 
 		let link = "https://api.yelp.com/v3/graphql"
-		let headers = ["Authorization": "Bearer " + token, "Accept-Language": "en-US"]
+		let headers = ["Authorization": "Bearer " + api_key, "Accept-Language": "en-US"]
 
 		let server = GQLServer(HTTP: link, headers: headers)
 
