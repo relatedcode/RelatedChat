@@ -38,7 +38,7 @@ class GraphQLite: NSObject {
 		let api_key = "..."
 
 		let link = "https://api.yelp.com/v3/graphql"
-		let headers = ["Authorization": "Bearer " + api_key, "Accept-Language": "en-US"]
+		let headers = ["Authorization": "Bearer \(api_key)", "Accept-Language": "en-US"]
 
 		let server = GQLServer(HTTP: link, headers: headers)
 
