@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)
+// swift-compiler-version: Apple Swift version 5.4.2 (swiftlang-1205.0.28.2 clang-1205.0.19.57)
 // swift-module-flags: -target arm64-apple-ios14.4 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name GraphQLite
 import CryptoKit
 import Foundation
@@ -7,7 +7,6 @@ import Foundation
 import Network
 import SQLite3
 import Swift
-import UIKit
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class GQLNetwork : ObjectiveC.NSObject {
   public class func setup()
   public class func notReachable() -> Swift.Bool
@@ -40,8 +39,8 @@ public typealias GQLResultCallback = ([Swift.String : Any], Swift.Error?) -> Swi
   public func upload(_ bucket: Swift.String, _ key: Swift.String, _ data: Foundation.Data, completion: @escaping (Swift.Error?) -> Swift.Void)
   public func download(_ bucket: Swift.String, _ key: Swift.String, completion: @escaping (Foundation.Data?, Swift.Error?) -> Swift.Void)
   public func delete(_ bucket: Swift.String, _ key: Swift.String, completion: @escaping (Swift.Error?) -> Swift.Void)
-  @objc deinit
   @objc override dynamic public init()
+  @objc deinit
 }
 @objc @_inheritsConvenienceInitializers public class GQLAuth : ObjectiveC.NSObject {
   public class func setup(_ domain: Swift.String, _ clientId: Swift.String, _ clientSecret: Swift.String, _ connection: Swift.String = "")
@@ -51,18 +50,18 @@ public typealias GQLResultCallback = ([Swift.String : Any], Swift.Error?) -> Swi
   public class func checkPassword(password: Swift.String, completion: @escaping (Swift.Error?) -> Swift.Void)
   public class func updatePassword(password: Swift.String, completion: @escaping (Swift.Error?) -> Swift.Void)
   public class func signOut()
-  @objc deinit
   @objc override dynamic public init()
+  @objc deinit
 }
 public enum GQLObserverType {
   case insert
   case update
   case delete
   public static func == (a: GraphQLite.GQLObserverType, b: GraphQLite.GQLObserverType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
   }
-  public func hash(into hasher: inout Swift.Hasher)
 }
 public typealias GQLObserverCallback = (Swift.String, Any) -> Swift.Void
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class GQLDatabase : ObjectiveC.NSObject {
@@ -160,8 +159,8 @@ extension GQLDate {
   public class func register(_ userId: Swift.String)
   public class func unregister()
   public class func send(_ chatId: Swift.String, _ userIds: [Swift.String], _ text: Swift.String)
-  @objc deinit
   @objc override dynamic public init()
+  @objc deinit
 }
 @objc public protocol GQLObject {
   @objc static func primaryKey() -> Swift.String
@@ -173,6 +172,8 @@ extension GQLObject {
 }
 extension GQLObject {
   public static func create(_ values: [Swift.String : Any]) -> Self
+  public func values(for names: [Swift.String]) -> [Swift.String : Any]
+  public func values(except names: [Swift.String]) -> [Swift.String : Any]
   public func values() -> [Swift.String : Any]
 }
 extension GQLObject {
@@ -244,10 +245,10 @@ public enum GQLQueryFormat {
   case original
   case escaped
   public static func == (a: GraphQLite.GQLQueryFormat, b: GraphQLite.GQLQueryFormat) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
   }
-  public func hash(into hasher: inout Swift.Hasher)
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class GQLQuery : ObjectiveC.NSObject {
   public class subscript(name: Swift.String, format: GraphQLite.GQLQueryFormat = .original) -> Swift.String {
@@ -274,15 +275,15 @@ public enum GQLDebugLevel {
   case error
   case all
   public static func == (a: GraphQLite.GQLDebugLevel, b: GraphQLite.GQLDebugLevel) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
   }
-  public func hash(into hasher: inout Swift.Hasher)
 }
 @objc @_inheritsConvenienceInitializers public class GQLDebug : ObjectiveC.NSObject {
   public class func level(_ debugLevel: GraphQLite.GQLDebugLevel)
-  @objc deinit
   @objc override dynamic public init()
+  @objc deinit
 }
 extension GraphQLite.GQLObserverType : Swift.Equatable {}
 extension GraphQLite.GQLObserverType : Swift.Hashable {}
