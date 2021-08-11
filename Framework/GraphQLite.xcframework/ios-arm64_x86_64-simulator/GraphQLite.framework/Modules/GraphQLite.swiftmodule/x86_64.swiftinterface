@@ -172,9 +172,16 @@ extension GQLObject {
 }
 extension GQLObject {
   public static func create(_ values: [Swift.String : Any]) -> Self
+}
+extension GQLObject {
   public func values(for names: [Swift.String]) -> [Swift.String : Any]
   public func values(except names: [Swift.String]) -> [Swift.String : Any]
   public func values() -> [Swift.String : Any]
+}
+extension GQLObject {
+  public func export(for names: [Swift.String]) -> [Swift.String : Any]
+  public func export(except names: [Swift.String]) -> [Swift.String : Any]
+  public func export() -> [Swift.String : Any]
 }
 extension GQLObject {
   public func insert(_ db: GraphQLite.GQLDatabase)
