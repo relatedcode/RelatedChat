@@ -81,6 +81,9 @@ extension GQLDatabase {
   public func execute(_ sql: Swift.String, _ arguments: [Swift.String : Any])
 }
 extension GQLDatabase {
+  public func export(_ table: Swift.String, _ values: [Swift.String : Any]) -> [Swift.String : Any]
+}
+extension GQLDatabase {
   public func insert(_ table: Swift.String, _ values: [Swift.String : Any])
   public func insertUpdate(_ table: Swift.String, _ values: [Swift.String : Any])
 }
