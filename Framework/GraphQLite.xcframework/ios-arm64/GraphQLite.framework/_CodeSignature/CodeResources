@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/GraphQLite-Swift.h</key>
 		<data>
-		FoLTQ52RT1FGQNVgam4gAOO8lIc=
+		RTkSlJoPc15juw0SrIu0djSG2TU=
 		</data>
 		<key>Headers/GraphQLite.h</key>
 		<data>
@@ -22,11 +22,11 @@
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		XKntM4GYuPfzLCdHjkXSf57qfA8=
+		Q74N35mgNoKKevKkHSc5axcsqh4=
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		JTrILVb3bqP9ZtTjvanrVfO8Rnw=
+		xgPoTELaK5bP9sZUuWB69+xYojw=
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -34,11 +34,11 @@
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftinterface</key>
 		<data>
-		XKntM4GYuPfzLCdHjkXSf57qfA8=
+		Q74N35mgNoKKevKkHSc5axcsqh4=
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		JTrILVb3bqP9ZtTjvanrVfO8Rnw=
+		xgPoTELaK5bP9sZUuWB69+xYojw=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -51,7 +51,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			EwfG0+Og5vgQK5rMryHe/Hmbogo7DHi6A8/+mi7q6B4=
+			QIViG7PR6Xz/jtF4Ge6OR0ZZwsw5O0lTlLGndMwJHeo=
 			</data>
 		</dict>
 		<key>Headers/GraphQLite.h</key>
@@ -72,14 +72,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			A0T5ceC/JpUk82fbqWqvjRXPGJD92BcQQ5TJPjdV5L8=
+			294KF+8nLJNcLzEkO0Qdr782NEhM6pK+e2ewBteukSU=
 			</data>
 		</dict>
 		<key>Modules/GraphQLite.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mCsVn0NY4W/PrBdn0inPPqoc9T5IbnQAqlm5JVaCFYs=
+			01MakvbcGUSMz+8it0FZvZ9dTx++GzK6hix6kr7lPYI=
 			</data>
 		</dict>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftdoc</key>
@@ -93,14 +93,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			A0T5ceC/JpUk82fbqWqvjRXPGJD92BcQQ5TJPjdV5L8=
+			294KF+8nLJNcLzEkO0Qdr782NEhM6pK+e2ewBteukSU=
 			</data>
 		</dict>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mCsVn0NY4W/PrBdn0inPPqoc9T5IbnQAqlm5JVaCFYs=
+			01MakvbcGUSMz+8it0FZvZ9dTx++GzK6hix6kr7lPYI=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

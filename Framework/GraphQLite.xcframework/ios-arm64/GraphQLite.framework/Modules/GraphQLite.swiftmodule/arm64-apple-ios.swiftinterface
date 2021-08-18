@@ -85,11 +85,19 @@ extension GQLDatabase {
 }
 extension GQLDatabase {
   public func insert(_ table: Swift.String, _ values: [Swift.String : Any])
-  public func insertUpdate(_ table: Swift.String, _ values: [Swift.String : Any])
+  public func insert(_ table: Swift.String, _ array: [[Swift.String : Any]], _ completion: @escaping () -> Swift.Void = {})
 }
 extension GQLDatabase {
   public func update(_ table: Swift.String, _ values: [Swift.String : Any])
+  public func update(_ table: Swift.String, _ array: [[Swift.String : Any]], _ completion: @escaping () -> Swift.Void = {})
+}
+extension GQLDatabase {
+  public func insertUpdate(_ table: Swift.String, _ values: [Swift.String : Any])
+  public func insertUpdate(_ table: Swift.String, _ array: [[Swift.String : Any]], _ completion: @escaping () -> Swift.Void = {})
+}
+extension GQLDatabase {
   public func updateInsert(_ table: Swift.String, _ values: [Swift.String : Any])
+  public func updateInsert(_ table: Swift.String, _ array: [[Swift.String : Any]], _ completion: @escaping () -> Swift.Void = {})
 }
 extension GQLDatabase {
   public func updateOne(_ table: Swift.String, _ values: [Swift.String : Any], key: Any)

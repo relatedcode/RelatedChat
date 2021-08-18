@@ -234,6 +234,9 @@ SWIFT_CLASS("_TtC10GraphQLite11GQLDatabase")
 
 
 
+
+
+
 SWIFT_CLASS("_TtC10GraphQLite7GQLDate")
 @interface GQLDate : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -532,6 +535,9 @@ SWIFT_CLASS("_TtC10GraphQLite11GQLDatabase")
 @interface GQLDatabase : NSObject
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
+
+
+
 
 
 
