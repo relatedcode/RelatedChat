@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/GraphQLite-Swift.h</key>
 		<data>
-		RTkSlJoPc15juw0SrIu0djSG2TU=
+		Z3UkG3Tm+WX0q5uy6zD9whHO0IY=
 		</data>
 		<key>Headers/GraphQLite.h</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		xgPoTELaK5bP9sZUuWB69+xYojw=
+		7cU8JeM5jTPQ7AM1gk0ZTTT92d0=
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -38,7 +38,7 @@
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		xgPoTELaK5bP9sZUuWB69+xYojw=
+		7cU8JeM5jTPQ7AM1gk0ZTTT92d0=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -51,7 +51,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			QIViG7PR6Xz/jtF4Ge6OR0ZZwsw5O0lTlLGndMwJHeo=
+			/6Ih9qdrfgRH6ivMqQg4DMc5BINbr/7hmZ9qNq8P8+U=
 			</data>
 		</dict>
 		<key>Headers/GraphQLite.h</key>
@@ -79,7 +79,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			01MakvbcGUSMz+8it0FZvZ9dTx++GzK6hix6kr7lPYI=
+			TS+p/3ynsydVUDScu+O95incP7I4DaFwbdC0k0V54+w=
 			</data>
 		</dict>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftdoc</key>
@@ -100,7 +100,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			01MakvbcGUSMz+8it0FZvZ9dTx++GzK6hix6kr7lPYI=
+			TS+p/3ynsydVUDScu+O95incP7I4DaFwbdC0k0V54+w=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

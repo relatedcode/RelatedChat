@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/GraphQLite-Swift.h</key>
 		<data>
-		CTlljZoNSLeshnBOIYSokbQbl28=
+		y5/rH5VmgPy7f4TrB3fccZNXbvo=
 		</data>
 		<key>Headers/GraphQLite.h</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		1BZ73lPzOJp/jWHrkLM2X9RX+2c=
+		7jvAKnepLfTjSlllKoGEXn2TQjs=
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -38,7 +38,7 @@
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		1BZ73lPzOJp/jWHrkLM2X9RX+2c=
+		7jvAKnepLfTjSlllKoGEXn2TQjs=
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -50,7 +50,7 @@
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		s4AxVyVzHNvxxt962a2bJN7CM0s=
+		un1ztxaCuQL/IACXcNaEYPrDJvE=
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/x86_64.swiftdoc</key>
 		<data>
@@ -62,7 +62,7 @@
 		</data>
 		<key>Modules/GraphQLite.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		s4AxVyVzHNvxxt962a2bJN7CM0s=
+		un1ztxaCuQL/IACXcNaEYPrDJvE=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -75,7 +75,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			lSxUVbaUBOkCKTMy/gmQPO2/Syn/ynFcmx7Y1Ti8ulw=
+			GkD7XH/axir9MgYycIBRc2HtdGkXn6fnOHue3MSAo7I=
 			</data>
 		</dict>
 		<key>Headers/GraphQLite.h</key>
@@ -103,7 +103,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			KdVugEZB5PEs1RlQIpA1TsMX+92ERu27fO53felodq0=
+			6QDapS5Vmh/RkblHJp5pH6RmKB5UnCuhFUOrob2SuSg=
 			</data>
 		</dict>
 		<key>Modules/GraphQLite.swiftmodule/arm64.swiftdoc</key>
@@ -124,7 +124,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			KdVugEZB5PEs1RlQIpA1TsMX+92ERu27fO53felodq0=
+			6QDapS5Vmh/RkblHJp5pH6RmKB5UnCuhFUOrob2SuSg=
 			</data>
 		</dict>
 		<key>Modules/GraphQLite.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -145,7 +145,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ffGmbZeZOuh7gS9RGCtp8bgs0k6O3iRbzFlGAOHVfd4=
+			8Jwu/gHIfqrwpYLm7cnGBlnuS5NQxCgxNd55kgmeYKc=
 			</data>
 		</dict>
 		<key>Modules/GraphQLite.swiftmodule/x86_64.swiftdoc</key>
@@ -166,7 +166,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ffGmbZeZOuh7gS9RGCtp8bgs0k6O3iRbzFlGAOHVfd4=
+			8Jwu/gHIfqrwpYLm7cnGBlnuS5NQxCgxNd55kgmeYKc=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
