@@ -13,13 +13,13 @@ import {
 } from "@apollo/client/core";
 import { setContext } from "@apollo/client/link/context";
 import { getMainDefinition } from "@apollo/client/utilities";
-import { getIdToken } from "gqlite-lib/dist/client/auth";
-import { setUrl } from "gqlite-lib/dist/client/utils";
 import Style from "components/Style";
 import WideScreen from "components/WideScreen";
 import { DEFAULT_THEME, getGQLServerUrl, THEMES_COUNT } from "config";
 import { AuthProvider } from "contexts/AuthContext";
 import { UserProvider } from "contexts/UserContext";
+import { getIdToken } from "gqlite-lib/dist/client/auth";
+import { setUrl } from "gqlite-lib/dist/client/utils";
 import { print } from "graphql";
 import { Client, ClientOptions, createClient } from "graphql-ws";
 import { useChannelsByWorkspace } from "hooks/useChannels";
@@ -64,6 +64,7 @@ import { Toaster } from "react-hot-toast";
 import { useRoutes } from "react-router-dom";
 import routes from "routes";
 import { postData } from "utils/api-helpers";
+import hexToRgbA from "utils/hexToRgbA";
 
 export interface IColor {
   name: string;
@@ -198,6 +199,9 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
           }
           .th-bg-blue {
             background-color: ${themeColors?.blue};
+          }
+          .th-bg-blue-40 {
+            background-color: ${hexToRgbA(themeColors?.blue, "0.4")};
           }
           .th-bg-brblue {
             background-color: ${themeColors?.brightBlue};

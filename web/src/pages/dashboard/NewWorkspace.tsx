@@ -19,31 +19,29 @@ const tabs = [{ name: "Create" }, { name: "Join" }];
 
 export function TabLists() {
   return (
-    <div>
+    <div className="mt-5">
       <div className="hidden sm:block">
-        <div className="border-b th-border-for">
-          <nav className="-mb-px flex w-full" aria-label="Tabs">
-            {tabs.map((tab) => (
-              <Tab.List key={tab.name} className="w-1/2 text-center">
-                <Tab as={Fragment}>
-                  {({ selected }) => (
-                    <button
-                      className={classNames(
-                        selected
-                          ? "th-border-blue th-color-blue"
-                          : "border-transparent th-color-for",
-                        "py-4 px-1 font-bold text-sm border-b-2 w-full focus:outline-none"
-                      )}
-                      aria-current={selected ? "page" : undefined}
-                    >
-                      {tab.name}
-                    </button>
-                  )}
-                </Tab>
-              </Tab.List>
-            ))}
-          </nav>
-        </div>
+        <nav className="flex space-x-4 w-full" aria-label="Tabs">
+          {tabs.map((tab) => (
+            <Tab.List key={tab.name} className="w-1/2 text-center">
+              <Tab as={Fragment}>
+                {({ selected }) => (
+                  <button
+                    className={classNames(
+                      selected
+                        ? "th-bg-blue-40 th-color-brwhite"
+                        : "th-color-brwhite",
+                      "px-3 py-2 font-medium text-sm rounded-md cursor-pointer w-full"
+                    )}
+                    aria-current={selected ? "page" : undefined}
+                  >
+                    {tab.name}
+                  </button>
+                )}
+              </Tab>
+            </Tab.List>
+          ))}
+        </nav>
       </div>
     </div>
   );
