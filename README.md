@@ -4,8 +4,6 @@ RelatedChat is an open-source alternative communication platform. Both iOS (Swif
 
 <img src="https://related.chat/messenger/header1.png" width="880">
 
----
-
 ## NEW FEATURES
 
 - Updated iOS codebase
@@ -13,11 +11,7 @@ RelatedChat is an open-source alternative communication platform. Both iOS (Swif
 - Android version (React Native)
 - Single backend server (GraphQLite)
 
----
-
 <img src="https://related.chat/messenger/ios11.png" width="880">
-
----
 
 ## FEATURES
 
@@ -59,20 +53,16 @@ RelatedChat is an open-source alternative communication platform. Both iOS (Swif
 - Supports native iOS Dark Mode
 - Supported devices: iPhone SE - iPhone 13 Pro Max
 
----
-
 <img src="https://related.chat/messenger/ios12.png" width="880">
 <img src="https://related.chat/messenger/ios13.png" width="880">
-
----
 
 ## INSTALLATION (iOS)
 
 **1.,** Run `pod install` first (the [CocoaPods](https://cocoapods.org) Frameworks and Libraries are not included in the repo).
 
-**2.,** Create some test users by using the [Desktop browser version](https://relatedchat.io).
+**2.,** Create some test users by using the [demo server](https://relatedchat.io).
 
----
+**3.,** Open the app.xcworkspace from Xcode and select Product/Run (⌘ R).
 
 ## INSTALLATION (Web)
 
@@ -106,8 +96,6 @@ environment:
 
   SECRET_KEY: f2e85774-9a3b-46a5-8170-b40a05ead6ef
 ```
-
----
 
 ## LICENSE
 
