@@ -1,20 +1,23 @@
-import { Dialog, RadioGroup, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
-import MembersSection from 'components/dashboard/workspaces/MembersSection';
-import SettingsSection from 'components/dashboard/workspaces/SettingsSection';
-import { WorkspaceSettingsContext } from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, { Fragment, useContext, useEffect } from 'react';
-import classNames from 'utils/classNames';
+import { Dialog, RadioGroup, Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
+import MembersSection from "components/dashboard/workspaces/MembersSection";
+import SettingsSection from "components/dashboard/workspaces/SettingsSection";
+import { useModal } from "contexts/ModalContext";
+import { useTheme } from "contexts/ThemeContext";
+import { Fragment, useEffect } from "react";
+import classNames from "utils/classNames";
 
 export default function WorkspaceSettings({ workspace }: { workspace: any }) {
   const { themeColors } = useTheme();
-  const { open, setOpen, section, setSection } = useContext(
-    WorkspaceSettingsContext
-  );
+  const {
+    openWorkspaceSettings: open,
+    setOpenWorkspaceSettings: setOpen,
+    workspaceSettingsSection: section,
+    setWorkspaceSettingsSection: setSection,
+  } = useModal();
 
   useEffect(() => {
-    if (!open) setSection('members');
+    if (!open) setSection("members");
   }, [open]);
 
   return (
@@ -99,11 +102,11 @@ export default function WorkspaceSettings({ workspace }: { workspace: any }) {
                     {({ checked }) => (
                       <div
                         className={classNames(
-                          checked ? 'border-b-2' : '',
-                          'pb-2 cursor-pointer'
+                          checked ? "border-b-2" : "",
+                          "pb-2 cursor-pointer"
                         )}
                         style={{
-                          borderColor: checked ? themeColors?.brightBlue : '',
+                          borderColor: checked ? themeColors?.brightBlue : "",
                         }}
                       >
                         <span>Members</span>
@@ -117,11 +120,11 @@ export default function WorkspaceSettings({ workspace }: { workspace: any }) {
                     {({ checked }) => (
                       <div
                         className={classNames(
-                          checked ? 'border-b-2' : '',
-                          'pb-2 cursor-pointer'
+                          checked ? "border-b-2" : "",
+                          "pb-2 cursor-pointer"
                         )}
                         style={{
-                          borderColor: checked ? themeColors?.brightBlue : '',
+                          borderColor: checked ? themeColors?.brightBlue : "",
                         }}
                       >
                         <span>Settings</span>
@@ -136,8 +139,8 @@ export default function WorkspaceSettings({ workspace }: { workspace: any }) {
                   }}
                   className="pt-5 border-t h-550 flex flex-col"
                 >
-                  {section === 'members' && <MembersSection />}
-                  {section === 'settings' && (
+                  {section === "members" && <MembersSection />}
+                  {section === "settings" && (
                     <SettingsSection workspace={workspace} />
                   )}
                 </div>

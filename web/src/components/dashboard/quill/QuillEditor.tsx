@@ -1,30 +1,29 @@
-/* eslint-disable */
-import { Popover } from '@headlessui/react';
+import { Popover } from "@headlessui/react";
 import {
   DocumentTextIcon,
   EmojiHappyIcon,
   PhotographIcon,
   PlayIcon,
   XIcon,
-} from '@heroicons/react/outline';
-import { PaperAirplaneIcon } from '@heroicons/react/solid';
-import Spinner from 'components/Spinner';
-import Style from 'components/Style';
-import { MESSAGE_MAX_CHARACTERS, STICKERS_COUNT } from 'config';
-import { Picker } from 'emoji-mart';
-import 'emoji-mart/css/emoji-mart.css';
-import { ReactComponent as AttachFileIcon } from 'icons/attach_file.svg';
-import { useTheme } from 'lib/hooks';
-import debounce from 'lodash/debounce';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { DropzoneState } from 'react-dropzone';
-import toast from 'react-hot-toast';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { useParams } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
-import classNames from 'utils/classNames';
-import hexToRgbA from 'utils/hexToRgbA';
+} from "@heroicons/react/outline";
+import { PaperAirplaneIcon } from "@heroicons/react/solid";
+import Spinner from "components/Spinner";
+import Style from "components/Style";
+import { MESSAGE_MAX_CHARACTERS, STICKERS_COUNT } from "config";
+import { useTheme } from "contexts/ThemeContext";
+import { Picker } from "emoji-mart";
+import "emoji-mart/css/emoji-mart.css";
+import { ReactComponent as AttachFileIcon } from "icons/attach_file.svg";
+import debounce from "lodash/debounce";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { DropzoneState } from "react-dropzone";
+import toast from "react-hot-toast";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { useParams } from "react-router-dom";
+import { postData } from "utils/api-helpers";
+import classNames from "utils/classNames";
+import hexToRgbA from "utils/hexToRgbA";
 
 function EmojiDropdown({
   onEmojiClick,
@@ -109,21 +108,21 @@ function StickersDropdown() {
 
   const { workspaceId, channelId, dmId } = useParams();
 
-  const [loading, setLoading] = useState('');
+  const [loading, setLoading] = useState("");
 
   const sendSticker = async (sticker: string) => {
     setLoading(sticker);
     try {
-      await postData('/messages', {
+      await postData("/messages", {
         chatId: channelId || dmId,
         workspaceId,
-        chatType: channelId ? 'Channel' : 'Direct',
+        chatType: channelId ? "Channel" : "Direct",
         sticker,
       });
     } catch (err: any) {
       toast.error(err.message);
     }
-    setLoading('');
+    setLoading("");
   };
 
   return (
@@ -154,7 +153,7 @@ function StickersDropdown() {
                     <img
                       alt={sticker}
                       className={classNames(
-                        'h-full w-full rounded-sm cursor-pointer'
+                        "h-full w-full rounded-sm cursor-pointer"
                       )}
                       src={`${process.env.PUBLIC_URL}/stickers/${sticker}`}
                     />
@@ -177,7 +176,6 @@ function StickersDropdown() {
 function CustomToolbar({
   isSubmitting,
   errors,
-  text,
   isFiles,
   editor,
   setHasText,
@@ -185,7 +183,6 @@ function CustomToolbar({
 }: {
   isSubmitting: boolean;
   errors: any;
-  text: string;
   isFiles: boolean;
   editor: any;
   setHasText: any;
@@ -205,8 +202,7 @@ function CustomToolbar({
 
   const sendDisabled = isSubmitting || (!isFiles && !isText);
 
-  // @ts-ignore
-  const onEmojiClick = (emojiObject) => {
+  const onEmojiClick = (emojiObject: any) => {
     const range = editor?.getLength() - 1;
     editor?.insertText(range, emojiObject.native);
   };
@@ -237,7 +233,7 @@ function CustomToolbar({
           id="sendButton"
           type="submit"
           disabled={sendDisabled}
-          className={classNames(isSubmitting ? 'opacity-50' : '')}
+          className={classNames(isSubmitting ? "opacity-50" : "")}
           style={{
             backgroundColor:
               // eslint-disable-next-line
@@ -245,7 +241,7 @@ function CustomToolbar({
                 ? themeColors?.red
                 : isText || isFiles
                 ? themeColors?.blue
-                : 'transparent',
+                : "transparent",
           }}
         >
           {!isSubmitting && (
@@ -257,8 +253,8 @@ function CustomToolbar({
               ) : (
                 <PaperAirplaneIcon
                   className={classNames(
-                    isText ? 'th-color-brwhite' : 'th-color-for',
-                    'transform rotate-90 h-5 w-5'
+                    isText ? "th-color-brwhite" : "th-color-for",
+                    "transform rotate-90 h-5 w-5"
                   )}
                 />
               )}
@@ -299,7 +295,7 @@ function FileThumbnail({
   file: File;
   children: React.ReactNode;
 }) {
-  if (file.type.includes('image/'))
+  if (file.type.includes("image/"))
     return (
       <div
         key={file.lastModified}
@@ -309,7 +305,7 @@ function FileThumbnail({
         {children}
       </div>
     );
-  if (file?.type?.includes('video/') || file?.type?.includes('audio/'))
+  if (file?.type?.includes("video/") || file?.type?.includes("audio/"))
     return (
       <div
         key={file.lastModified}
@@ -347,8 +343,8 @@ function FileViewer({
     () => (
       <div
         className={classNames(
-          files?.length ? '' : 'hidden',
-          'w-full h-24 px-3 flex py-2'
+          files?.length ? "" : "hidden",
+          "w-full h-24 px-3 flex py-2"
         )}
       >
         {files?.length &&
@@ -421,7 +417,7 @@ function Editor({
   const modules = useMemo(
     () => ({
       toolbar: {
-        container: '#toolbar',
+        container: "#toolbar",
       },
       clipboard: {
         matchVisual: false,
@@ -436,16 +432,6 @@ function Editor({
               handleSubmit();
             },
           },
-          // linebreak: {
-          //   key: 13,
-          //   shiftKey: true,
-          //   handler: (range: any) => {
-          //     editor?.clipboard.dangerouslyPasteHTML(
-          //       range.index,
-          //       '<p><br/><br/></p>'
-          //     );
-          //   },
-          // },
         },
       },
     }),
@@ -453,10 +439,10 @@ function Editor({
   );
 
   useEffect(() => {
-    setFieldValue('text', '');
+    setFieldValue("text", "");
     document
-      .querySelector('#chat-editor > div > div.ql-editor.ql-blank')
-      ?.setAttribute('data-placeholder', placeholder);
+      .querySelector("#chat-editor > div > div.ql-editor.ql-blank")
+      ?.setAttribute("data-placeholder", placeholder);
   }, [placeholder]);
 
   const debounceRequest = useCallback(() => {
@@ -464,7 +450,7 @@ function Editor({
   }, []);
 
   useEffect(() => {
-    const type = dmId ? 'directs' : 'channels';
+    const type = dmId ? "directs" : "channels";
     const id = dmId || channelId;
     if (isTyping) {
       postData(
@@ -480,7 +466,7 @@ function Editor({
 
   useEffect(() => {
     let interval: any;
-    const type = dmId ? 'directs' : 'channels';
+    const type = dmId ? "directs" : "channels";
     const id = dmId || channelId;
 
     if (isTyping && !isSubmitting) {
@@ -517,9 +503,9 @@ function Editor({
             .editor .ql-editor {
               color: ${themeColors?.foreground};
               background-color: ${themeColors?.background};
-              font-weight: ${themeColors?.messageFontWeight === 'light'
-                ? '300'
-                : '400'};
+              font-weight: ${themeColors?.messageFontWeight === "light"
+                ? "300"
+                : "400"};
             }
             .editor .ql-editor {
               border-top-left-radius: 3px;
@@ -543,14 +529,14 @@ function Editor({
             .ql-snow .ql-editor pre.ql-syntax {
               background-color: ${themeColors?.brightBlack};
               color: ${themeColors?.brightWhite};
-              border-color: ${hexToRgbA(themeColors?.background!, '0.2')};
+              border-color: ${hexToRgbA(themeColors?.background!, "0.2")};
               border-width: 1px;
             }
             .ql-snow .ql-editor code,
-            .ql-snow .ql-editor pre  {
+            .ql-snow .ql-editor pre {
               background-color: ${themeColors?.brightBlack};
               color: ${themeColors?.brightWhite};
-              border-color: ${hexToRgbA(themeColors?.background!, '0.2')};
+              border-color: ${hexToRgbA(themeColors?.background!, "0.2")};
               border-width: 1px;
             }
 
@@ -559,7 +545,7 @@ function Editor({
               stroke: ${themeColors?.foreground};
             }
             .ql-snow .ql-fill,
-            .ql-snow .ql-stroke.ql-fill  {
+            .ql-snow .ql-stroke.ql-fill {
               fill: ${themeColors?.foreground};
             }
 
@@ -575,7 +561,7 @@ function Editor({
         />
         <ReactQuill
           onChange={(e) => {
-            setFieldValue('text', e);
+            setFieldValue("text", e);
             setIsTyping(true);
             debounceRequest();
           }}
@@ -584,14 +570,14 @@ function Editor({
           placeholder={placeholder}
           modules={modules}
           formats={[
-            'bold',
-            'italic',
-            'strike',
-            'list',
-            'code',
-            'link',
-            'blockquote',
-            'code-block',
+            "bold",
+            "italic",
+            "strike",
+            "list",
+            "code",
+            "link",
+            "blockquote",
+            "code-block",
           ]}
           theme="snow"
           id="chat-editor"
@@ -601,7 +587,6 @@ function Editor({
         <CustomToolbar
           isSubmitting={isSubmitting}
           errors={errors}
-          text={text}
           isFiles={!!files?.length}
           editor={editor}
           setHasText={setHasText}

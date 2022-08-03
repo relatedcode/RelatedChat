@@ -1,12 +1,13 @@
-import { uploadFile } from "gqlite-lib/dist/client/storage";
 import CancelButton from "components/CancelButton";
 import ConfirmationModal from "components/ConfirmationModal";
 import ModalButton from "components/dashboard/ModalButton";
 import TextField from "components/TextField";
+import { useModal } from "contexts/ModalContext";
+import { useUser } from "contexts/UserContext";
 import { Formik } from "formik";
+import { uploadFile } from "gqlite-lib/dist/client/storage";
 import { useMyWorkspaces } from "hooks/useWorkspaces";
-import { UserContext, WorkspaceSettingsContext } from "lib/context";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { deleteData, postData } from "utils/api-helpers";
@@ -17,10 +18,11 @@ export default function SettingsSection({ workspace }: { workspace: any }) {
   const [photo, setPhoto] = useState<any>(null);
   const [photoUrl, setPhotoUrl] = useState("");
   const fileRef = useRef<any>(null);
-  const { setOpen, open } = useContext(WorkspaceSettingsContext);
+  const { openWorkspaceSettings: open, setOpenWorkspaceSettings: setOpen } =
+    useModal();
   const { value: workpspaces } = useMyWorkspaces();
   const workspacePhotoURL = getHref(workspace?.photoURL);
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const navigate = useNavigate();
   const owner = user?.uid === workspace?.ownerId;
 

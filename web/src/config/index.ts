@@ -1,8 +1,8 @@
 // Your app name
-export const APP_NAME = 'Related:Chat';
+export const APP_NAME = "Related:Chat";
 
 // The default theme of the web app
-export const DEFAULT_THEME = 'theme01';
+export const DEFAULT_THEME = "theme01";
 
 // The number of files in the `public/stickers` folder
 export const STICKERS_COUNT = 78;
@@ -20,18 +20,18 @@ export const MESSAGES_PER_PAGE = 30;
 export const FAKE_EMAIL = true;
 
 // The client version number. PLEASE DO NOT CHANGE THIS NUMBER.
-export const CLIENT_VERSION = '1.1.0';
+export const CLIENT_VERSION = "1.1.0";
 
 export const getAPIUrl = () => {
-  return typeof window !== 'undefined'
+  return typeof window !== "undefined"
     ? process.env.REACT_APP_API_URL ||
-        `http://${window?.location.hostname}:4001`
-    : '';
+        `${window?.location.protocol}//${window?.location.hostname}:4001`
+    : "";
 };
 
 export const getGQLServerUrl = () => {
-  return typeof window !== 'undefined'
+  return typeof window !== "undefined"
     ? process.env.REACT_APP_GQL_SERVER_URL ||
-        `http://${window?.location.hostname}:4000`
-    : '';
+        `${window?.location.protocol}//${window?.location.hostname}:4000`
+    : "";
 };

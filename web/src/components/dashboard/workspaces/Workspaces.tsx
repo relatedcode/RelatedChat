@@ -4,10 +4,11 @@ import ModalButton from "components/dashboard/ModalButton";
 import Spinner from "components/Spinner";
 import TextField from "components/TextField";
 import { WorkspacesSelectDropdown } from "components/WorkspacesDropdown";
+import { useModal } from "contexts/ModalContext";
+import { useTheme } from "contexts/ThemeContext";
+import { useUser } from "contexts/UserContext";
 import { Formik } from "formik";
 import { useMyWorkspaces, WorkspacesContext } from "hooks/useWorkspaces";
-import { CreateWorkspaceContext, UserContext } from "lib/context";
-import { useTheme } from "lib/hooks";
 import { TabLists } from "pages/dashboard/NewWorkspace";
 import React, { Fragment, useContext, useRef } from "react";
 import toast from "react-hot-toast";
@@ -19,10 +20,11 @@ import wait from "utils/wait";
 import * as Yup from "yup";
 
 function CreateWorkspace() {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const { value: allWorkspaces, loading } = useContext(WorkspacesContext);
   const cancelButtonRef = useRef(null);
-  const { open, setOpen } = useContext(CreateWorkspaceContext);
+  const { openCreateWorkspace: open, setOpenCreateWorkspace: setOpen } =
+    useModal();
   const { value: workspaces } = useMyWorkspaces();
   const navigate = useNavigate();
 
@@ -277,7 +279,7 @@ function WorkspaceItem({
 
 function AddWorkspaces() {
   const { themeColors } = useTheme();
-  const { setOpen } = useContext(CreateWorkspaceContext);
+  const { setOpenCreateWorkspace: setOpen } = useModal();
   return (
     <div
       role="button"

@@ -1,23 +1,17 @@
-import { Dialog, RadioGroup, Transition } from '@headlessui/react';
+import { Dialog, RadioGroup, Transition } from "@headlessui/react";
 import {
   CheckCircleIcon,
   EyeIcon,
   HashtagIcon,
   XIcon,
-} from '@heroicons/react/outline';
-import { IColor } from 'App';
-import { APP_NAME, THEMES_COUNT } from 'config';
-import { PreferencesContext, UserContext } from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, {
-  Fragment,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { postData } from 'utils/api-helpers';
-import classNames from 'utils/classNames';
+} from "@heroicons/react/outline";
+import { APP_NAME, THEMES_COUNT } from "config";
+import { useModal } from "contexts/ModalContext";
+import { IColor, useTheme } from "contexts/ThemeContext";
+import { useUser } from "contexts/UserContext";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { postData } from "utils/api-helpers";
+import classNames from "utils/classNames";
 
 function ThemeItem({ name }: { name: string }) {
   const { themeColors } = useTheme();
@@ -26,8 +20,8 @@ function ThemeItem({ name }: { name: string }) {
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/themes/${name}.json`, {
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
     })
       .then((response) => response.json())
@@ -52,8 +46,8 @@ function ThemeItem({ name }: { name: string }) {
             <div
               style={{
                 backgroundColor: previewTheme?.blue,
-                borderTopRightRadius: '3px',
-                borderTopLeftRadius: '3px',
+                borderTopRightRadius: "3px",
+                borderTopLeftRadius: "3px",
               }}
               className="h-1/5 w-full"
             />
@@ -98,7 +92,7 @@ function ThemeItem({ name }: { name: string }) {
                     <div className="flex items-center space-x-2">
                       <div
                         className="h-2 w-2 rounded-full"
-                        style={{ backgroundColor: '#94e864' }}
+                        style={{ backgroundColor: "#94e864" }}
                       />
                       <div
                         style={{ backgroundColor: previewTheme?.foreground }}
@@ -154,11 +148,11 @@ function Themes() {
       </span>
       <RadioGroup
         className="grid grid-cols-2 gap-4 mt-5"
-        value={theme.replace('.json', '')}
+        value={theme.replace(".json", "")}
         onChange={setTheme}
       >
         {themes.map((th) => (
-          <ThemeItem key={th} name={th.replace('.json', '')} />
+          <ThemeItem key={th} name={th.replace(".json", "")} />
         ))}
       </RadioGroup>
     </div>
@@ -167,9 +161,9 @@ function Themes() {
 
 export default function Preferences() {
   const { themeColors, theme } = useTheme();
-  const { userdata } = useContext(UserContext);
-  const { open, setOpen } = useContext(PreferencesContext);
-  const [selected, setSelected] = useState('themes');
+  const { userdata } = useUser();
+  const { openPreferences: open, setOpenPreferences: setOpen } = useModal();
+  const [selected, setSelected] = useState("themes");
 
   const onClose = () => {
     if (userdata?.objectId && userdata?.theme !== theme) {
@@ -249,7 +243,7 @@ export default function Preferences() {
                     {({ checked }) => (
                       <div
                         className={classNames(
-                          'flex items-center px-2 py-px rounded space-x-2 cursor-pointer outline-none ring-0'
+                          "flex items-center px-2 py-px rounded space-x-2 cursor-pointer outline-none ring-0"
                         )}
                         style={{
                           backgroundColor: checked
@@ -267,7 +261,7 @@ export default function Preferences() {
                   </RadioGroup.Option>
                 </RadioGroup>
                 <div className="col-span-3 flex flex-col px-6 py-3 overflow-y-scroll h-550">
-                  {selected === 'themes' && <Themes />}
+                  {selected === "themes" && <Themes />}
                 </div>
               </div>
             </div>

@@ -1,7 +1,7 @@
-import EditChannelItemsDialog from 'components/dashboard/channels/EditChannelItemsDialog';
-import { useTheme } from 'lib/hooks';
-import React, { useState } from 'react';
-import classNames from 'utils/classNames';
+import EditChannelItemsDialog from "components/dashboard/channels/EditChannelItemsDialog";
+import { useTheme } from "contexts/ThemeContext";
+import React, { useState } from "react";
+import classNames from "utils/classNames";
 
 export default function EditChannelItems({
   value,
@@ -40,8 +40,8 @@ export default function EditChannelItems({
       >
         <span
           className={classNames(
-            color || '',
-            'font-bold text-sm flex items-center'
+            color || "",
+            "font-bold text-sm flex items-center"
           )}
           style={{
             color: color || themeColors?.foreground,

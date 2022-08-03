@@ -167,17 +167,14 @@ export const updateWorkspace = async (
         )
       : "";
     const metadata = await getFileMetadata(path);
-    const [thumbnailURL, , photoResizedURL] = await saveImageThumbnail(
-      path,
-      WORKSPACE_THUMBNAIL_WIDTH,
-      WORKSPACE_THUMBNAIL_WIDTH,
+    const [thumbnailURL, , photoResizedURL] = await saveImageThumbnail({
+      filePath: path,
+      width: WORKSPACE_THUMBNAIL_WIDTH,
+      height: WORKSPACE_THUMBNAIL_WIDTH,
       metadata,
-      false,
-      false,
-      true,
-      WORKSPACE_PHOTO_MAX_WIDTH,
-      res.locals.token
-    );
+      resizeOriginalSize: WORKSPACE_PHOTO_MAX_WIDTH,
+      authToken: res.locals.token,
+    });
 
     await graphQLClient(res.locals.token).request(UPDATE_WORKSPACE, {
       input: {

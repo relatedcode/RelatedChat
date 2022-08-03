@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const Style = (props: any) => {
   return (
     <style

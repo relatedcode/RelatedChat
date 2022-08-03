@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-export default function BigInput({
+export default function TextArea({
   label,
   name,
   autoComplete,
@@ -19,10 +19,9 @@ export default function BigInput({
   handleChange?: any;
   focus?: boolean;
 }) {
-  const inputRef = useRef(null);
+  const inputRef = useRef<any>(null);
   useEffect(() => {
-    // @ts-ignore
-    if (focus) inputRef?.current.focus();
+    if (focus) inputRef?.current?.focus();
   }, []);
   return (
     <div className="w-full">

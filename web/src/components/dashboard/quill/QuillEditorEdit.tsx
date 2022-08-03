@@ -1,11 +1,11 @@
-import { Popover } from '@headlessui/react';
-import { EmojiHappyIcon } from '@heroicons/react/outline';
-import { Picker } from 'emoji-mart';
-import 'emoji-mart/css/emoji-mart.css';
-import { useTheme } from 'lib/hooks';
-import React, { useMemo } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { Popover } from "@headlessui/react";
+import { EmojiHappyIcon } from "@heroicons/react/outline";
+import { useTheme } from "contexts/ThemeContext";
+import { Picker } from "emoji-mart";
+import "emoji-mart/css/emoji-mart.css";
+import { useMemo } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 interface EditorProps {
   placeholder: string;
@@ -13,7 +13,6 @@ interface EditorProps {
   text: string;
   handleSubmit: any;
   editorRef: any;
-  editor: any;
   forceUpdate: any;
 }
 
@@ -44,6 +43,7 @@ function EmojiDropdown({ onEmojiClick }: { onEmojiClick: any }) {
                   title="Emojis"
                   showPreview={false}
                   native
+                  set="apple"
                 />
               </Popover.Panel>
             </div>
@@ -54,9 +54,9 @@ function EmojiDropdown({ onEmojiClick }: { onEmojiClick: any }) {
   );
 }
 
-function CustomToolbar({ editor }: { editor: any }) {
-  // @ts-ignore
-  const onEmojiClick = (emojiObject) => {
+function CustomToolbar({ editorRef }: { editorRef: any }) {
+  const onEmojiClick = (emojiObject: any) => {
+    const editor = editorRef?.current?.getEditor();
     const range = editor?.getLength() - 1;
     editor?.insertText(range, emojiObject.native);
   };
@@ -87,13 +87,12 @@ export default function EditorEdit({
   text,
   handleSubmit,
   editorRef,
-  editor,
   forceUpdate,
 }: EditorProps) {
   const modules = useMemo(
     () => ({
       toolbar: {
-        container: '#toolbar',
+        container: "#toolbar",
       },
       clipboard: {
         matchVisual: false,
@@ -108,16 +107,6 @@ export default function EditorEdit({
               handleSubmit();
             },
           },
-          // linebreak: {
-          //   key: 13,
-          //   shiftKey: true,
-          //   handler: (range: any, _context: any) => {
-          //     unprivilegedEditor.clipboard.dangerouslyPasteHTML(
-          //       range.index,
-          //       '<p><br/><br/></p>'
-          //     );
-          //   },
-          // },
         },
       },
     }),
@@ -128,27 +117,27 @@ export default function EditorEdit({
     <div className="flex flex-col w-full">
       <ReactQuill
         onChange={(e) => {
-          setFieldValue('text', e);
+          setFieldValue("text", e);
           forceUpdate();
         }}
         value={text}
         placeholder={placeholder}
         modules={modules}
         formats={[
-          'bold',
-          'italic',
-          'strike',
-          'list',
-          'code',
-          'link',
-          'blockquote',
-          'code-block',
+          "bold",
+          "italic",
+          "strike",
+          "list",
+          "code",
+          "link",
+          "blockquote",
+          "code-block",
         ]}
         theme="snow"
         ref={editorRef}
         className="editor"
       />
-      <CustomToolbar editor={editor} />
+      <CustomToolbar editorRef={editorRef} />
     </div>
   );
 }

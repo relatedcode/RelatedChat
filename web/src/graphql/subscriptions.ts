@@ -70,16 +70,8 @@ export const PRESENCE = gql`
 `;
 
 export const DETAIL = gql`
-  subscription onUpdateDetail(
-    $objectId: String
-    $workspaceId: String
-    $userId: String
-  ) {
-    onUpdateDetail(
-      objectId: $objectId
-      workspaceId: $workspaceId
-      userId: $userId
-    ) {
+  subscription OnUpdateDetail($objectId: String, $workspaceId: String, $userId: String) {
+    onUpdateDetail(objectId: $objectId, workspaceId: $workspaceId, userId: $userId) {
       objectId
       chatId
       lastRead
@@ -92,7 +84,7 @@ export const DETAIL = gql`
 `;
 
 export const DIRECT = gql`
-  subscription onUpdateDirect($objectId: String, $workspaceId: String) {
+  subscription OnUpdateDirect($objectId: String, $workspaceId: String) {
     onUpdateDirect(objectId: $objectId, workspaceId: $workspaceId) {
       objectId
       active
@@ -109,7 +101,7 @@ export const DIRECT = gql`
 `;
 
 export const MESSAGE = gql`
-  subscription onUpdateMessage($objectId: String, $chatId: String) {
+  subscription OnUpdateMessage($objectId: String, $chatId: String) {
     onUpdateMessage(objectId: $objectId, chatId: $chatId) {
       objectId
       chatId
@@ -127,8 +119,24 @@ export const MESSAGE = gql`
       senderId
       sticker
       text
+      type
       thumbnailURL
       workspaceId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const REACTION = gql`
+  subscription OnUpdateReaction($objectId: String, $chatId: String) {
+    onUpdateReaction(objectId: $objectId, chatId: $chatId) {
+      objectId
+      chatId
+      messageId
+      userId
+      workspaceId
+      reaction
       createdAt
       updatedAt
     }

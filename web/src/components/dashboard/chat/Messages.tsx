@@ -1,13 +1,13 @@
-import Message from 'components/dashboard/chat/Message';
-import Spinner from 'components/Spinner';
-import { MESSAGES_PER_PAGE } from 'config';
-import { useChannelById } from 'hooks/useChannels';
-import { useDirectMessageById } from 'hooks/useDirects';
-import { useMessagesByChat } from 'hooks/useMessages';
-import { UserContext } from 'lib/context';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { useParams } from 'react-router-dom';
+import Message from "components/dashboard/chat/Message";
+import Spinner from "components/Spinner";
+import { MESSAGES_PER_PAGE } from "config";
+import { useUser } from "contexts/UserContext";
+import { useChannelById } from "hooks/useChannels";
+import { useDirectMessageById } from "hooks/useDirects";
+import { useMessagesByChat } from "hooks/useMessages";
+import { useEffect, useMemo, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import { useParams } from "react-router-dom";
 
 export default function Messages({ lastRead }: { lastRead: number | null }) {
   const { channelId, dmId } = useParams();
@@ -18,11 +18,13 @@ export default function Messages({ lastRead }: { lastRead: number | null }) {
     page
   );
 
-  const { user } = useContext(UserContext);
-  const { value: channel } = useChannelById(channelId);
-  const { value: conversation } = useDirectMessageById(dmId);
+  const [editMessage, setEditMessage] = useState("");
 
-  const chat = channel || conversation;
+  const { user } = useUser();
+  const { value: channel } = useChannelById(channelId);
+  const { value: direct } = useDirectMessageById(dmId);
+
+  const chat = channel || direct;
 
   const { ref, inView } = useInView();
 
@@ -37,7 +39,7 @@ export default function Messages({ lastRead }: { lastRead: number | null }) {
   const displayMessages = useMemo(
     () => (
       <div
-        className="w-full flex flex-col-reverse overflow-y-auto pt-1"
+        className="w-full flex flex-1 flex-col-reverse overflow-y-auto pt-1"
         id="messages"
       >
         {messages?.map((message: any, index: number) => (
@@ -51,6 +53,8 @@ export default function Messages({ lastRead }: { lastRead: number | null }) {
                 : false
             }
             previousMessageDate={messages[index + 1]?.createdAt}
+            editMessage={editMessage}
+            setEditMessage={setEditMessage}
           >
             {lastRead !== null &&
               lastRead + 1 === message?.counter &&
@@ -78,7 +82,7 @@ export default function Messages({ lastRead }: { lastRead: number | null }) {
           )}
       </div>
     ),
-    [messages, loading, chat, lastRead, page]
+    [messages, loading, chat, lastRead, page, editMessage]
   );
 
   return <>{displayMessages}</>;

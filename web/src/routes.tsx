@@ -6,12 +6,11 @@ import Signup from "pages/authentication/Signup";
 import Logout from "pages/dashboard/Logout";
 import NewWorkspace from "pages/dashboard/NewWorkspace";
 import NotFound from "pages/NotFound";
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 
 const Loadable = (Component: any) => (props: any) =>
   (
     <Suspense fallback={<LoadingScreen />}>
-      {/* eslint-disable-next-line */}
       <Component {...props} />
     </Suspense>
   );

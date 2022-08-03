@@ -1,17 +1,21 @@
-import { Dialog, RadioGroup, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
-import ChannelsSection from 'components/dashboard/sidebar/ChannelsSection';
-import TeammatesSection from 'components/dashboard/sidebar/TeammatesSection';
-import { CreateMessageContext } from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, { Fragment, useContext, useRef } from 'react';
-import classNames from 'utils/classNames';
+import { Dialog, RadioGroup, Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
+import ChannelsSection from "components/dashboard/sidebar/ChannelsSection";
+import TeammatesSection from "components/dashboard/sidebar/TeammatesSection";
+import { useModal } from "contexts/ModalContext";
+import { useTheme } from "contexts/ThemeContext";
+import { Fragment, useRef } from "react";
+import classNames from "utils/classNames";
 
 export default function CreateMessageModal() {
   const { themeColors } = useTheme();
   const cancelButtonRef = useRef(null);
-  const { open, setOpen, section, setSection } =
-    useContext(CreateMessageContext);
+  const {
+    openCreateMessage: open,
+    setOpenCreateMessage: setOpen,
+    createMessageSection: section,
+    setCreateMessageSection: setSection,
+  } = useModal();
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -96,11 +100,11 @@ export default function CreateMessageModal() {
                     {({ checked }) => (
                       <div
                         className={classNames(
-                          checked ? 'border-b-2' : '',
-                          'pb-2 cursor-pointer'
+                          checked ? "border-b-2" : "",
+                          "pb-2 cursor-pointer"
                         )}
                         style={{
-                          borderColor: checked ? themeColors?.brightBlue : '',
+                          borderColor: checked ? themeColors?.brightBlue : "",
                         }}
                       >
                         <span>Channels</span>
@@ -114,11 +118,11 @@ export default function CreateMessageModal() {
                     {({ checked }) => (
                       <div
                         className={classNames(
-                          checked ? 'border-b-2' : '',
-                          'pb-2 cursor-pointer'
+                          checked ? "border-b-2" : "",
+                          "pb-2 cursor-pointer"
                         )}
                         style={{
-                          borderColor: checked ? themeColors?.brightBlue : '',
+                          borderColor: checked ? themeColors?.brightBlue : "",
                         }}
                       >
                         <span>Members</span>
@@ -127,14 +131,14 @@ export default function CreateMessageModal() {
                   </RadioGroup.Option>
                 </RadioGroup>
                 <div
-                  className={classNames('space-y-6 pt-5 pb-8 border-t h-550')}
+                  className={classNames("space-y-6 pt-5 pb-8 border-t h-550")}
                   style={{
                     backgroundColor: themeColors?.background,
                     borderColor: themeColors?.selectionBackground,
                   }}
                 >
-                  {section === 'channels' && <ChannelsSection />}
-                  {section === 'members' && <TeammatesSection />}
+                  {section === "channels" && <ChannelsSection />}
+                  {section === "members" && <TeammatesSection />}
                 </div>
               </div>
             </div>

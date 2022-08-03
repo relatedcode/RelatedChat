@@ -1,19 +1,16 @@
-import { SearchIcon, UserAddIcon } from '@heroicons/react/outline';
-import ModalButton from 'components/dashboard/ModalButton';
-import { useWorkspaceById } from 'hooks/useWorkspaces';
-import {
-  CreateMessageContext,
-  DirectMessagesContext,
-  InviteTeammatesContext,
-  UserContext,
-  UsersContext,
-} from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
-import { getHref } from 'utils/get-file-url';
+import { SearchIcon, UserAddIcon } from "@heroicons/react/outline";
+import ModalButton from "components/dashboard/ModalButton";
+import { DirectMessagesContext } from "contexts/DirectMessagesContext";
+import { useModal } from "contexts/ModalContext";
+import { useTheme } from "contexts/ThemeContext";
+import { useUser } from "contexts/UserContext";
+import { UsersContext } from "contexts/UsersContext";
+import { useWorkspaceById } from "hooks/useWorkspaces";
+import { useContext, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { postData } from "utils/api-helpers";
+import { getHref } from "utils/get-file-url";
 
 function MemberItem({
   id,
@@ -25,10 +22,10 @@ function MemberItem({
   member: any;
 }) {
   const { themeColors } = useTheme();
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const { workspaceId } = useParams();
-  const { setOpen: setOpenCreateMessage, setSection } =
-    useContext(CreateMessageContext);
+  const { setOpenCreateMessage, setCreateMessageSection: setSection } =
+    useModal();
   const photoURL = getHref(member?.thumbnailURL) || getHref(member?.photoURL);
 
   const isMe = user?.uid === id;
@@ -59,13 +56,13 @@ function MemberItem({
   const newMessage = async () => {
     setLoading(true);
     try {
-      const { directId } = await postData('/directs', {
+      const { directId } = await postData("/directs", {
         workspaceId,
         userId: id,
       });
       navigate(`/dashboard/workspaces/${workspaceId}/dm/${directId}`);
       setOpenCreateMessage(false);
-      setSection('members');
+      setSection("members");
     } catch (err: any) {
       toast.error(err.message);
     }
@@ -98,7 +95,7 @@ function MemberItem({
               className="font-normal opacity-70 ml-1"
               style={{ color: themeColors?.foreground }}
             >
-              {' '}
+              {" "}
               - owner
             </span>
           )}
@@ -124,15 +121,13 @@ function MemberItem({
 }
 
 export default function TeammatesSection() {
-  const { setOpen: setOpenInviteTeammates } = useContext(
-    InviteTeammatesContext
-  );
-  const { setOpen: setOpenCreateMessage } = useContext(CreateMessageContext);
+  const { setOpenInviteTeammates } = useModal();
+  const { setOpenCreateMessage } = useModal();
 
   const { workspaceId } = useParams();
   const { value } = useWorkspaceById(workspaceId);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const { value: members, loading } = useContext(UsersContext);
 
   const displayMembers = useMemo(
@@ -166,7 +161,7 @@ export default function TeammatesSection() {
           />
         </div>
       </div>
-      <ul className="w-full mt-6 overflow-y-scroll" style={{ height: '460px' }}>
+      <ul className="w-full mt-6 overflow-y-scroll" style={{ height: "460px" }}>
         <li
           className="px-8 py-2 flex items-center cursor-pointer"
           onClick={() => {

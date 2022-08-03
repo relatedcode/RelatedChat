@@ -50,12 +50,13 @@ create table if not exists "messages"(
   "fileURL" varchar(255),
   "isDeleted" boolean not null default false,
   "isEdited" boolean not null default false,
-  "mediaDuration" float,
+  "mediaDuration" integer,
   "mediaHeight" integer,
   "mediaWidth" integer,
   "senderId" varchar(255) not null,
   "sticker" varchar(255),
   "text" text,
+  "type" varchar(255) not null,
   "thumbnailURL" varchar(255),
   "workspaceId" varchar(255) not null,
   "createdAt" timestamptz not null default now(),
@@ -94,6 +95,17 @@ create table if not exists "workspaces"(
   "ownerId" varchar(255) not null,
   "photoURL" varchar(255),
   "thumbnailURL" varchar(255),
+  "createdAt" timestamptz not null default now(),
+  "updatedAt" timestamptz not null default now()
+);
+
+create table if not exists "reactions"(
+  "objectId" varchar(255) primary key,
+  "chatId" varchar(255) not null,
+  "messageId" varchar(255) not null,
+  "userId" varchar(255) not null,
+  "workspaceId" varchar(255) not null,
+  "reaction" varchar(255),
   "createdAt" timestamptz not null default now(),
   "updatedAt" timestamptz not null default now()
 );

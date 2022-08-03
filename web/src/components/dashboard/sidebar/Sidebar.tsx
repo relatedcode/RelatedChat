@@ -1,21 +1,17 @@
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/outline';
-import Preferences from 'components/dashboard/navbar/Preferences';
-import Channels from 'components/dashboard/sidebar/Channels';
-import CreateMessageModal from 'components/dashboard/sidebar/CreateMessageModal';
-import DirectMessages from 'components/dashboard/sidebar/DirectMessages';
-import WorkspaceSettings from 'components/dashboard/workspaces/WorkspaceSettings';
-import Spinner from 'components/Spinner';
-import { useWorkspaceById } from 'hooks/useWorkspaces';
-import {
-  CreateChannelContext,
-  InviteTeammatesContext,
-  WorkspaceSettingsContext,
-} from 'lib/context';
-import React, { Fragment, useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import classNames from 'utils/classNames';
-import { getHref } from 'utils/get-file-url';
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/outline";
+import Preferences from "components/dashboard/navbar/Preferences";
+import Channels from "components/dashboard/sidebar/Channels";
+import CreateMessageModal from "components/dashboard/sidebar/CreateMessageModal";
+import DirectMessages from "components/dashboard/sidebar/DirectMessages";
+import WorkspaceSettings from "components/dashboard/workspaces/WorkspaceSettings";
+import Spinner from "components/Spinner";
+import { useModal } from "contexts/ModalContext";
+import { useWorkspaceById } from "hooks/useWorkspaces";
+import { Fragment } from "react";
+import { useParams } from "react-router-dom";
+import classNames from "utils/classNames";
+import { getHref } from "utils/get-file-url";
 
 function WorkspaceDropdownItem({
   setOpen,
@@ -31,8 +27,8 @@ function WorkspaceDropdownItem({
           role="button"
           tabIndex={0}
           className={classNames(
-            active ? 'th-bg-blue th-color-brwhite' : 'th-bg-bg th-color-for',
-            'block px-5 py-1 text-sm cursor-pointer focus:outline-none'
+            active ? "th-bg-blue th-color-brwhite" : "th-bg-bg th-color-for",
+            "block px-5 py-1 text-sm cursor-pointer focus:outline-none"
           )}
           onClick={() => setOpen(true)}
         >
@@ -50,13 +46,9 @@ function WorkspaceDropdown({
   photoURL: string | undefined;
   workspaceName: string;
 }) {
-  const { setOpen: setOpenCreateChannel } = useContext(CreateChannelContext);
-  const { setOpen: setOpenInviteTeammates } = useContext(
-    InviteTeammatesContext
-  );
-  const { setOpen: setOpenWorkspaceSettings } = useContext(
-    WorkspaceSettingsContext
-  );
+  const { setOpenCreateChannel } = useModal();
+  const { setOpenInviteTeammates } = useModal();
+  const { setOpenWorkspaceSettings } = useModal();
   return (
     <Menu as="div" className="absolute z-10">
       {({ open }) => (

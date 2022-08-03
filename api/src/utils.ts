@@ -91,3 +91,44 @@ export const timeDiff = (date1: any, date2: any) => {
 export const sha256 = (str: string) => {
   return crypto.createHash("sha256").update(str).digest("hex");
 };
+
+const lastMessageTextFileGenerator = (fileType: string) => {
+  if (fileType === "image/gif") return "GIF message";
+  if (["image/png", "image/jpeg"].includes(fileType)) return "Picture message";
+  if (fileType === "video/mp4") return "Video message";
+  if (fileType === "audio/mpeg") return "Audio message";
+  return "File message";
+};
+
+export const lastMessageTextGenerator = ({
+  text,
+  sticker,
+  fileType,
+}: {
+  text?: string;
+  sticker?: string;
+  fileType?: string;
+}) => {
+  if (text) return text;
+  if (sticker) return "Sticker message";
+  if (fileType) return lastMessageTextFileGenerator(fileType);
+  return "";
+};
+
+export const getMessageType = ({
+  text,
+  sticker,
+  fileType,
+}: {
+  text?: string;
+  sticker?: string;
+  fileType?: string;
+}) => {
+  if (text) return "text";
+  if (sticker) return "sticker";
+  if (fileType === "image/gif") return "anim";
+  if (["image/png", "image/jpeg"].includes(fileType || "")) return "photo";
+  if (fileType === "video/mp4") return "video";
+  if (fileType === "audio/mpeg") return "audio";
+  return "file";
+};

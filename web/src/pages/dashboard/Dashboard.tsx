@@ -5,11 +5,11 @@ import Sidebar from "components/dashboard/sidebar/Sidebar";
 import Workspaces from "components/dashboard/workspaces/Workspaces";
 import LoadingScreen from "components/LoadingScreen";
 import { APP_NAME } from "config";
+import { useUser } from "contexts/UserContext";
 import { usePresenceByUserId } from "hooks/usePresence";
 import { useUserById } from "hooks/useUsers";
 import { useMyWorkspaces } from "hooks/useWorkspaces";
-import { UserContext } from "lib/context";
-import React, { useContext, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   Navigate,
@@ -89,10 +89,9 @@ function ProfileView() {
 export default function Dashboard() {
   const { workspaceId, channelId, dmId } = useParams();
   const { value, loading } = useMyWorkspaces();
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const location = useLocation();
   const profile = location.pathname?.includes("user_profile");
-  const intervalId = useRef<any>(null);
 
   useEffect(() => {
     if (user?.uid) {
@@ -100,16 +99,9 @@ export default function Dashboard() {
       const intId = setInterval(() => {
         postData(`/users/${user?.uid}/presence`, {}, {}, false);
       }, 30000);
-      intervalId.current = intId;
+      return () => clearInterval(intId);
     }
   }, [user?.uid]);
-
-  useEffect(
-    () => () => {
-      clearInterval(intervalId.current);
-    },
-    []
-  );
 
   useEffect(() => {
     const appHeight = () => {

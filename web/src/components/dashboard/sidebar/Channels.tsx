@@ -1,33 +1,30 @@
-import { Dialog, Disclosure, Transition } from '@headlessui/react';
+import { Dialog, Disclosure, Transition } from "@headlessui/react";
 import {
   DotsHorizontalIcon,
   HashtagIcon,
   PlusIcon,
   XIcon,
-} from '@heroicons/react/outline';
-import ModalButton from 'components/dashboard/ModalButton';
-import TextField from 'components/TextField';
-import { Formik } from 'formik';
-import { useChannelById, useChannels } from 'hooks/useChannels';
-import { useDetailByChat } from 'hooks/useDetails';
-import { ReactComponent as ArrowIcon } from 'icons/arrow.svg';
-import {
-  CreateChannelContext,
-  CreateMessageContext,
-  UserContext,
-} from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, { Fragment, useContext, useRef } from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
-import classNames from 'utils/classNames';
-import * as Yup from 'yup';
+} from "@heroicons/react/outline";
+import ModalButton from "components/dashboard/ModalButton";
+import TextField from "components/TextField";
+import { useModal } from "contexts/ModalContext";
+import { useTheme } from "contexts/ThemeContext";
+import { useUser } from "contexts/UserContext";
+import { Formik } from "formik";
+import { useChannelById, useChannels } from "hooks/useChannels";
+import { useDetailByChat } from "hooks/useDetails";
+import { ReactComponent as ArrowIcon } from "icons/arrow.svg";
+import { Fragment, useRef } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { postData } from "utils/api-helpers";
+import classNames from "utils/classNames";
+import * as Yup from "yup";
 
 function CreateChannel() {
   const { themeColors } = useTheme();
   const cancelButtonRef = useRef(null);
-  const { open, setOpen } = useContext(CreateChannelContext);
+  const { openCreateChannel: open, setOpenCreateChannel: setOpen } = useModal();
   const { workspaceId } = useParams();
   const navigate = useNavigate();
 
@@ -98,8 +95,8 @@ function CreateChannel() {
               </div>
               <Formik
                 initialValues={{
-                  name: '',
-                  details: '',
+                  name: "",
+                  details: "",
                 }}
                 validationSchema={Yup.object({
                   name: Yup.string().max(100).required(),
@@ -109,7 +106,7 @@ function CreateChannel() {
                 onSubmit={async ({ name, details }, { setSubmitting }) => {
                   setSubmitting(true);
                   try {
-                    const { channelId } = await postData('/channels', {
+                    const { channelId } = await postData("/channels", {
                       name,
                       details,
                       workspaceId,
@@ -117,7 +114,7 @@ function CreateChannel() {
                     navigate(
                       `/dashboard/workspaces/${workspaceId}/channels/${channelId}`
                     );
-                    toast.success('Channel created.');
+                    toast.success("Channel created.");
                     setOpen(false);
                   } catch (err: any) {
                     toast.error(err.message);
@@ -153,11 +150,11 @@ function CreateChannel() {
                           value={values.name}
                           handleChange={(e: any) =>
                             setFieldValue(
-                              'name',
+                              "name",
                               e.target.value
                                 .toLowerCase()
-                                .replace(/[^a-z0-9_\- ]/g, '')
-                                .replace('#', '')
+                                .replace(/[^a-z0-9_\- ]/g, "")
+                                .replace("#", "")
                             )
                           }
                           placeholder="e.g. plan-budget"
@@ -193,7 +190,7 @@ function Channel({ name, objectId }: { name: string; objectId: string }) {
   const { workspaceId, channelId } = useParams();
   const { value: channel } = useChannelById(objectId);
   const { value: detail } = useDetailByChat(objectId);
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const notifications = channel
     ? channel.lastMessageCounter - (detail?.lastRead || 0)
     : 0;
@@ -211,20 +208,20 @@ function Channel({ name, objectId }: { name: string; objectId: string }) {
         navigate(`/dashboard/workspaces/${workspaceId}/channels/${objectId}`)
       }
       style={{
-        backgroundColor: selected ? themeColors?.blue : 'transparent',
+        backgroundColor: selected ? themeColors?.blue : "transparent",
       }}
     >
       <div className="flex items-center">
         <HashtagIcon
           className={classNames(
-            'h-4 w-4 mr-3',
-            selected ? 'th-color-brwhite' : 'th-color-for'
+            "h-4 w-4 mr-3",
+            selected ? "th-color-brwhite" : "th-color-for"
           )}
         />
         <h5
           className={classNames(
-            notifications ? 'font-semibold' : '',
-            'truncate w-36'
+            notifications ? "font-semibold" : "",
+            "truncate w-36"
           )}
           style={{
             color: selected
@@ -232,12 +229,12 @@ function Channel({ name, objectId }: { name: string; objectId: string }) {
               : themeColors?.foreground,
           }}
         >
-          {name.replace('#', '')}
+          {name.replace("#", "")}
         </h5>
       </div>
       {notifications > 0 && !typingArray?.length && (
         <div
-          style={{ paddingTop: '2px', paddingBottom: '2px' }}
+          style={{ paddingTop: "2px", paddingBottom: "2px" }}
           className="rounded flex items-center justify-center px-2 th-color-brwhite th-bg-red font-semibold text-xs"
         >
           {notifications}
@@ -245,7 +242,7 @@ function Channel({ name, objectId }: { name: string; objectId: string }) {
       )}
       {notifications > 0 && typingArray?.length > 0 && (
         <div
-          style={{ paddingTop: '2px', paddingBottom: '2px' }}
+          style={{ paddingTop: "2px", paddingBottom: "2px" }}
           className="rounded flex items-center justify-center px-1 th-color-brwhite th-bg-red font-semibold text-xs"
         >
           <DotsHorizontalIcon className="h-4 w-4 animate-bounce" />
@@ -253,7 +250,7 @@ function Channel({ name, objectId }: { name: string; objectId: string }) {
       )}
       {typingArray?.length > 0 && !notifications && (
         <div
-          style={{ paddingTop: '2px', paddingBottom: '2px' }}
+          style={{ paddingTop: "2px", paddingBottom: "2px" }}
           className="rounded flex items-center justify-center px-2 th-color-brwhite font-semibold text-xs"
         >
           <DotsHorizontalIcon className="h-4 w-4 animate-bounce" />
@@ -264,7 +261,8 @@ function Channel({ name, objectId }: { name: string; objectId: string }) {
 }
 
 function AddChannels() {
-  const { setOpen, setSection } = useContext(CreateMessageContext);
+  const { setOpenCreateMessage: setOpen, setCreateMessageSection: setSection } =
+    useModal();
   return (
     <div
       role="button"
@@ -272,7 +270,7 @@ function AddChannels() {
       className="flex items-center px-8 cursor-pointer focus:outline-none pt-2"
       onClick={() => {
         setOpen(true);
-        setSection('channels');
+        setSection("channels");
       }}
     >
       <div className="flex items-center justify-center rounded p-1 mr-2 th-bg-blue">
@@ -296,7 +294,7 @@ export default function Channels() {
               <div className="flex items-center">
                 <ArrowIcon
                   className={`h-4 w-4 mr-2 ${
-                    open ? 'transform rotate-90' : ''
+                    open ? "transform rotate-90" : ""
                   }`}
                   style={{
                     color: themeColors?.foreground,

@@ -1,18 +1,15 @@
-import { SearchIcon, TrashIcon, UserAddIcon } from '@heroicons/react/outline';
-import Spinner from 'components/Spinner';
-import { useWorkspaceById } from 'hooks/useWorkspaces';
-import {
-  InviteTeammatesContext,
-  UserContext,
-  UsersContext,
-  WorkspaceSettingsContext,
-} from 'lib/context';
-import React, { useContext, useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
-import { deleteData } from 'utils/api-helpers';
-import classNames from 'utils/classNames';
-import { getHref } from 'utils/get-file-url';
+import { SearchIcon, TrashIcon, UserAddIcon } from "@heroicons/react/outline";
+import Spinner from "components/Spinner";
+import { useModal } from "contexts/ModalContext";
+import { useUser } from "contexts/UserContext";
+import { UsersContext } from "contexts/UsersContext";
+import { useWorkspaceById } from "hooks/useWorkspaces";
+import { useContext, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteData } from "utils/api-helpers";
+import classNames from "utils/classNames";
+import { getHref } from "utils/get-file-url";
 
 function MemberItem({
   id,
@@ -24,7 +21,7 @@ function MemberItem({
   member: any;
 }) {
   const { workspaceId } = useParams();
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const isMe = id === user?.uid;
@@ -33,9 +30,7 @@ function MemberItem({
 
   const [loading, setLoading] = useState(false);
 
-  const { setOpen: setOpenWorkspaceSettings } = useContext(
-    WorkspaceSettingsContext
-  );
+  const { setOpenWorkspaceSettings } = useModal();
 
   const deleteMember = async () => {
     setLoading(true);
@@ -43,7 +38,7 @@ function MemberItem({
       if (isMe) {
         deleteData(`/workspaces/${workspaceId}/members/${id}`);
         setOpenWorkspaceSettings(false);
-        navigate('/dashboard');
+        navigate("/dashboard");
       } else {
         await deleteData(`/workspaces/${workspaceId}/members/${id}`);
       }
@@ -57,8 +52,8 @@ function MemberItem({
     <li className="px-8 py-2 flex justify-between items-center cursor-pointer group">
       <div
         className={classNames(
-          owner ? '' : 'group-hover:w-5/6',
-          'flex items-center w-full'
+          owner ? "" : "group-hover:w-5/6",
+          "flex items-center w-full"
         )}
       >
         <img
@@ -91,17 +86,13 @@ function MemberItem({
 }
 
 export default function MembersSection() {
-  const { setOpen: setOpenInviteTeammates } = useContext(
-    InviteTeammatesContext
-  );
-  const { setOpen: setOpenWorkspaceSettings } = useContext(
-    WorkspaceSettingsContext
-  );
+  const { setOpenInviteTeammates } = useModal();
+  const { setOpenWorkspaceSettings } = useModal();
 
   const { workspaceId } = useParams();
   const { value } = useWorkspaceById(workspaceId);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const { value: members, loading } = useContext(UsersContext);
 
   const displayMembers = useMemo(
@@ -135,7 +126,7 @@ export default function MembersSection() {
           />
         </div>
       </div>
-      <ul className="w-full mt-6 overflow-y-scroll" style={{ height: '460px' }}>
+      <ul className="w-full mt-6 overflow-y-scroll" style={{ height: "460px" }}>
         <li
           className="px-8 py-2 flex items-center cursor-pointer"
           onClick={() => {

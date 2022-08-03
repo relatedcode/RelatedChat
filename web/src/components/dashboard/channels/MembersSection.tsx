@@ -1,15 +1,16 @@
-import { SearchIcon, TrashIcon, UserAddIcon } from '@heroicons/react/outline';
-import AddPeopleToChannelDialog from 'components/dashboard/channels/AddPeopleToChannelDialog';
-import Spinner from 'components/Spinner';
-import { useChannelById } from 'hooks/useChannels';
-import { useWorkspaceById } from 'hooks/useWorkspaces';
-import { UserContext, UsersContext } from 'lib/context';
-import React, { useContext, useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
-import { deleteData } from 'utils/api-helpers';
-import classNames from 'utils/classNames';
-import { getHref } from 'utils/get-file-url';
+import { SearchIcon, TrashIcon, UserAddIcon } from "@heroicons/react/outline";
+import AddPeopleToChannelDialog from "components/dashboard/channels/AddPeopleToChannelDialog";
+import Spinner from "components/Spinner";
+import { useUser } from "contexts/UserContext";
+import { UsersContext } from "contexts/UsersContext";
+import { useChannelById } from "hooks/useChannels";
+import { useWorkspaceById } from "hooks/useWorkspaces";
+import { useContext, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteData } from "utils/api-helpers";
+import classNames from "utils/classNames";
+import { getHref } from "utils/get-file-url";
 
 function MemberItem({
   id,
@@ -23,7 +24,7 @@ function MemberItem({
   const { channelId, workspaceId } = useParams();
   const { value: workspace } = useWorkspaceById(workspaceId);
   const defaultChannel = channelId === workspace?.channelId;
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const navigate = useNavigate();
   const photoURL = getHref(member?.thumbnailURL) || getHref(member?.photoURL);
 
@@ -48,8 +49,8 @@ function MemberItem({
     <li className="px-8 py-2 flex justify-between items-center cursor-pointer group">
       <div
         className={classNames(
-          defaultChannel || owner ? '' : 'group-hover:w-5/6',
-          'flex items-center w-full'
+          defaultChannel || owner ? "" : "group-hover:w-5/6",
+          "flex items-center w-full"
         )}
       >
         <img
@@ -66,7 +67,7 @@ function MemberItem({
           )}
           {owner && (
             <span className="font-normal opacity-70 ml-1 th-color-for">
-              {' '}
+              {" "}
               - creator
             </span>
           )}
@@ -93,7 +94,7 @@ export default function MembersSection() {
   const { channelId } = useParams();
   const { value: channel } = useChannelById(channelId);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const { value: members, loading } = useContext(UsersContext);
 
   const displayMembers = useMemo(
@@ -129,7 +130,7 @@ export default function MembersSection() {
           />
         </div>
       </div>
-      <ul className="w-full overflow-y-scroll" style={{ height: '460px' }}>
+      <ul className="w-full overflow-y-scroll" style={{ height: "460px" }}>
         <li
           className="px-8 py-2 flex items-center cursor-pointer"
           onClick={() => setOpen(true)}

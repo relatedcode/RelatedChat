@@ -123,6 +123,7 @@ export const CREATE_MESSAGE = gql`
       senderId
       sticker
       text
+      type
       thumbnailURL
       workspaceId
       createdAt
@@ -150,6 +151,7 @@ export const UPDATE_MESSAGE = gql`
       senderId
       sticker
       text
+      type
       thumbnailURL
       workspaceId
       createdAt
@@ -248,6 +250,36 @@ export const UPDATE_WORKSPACE = gql`
       ownerId
       photoURL
       thumbnailURL
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const CREATE_REACTION = gql`
+  mutation CreateReaction($input: CreateReactionInput!) {
+    createReaction(input: $input) {
+      objectId
+      chatId
+      messageId
+      userId
+      workspaceId
+      reaction
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_REACTION = gql`
+  mutation UpdateReaction($input: UpdateReactionInput!) {
+    updateReaction(input: $input) {
+      objectId
+      chatId
+      messageId
+      userId
+      workspaceId
+      reaction
       createdAt
       updatedAt
     }

@@ -1,8 +1,8 @@
 import { useQuery, useSubscription } from "@apollo/client";
+import { ChannelsContext } from "contexts/ChannelsContext";
 import * as queries from "graphql/queries";
 import * as subscriptions from "graphql/subscriptions";
 import useAuth from "hooks/useAuth";
-import { ChannelsContext } from "lib/context";
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -54,7 +54,9 @@ export function useChannelsByWorkspace() {
   }, [dataPush]);
 
   return {
-    value: [...channels].sort(compareName),
+    value: [...channels]
+      .sort(compareName)
+      ?.filter((c) => c.isDeleted === false),
     loading,
   };
 }
@@ -65,7 +67,10 @@ export function useChannels() {
 
   return {
     value: value?.filter(
-      (c: any) => c.members.includes(user?.uid) && c.isArchived === false
+      (c: any) =>
+        c.members.includes(user?.uid) &&
+        c.isArchived === false &&
+        c.isDeleted === false
     ),
   };
 }

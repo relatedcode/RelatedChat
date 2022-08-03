@@ -51,9 +51,13 @@ const ffmpegSync = (originalFile: any, modifiedFile: any) => {
 };
 
 const ffprobeSync = (originalFile: any) => {
+  const ffprobePath =
+    process.env.NODE_ENV === "production"
+      ? ffprobe.path
+      : "/app/node_modules/ffprobe-static/bin/linux/x64/ffprobe";
   return new Promise((resolve, reject) => {
     ffmpeg()
-      .setFfprobePath(ffprobe.path)
+      .setFfprobePath(ffprobePath)
       .input(originalFile)
       .ffprobe((err, metadata) => {
         if (err) reject(err);
@@ -86,17 +90,25 @@ export const deleteFile = async (filePath: string) => {
     .promise();
 };
 
-export const saveImageThumbnail = async (
-  filePath: string,
-  width: number,
-  height: number | null,
-  metadata: any,
+export const saveImageThumbnail = async ({
+  filePath,
+  width,
+  height = null,
+  metadata,
   allowVideo = false,
   allowAudio = false,
-  resizeOriginal = false,
-  resizeOriginalSize = null as any,
-  token: string
-) => {
+  resizeOriginalSize = null,
+  authToken,
+}: {
+  filePath: string;
+  width: number;
+  height?: number | null;
+  metadata: any;
+  allowVideo?: boolean;
+  allowAudio?: boolean;
+  resizeOriginalSize?: number | null;
+  authToken: string;
+}) => {
   let fileDeleted = false;
   try {
     if (!filePath) return ["", null];
@@ -188,7 +200,7 @@ export const saveImageThumbnail = async (
         .toFile(thumbnailFile);
 
       // START - Only used for original image resizing
-      if (resizeOriginal && fileMetadata.width! > resizeOriginalSize!) {
+      if (resizeOriginalSize && fileMetadata.width! > resizeOriginalSize!) {
         await sharp(originalFile)
           .resize(resizeOriginalSize, resizeOriginalSize)
           .jpeg()
@@ -199,7 +211,7 @@ export const saveImageThumbnail = async (
           "messenger",
           `${fileDir}/${fileNameWithoutExtension}.jpeg`,
           originalFileResized,
-          token
+          authToken
         );
       }
       // END - Only used for original image resizing
@@ -209,7 +221,7 @@ export const saveImageThumbnail = async (
       "messenger",
       `${fileDir}/${fileNameWithoutExtension}_thumbnail.jpeg`,
       thumbnailFile,
-      token
+      authToken
     );
 
     if (fs.existsSync(originalFile)) fs.unlinkSync(originalFile);

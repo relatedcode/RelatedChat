@@ -2,27 +2,24 @@ import {
   HashtagIcon,
   PlusCircleIcon,
   SearchIcon,
-} from '@heroicons/react/outline';
-import ModalButton from 'components/dashboard/ModalButton';
-import Spinner from 'components/Spinner';
-import { useWorkspaceById } from 'hooks/useWorkspaces';
-import {
-  ChannelsContext,
-  CreateChannelContext,
-  CreateMessageContext,
-  UserContext,
-} from 'lib/context';
-import React, { useContext, useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
+} from "@heroicons/react/outline";
+import ModalButton from "components/dashboard/ModalButton";
+import Spinner from "components/Spinner";
+import { ChannelsContext } from "contexts/ChannelsContext";
+import { useModal } from "contexts/ModalContext";
+import { useUser } from "contexts/UserContext";
+import { useWorkspaceById } from "hooks/useWorkspaces";
+import { useContext, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { postData } from "utils/api-helpers";
 
 function ChannelItem({ channel }: { channel: any }) {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const { workspaceId } = useParams();
   const { value: workspace } = useWorkspaceById(workspaceId);
   const navigate = useNavigate();
-  const { setOpen: setOpenCreateMessage } = useContext(CreateMessageContext);
+  const { setOpenCreateMessage } = useModal();
   const [loading, setLoading] = useState(false);
 
   const joinChannel = async () => {
@@ -59,12 +56,12 @@ function ChannelItem({ channel }: { channel: any }) {
       <div className="flex items-center group-hover:w-4/6 w-full">
         <div
           className="rounded p-2 mr-4"
-          style={{ backgroundColor: '#f4ede4' }}
+          style={{ backgroundColor: "#f4ede4" }}
         >
-          <HashtagIcon className="h-6 w-6" style={{ color: '#4a154b' }} />
+          <HashtagIcon className="h-6 w-6" style={{ color: "#4a154b" }} />
         </div>
         <span className="font-bold th-color-for truncate">
-          {channel?.name.replace('#', '')}
+          {channel?.name.replace("#", "")}
           {channel?.isArchived && (
             <span className="text-sm opacity-70"> (archived)</span>
           )}
@@ -107,18 +104,18 @@ function ChannelItem({ channel }: { channel: any }) {
 }
 
 export default function ChannelsSection() {
-  const { setOpen: setOpenCreateChannel } = useContext(CreateChannelContext);
-  const { setOpen: setOpenCreateMessage } = useContext(CreateMessageContext);
+  const { setOpenCreateChannel } = useModal();
+  const { setOpenCreateMessage } = useModal();
   const { value, loading } = useContext(ChannelsContext);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const displayChannels = useMemo(
     () =>
       value?.reduce((result: any, channel: any) => {
         if (
           channel.name
-            .replace('#', '')
+            .replace("#", "")
             .toLowerCase()
             .includes(search.toLowerCase())
         )
@@ -151,7 +148,7 @@ export default function ChannelsSection() {
       ) : (
         <ul
           className="w-full mt-6 overflow-y-scroll"
-          style={{ height: '460px' }}
+          style={{ height: "460px" }}
         >
           <li
             className="px-8 py-2 flex items-center cursor-pointer"

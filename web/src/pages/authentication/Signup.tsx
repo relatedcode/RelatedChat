@@ -1,13 +1,12 @@
-import AuthButton from 'components/authentication/AuthButton';
-import TextField from 'components/TextField';
-import { APP_NAME, FAKE_EMAIL } from 'config';
-import { Formik } from 'formik';
-import useAuth from 'hooks/useAuth';
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
+import AuthButton from "components/authentication/AuthButton";
+import TextField from "components/TextField";
+import { APP_NAME, FAKE_EMAIL } from "config";
+import { Formik } from "formik";
+import useAuth from "hooks/useAuth";
+import { Helmet } from "react-helmet-async";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import { postData } from "utils/api-helpers";
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -51,26 +50,26 @@ export default function Signup() {
         </h1>
         <Formik
           initialValues={{
-            name: '',
-            email: '',
-            password: '',
+            name: "",
+            email: "",
+            password: "",
           }}
           onSubmit={async ({ email, password, name }, { setSubmitting }) => {
             setSubmitting(true);
             try {
               let emailPayload = email;
               let passwordPayload = password;
-              if (FAKE_EMAIL && !email.includes('@') && !password) {
+              if (FAKE_EMAIL && !email.includes("@") && !password) {
                 emailPayload = `${email}@${email}.com`;
                 passwordPayload = `${email}111`;
               }
-              await postData('/users', {
+              await postData("/users", {
                 name,
                 email: emailPayload,
                 password: passwordPayload,
               });
               await login(emailPayload, passwordPayload);
-              navigate('/dashboard');
+              navigate("/dashboard");
             } catch (err: any) {
               toast.error(err.message);
             }
@@ -89,7 +88,7 @@ export default function Signup() {
                 <TextField
                   value={values.name}
                   handleChange={(e: any) =>
-                    setFieldValue('name', capitalize(e.target.value))
+                    setFieldValue("name", capitalize(e.target.value))
                   }
                   label="Full name"
                   name="name"
@@ -100,7 +99,7 @@ export default function Signup() {
                 <TextField
                   value={values.email}
                   handleChange={handleChange}
-                  type={FAKE_EMAIL ? 'text' : 'email'}
+                  type={FAKE_EMAIL ? "text" : "email"}
                   label="Email address"
                   name="email"
                   required

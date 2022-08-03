@@ -635,3 +635,91 @@ module.exports.createDirectResolver = function (
     },
   };
 };
+
+const MODEL_NAME_REACTION = "reactions";
+module.exports.createReactionResolver = function (
+  database,
+  Operation,
+  withFilter,
+  pubsub
+) {
+  return {
+    Subscription: {
+      onUpdateReaction: {
+        subscribe: withFilter(
+          () => pubsub.asyncIterator(MODEL_NAME_REACTION),
+          (payload, args) => {
+            if (args.objectId) {
+              return payload.onUpdateReaction.objectId === args.objectId;
+            }
+            if (args.chatId) {
+              return payload.onUpdateReaction.chatId === args.chatId;
+            }
+            return true;
+          }
+        ),
+      },
+    },
+    Query: {
+      listReactions: async (root, args) => {
+        let filter = {};
+        if (args.updatedAt) {
+          filter = {
+            updatedAt: {
+              [Operation.gt]: args.updatedAt,
+            },
+          };
+        }
+        if (args.chatId) {
+          filter = {
+            chatId: args.chatId,
+          };
+        }
+        return await database.models[MODEL_NAME_REACTION].findAll({
+          where: filter,
+        });
+      },
+      getReaction: async (root, args) => {
+        let filter = {};
+        if (args.objectId) {
+          filter = {
+            objectId: {
+              [Operation.eq]: args.objectId,
+            },
+          };
+        }
+        return (
+          await database.models[MODEL_NAME_REACTION].findOne({
+            where: filter,
+          })
+        ).dataValues;
+      },
+    },
+    Mutation: {
+      createReaction: async (root, body, context, info) => {
+        const { input: args } = body;
+        const reaction = await database.models[MODEL_NAME_REACTION].create(
+          args
+        );
+        pubsub.publish(MODEL_NAME_REACTION, {
+          onUpdateReaction: reaction.dataValues,
+        });
+        return reaction.dataValues;
+      },
+      updateReaction: async (root, body, context, info) => {
+        const { input: args } = body;
+        const filter = {
+          where: { objectId: args.objectId },
+          returning: true,
+        };
+        const reaction = (
+          await database.models[MODEL_NAME_REACTION].update(args, filter)
+        )[1][0];
+        pubsub.publish(MODEL_NAME_REACTION, {
+          onUpdateReaction: reaction.dataValues,
+        });
+        return reaction.dataValues;
+      },
+    },
+  };
+};

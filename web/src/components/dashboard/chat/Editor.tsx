@@ -1,12 +1,12 @@
-import { uploadFile } from "gqlite-lib/dist/client/storage";
 import QuillEditor from "components/dashboard/quill/QuillEditor";
 import { MESSAGE_MAX_CHARACTERS } from "config";
+import { useUser } from "contexts/UserContext";
 import { Formik } from "formik";
+import { uploadFile } from "gqlite-lib/dist/client/storage";
 import { useChannelById } from "hooks/useChannels";
 import { useDirectMessageById } from "hooks/useDirects";
 import { useUserById } from "hooks/useUsers";
-import { UserContext } from "lib/context";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
@@ -102,7 +102,7 @@ export default function Editor() {
   const { value: channel } = useChannelById(channelId);
   const { value: dm } = useDirectMessageById(dmId);
 
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const otherUserId = dm?.members.find((m: string) => m !== user?.uid);
   const { value: userData } = useUserById(otherUserId || user?.uid);
 
@@ -186,9 +186,9 @@ export default function Editor() {
                 files={files}
                 setFiles={setFiles}
                 editorRef={editorRef}
+                editor={editor}
                 text={values.text}
                 setFieldValue={setFieldValue}
-                editor={editor}
                 placeholder={
                   channelId
                     ? `Send a message to ${`#${channel?.name}`}`

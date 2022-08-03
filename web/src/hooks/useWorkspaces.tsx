@@ -1,7 +1,7 @@
 import { useQuery, useSubscription } from "@apollo/client";
+import { useUser } from "contexts/UserContext";
 import * as queries from "graphql/queries";
 import * as subscriptions from "graphql/subscriptions";
-import { UserContext } from "lib/context";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export const WorkspacesContext = createContext({
@@ -10,7 +10,7 @@ export const WorkspacesContext = createContext({
 });
 
 export function useMyWorkspaces() {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const { value, loading } = useContext(WorkspacesContext);
 
   return {
@@ -31,7 +31,7 @@ export function WorkspacesProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const [workspaces, setWorkspaces] = useState<any[]>([]);
 
   const { data, loading } = useQuery(queries.LIST_WORKSPACES, {

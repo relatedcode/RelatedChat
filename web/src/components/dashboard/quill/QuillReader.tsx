@@ -1,10 +1,11 @@
-import Style from 'components/Style';
-import { useForceUpdate, useTheme } from 'lib/hooks';
-import React, { useEffect, useRef } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.bubble.css';
-import classNames from 'utils/classNames';
-import hexToRgbA from 'utils/hexToRgbA';
+import Style from "components/Style";
+import { useTheme } from "contexts/ThemeContext";
+import { useForceUpdate } from "lib/hooks";
+import { useEffect, useRef } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
+import classNames from "utils/classNames";
+import hexToRgbA from "utils/hexToRgbA";
 
 export default function Reader({
   text,
@@ -21,12 +22,11 @@ export default function Reader({
 
   const onlyText = unprivilegedEditor?.getText();
 
-  const endWithPTag = text.substr(text?.length - 4) === '</p>';
+  const endWithPTag = text.substr(text?.length - 4) === "</p>";
 
   const position = endWithPTag ? text?.length - 4 : text?.length;
 
   const display =
-    // eslint-disable-next-line
     text && isEdited && position
       ? !endWithPTag
         ? `${text}<p><span class="ql-size-small" style="color: rgb(136, 136, 136);"> (edited)</span></p>`
@@ -34,7 +34,7 @@ export default function Reader({
             text.slice(0, position),
             '<span class="ql-size-small" style="color: rgb(136, 136, 136);"> (edited)</span>',
             text.slice(position),
-          ].join('')
+          ].join("")
       : text;
 
   useEffect(() => {
@@ -47,23 +47,23 @@ export default function Reader({
         css={`
           .reader .ql-editor {
             color: ${themeColors?.foreground};
-            font-weight: ${themeColors?.messageFontWeight === 'light'
-              ? '300'
-              : '400'};
+            font-weight: ${themeColors?.messageFontWeight === "light"
+              ? "300"
+              : "400"};
           }
 
           /* Code editor */
           .ql-bubble .ql-editor pre.ql-syntax {
             background-color: ${themeColors?.brightBlack};
             color: ${themeColors?.brightWhite};
-            border-color: ${hexToRgbA(themeColors?.background!, '0.2')};
+            border-color: ${hexToRgbA(themeColors?.background!, "0.2")};
             border-width: 1px;
           }
           .ql-bubble .ql-editor code,
           .ql-bubble .ql-editor pre {
             background-color: ${themeColors?.brightBlack};
             color: ${themeColors?.brightWhite};
-            border-color: ${hexToRgbA(themeColors?.background!, '0.2')};
+            border-color: ${hexToRgbA(themeColors?.background!, "0.2")};
             border-width: 1px;
           }
 
@@ -84,11 +84,11 @@ export default function Reader({
         ref={editorRef}
         className={classNames(
           /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~A-Za-z0-9]/g.test(
-            onlyText?.replace(' (edited)', '')
+            onlyText?.replace(" (edited)", "")
           )
-            ? ''
-            : 'editor-has-only-emoji',
-          'reader'
+            ? ""
+            : "editor-has-only-emoji",
+          "reader"
         )}
       />
     </>

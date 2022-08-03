@@ -1,19 +1,19 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
-import { updateUser } from "gqlite-lib/dist/client/auth";
 import CancelButton from "components/CancelButton";
 import ModalButton from "components/dashboard/ModalButton";
 import TextField from "components/TextField";
+import { useModal } from "contexts/ModalContext";
 import { Formik } from "formik";
+import { updateUser } from "gqlite-lib/dist/client/auth";
 import useAuth from "hooks/useAuth";
-import { useEditPasswordModal } from "lib/hooks";
-import React, { Fragment, useRef } from "react";
+import { Fragment, useRef } from "react";
 import toast from "react-hot-toast";
 
 export default function EditPasswordModal() {
   const { user } = useAuth();
   const cancelButtonRef = useRef(null);
-  const { open, setOpen } = useEditPasswordModal();
+  const { openEditPassword: open, setOpenEditPassword: setOpen } = useModal();
 
   return (
     <Transition.Root show={open} as={Fragment}>

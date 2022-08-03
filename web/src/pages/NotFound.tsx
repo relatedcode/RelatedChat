@@ -1,6 +1,5 @@
-import { APP_NAME } from 'config';
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import { APP_NAME } from "config";
+import { Helmet } from "react-helmet-async";
 
 export default function NotFound() {
   return (

@@ -1,30 +1,28 @@
-import { Disclosure } from '@headlessui/react';
-import { DotsHorizontalIcon, PlusIcon, XIcon } from '@heroicons/react/outline';
-import AddTeammatesModal from 'components/dashboard/workspaces/AddTeammatesModal';
-import Spinner from 'components/Spinner';
-import { useDetailByChat } from 'hooks/useDetails';
-import { usePresenceByUserId } from 'hooks/usePresence';
-import { useUserById } from 'hooks/useUsers';
-import { ReactComponent as ArrowIcon } from 'icons/arrow.svg';
-import {
-  CreateMessageContext,
-  DirectMessagesContext,
-  UserContext,
-} from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, { useContext, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
-import classNames from 'utils/classNames';
-import { getHref } from 'utils/get-file-url';
+import { Disclosure } from "@headlessui/react";
+import { DotsHorizontalIcon, PlusIcon, XIcon } from "@heroicons/react/outline";
+import AddTeammatesModal from "components/dashboard/workspaces/AddTeammatesModal";
+import Spinner from "components/Spinner";
+import { DirectMessagesContext } from "contexts/DirectMessagesContext";
+import { useModal } from "contexts/ModalContext";
+import { useTheme } from "contexts/ThemeContext";
+import { useUser } from "contexts/UserContext";
+import { useDetailByChat } from "hooks/useDetails";
+import { usePresenceByUserId } from "hooks/usePresence";
+import { useUserById } from "hooks/useUsers";
+import { ReactComponent as ArrowIcon } from "icons/arrow.svg";
+import { useContext, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { postData } from "utils/api-helpers";
+import classNames from "utils/classNames";
+import { getHref } from "utils/get-file-url";
 
 function DirectMessage({ dm }: { dm: any }) {
   const { themeColors } = useTheme();
   const navigate = useNavigate();
   const { workspaceId, dmId } = useParams();
 
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
 
   const isMe = dm?.members?.length === 1 && dm?.members[0] === user?.uid;
   const otherUserId = dm?.members.find((m: string) => m !== user?.uid);
@@ -60,7 +58,7 @@ function DirectMessage({ dm }: { dm: any }) {
     <div
       className="relative py-1 flex items-center justify-between cursor-pointer focus:outline-none group"
       style={{
-        backgroundColor: selected ? themeColors?.blue : 'transparent',
+        backgroundColor: selected ? themeColors?.blue : "transparent",
         color: selected ? themeColors?.brightWhite : themeColors?.foreground,
       }}
     >
@@ -75,17 +73,17 @@ function DirectMessage({ dm }: { dm: any }) {
         <div className="relative mr-2 flex-shrink-0">
           <div
             className={classNames(
-              selected ? 'th-bg-blue' : 'th-bg-selbg',
-              'rounded-full h-3 w-3 absolute bottom-0 right-0 transform translate-x-1 translate-y-1 flex items-center justify-center'
+              selected ? "th-bg-blue" : "th-bg-selbg",
+              "rounded-full h-3 w-3 absolute bottom-0 right-0 transform translate-x-1 translate-y-1 flex items-center justify-center"
             )}
           >
             <div
               style={{
-                backgroundColor: isPresent ? '#94e864' : 'transparent',
+                backgroundColor: isPresent ? "#94e864" : "transparent",
               }}
               className={classNames(
-                isPresent ? '' : 'border border-gray-400',
-                'rounded-full h-2 w-2'
+                isPresent ? "" : "border border-gray-400",
+                "rounded-full h-2 w-2"
               )}
             />
           </div>
@@ -97,9 +95,9 @@ function DirectMessage({ dm }: { dm: any }) {
         </div>
         <div
           className={classNames(
-            notifications ? 'font-semibold' : '',
-            'truncate w-36',
-            selected ? 'th-color-brwhite' : 'th-color-for'
+            notifications ? "font-semibold" : "",
+            "truncate w-36",
+            selected ? "th-color-brwhite" : "th-color-for"
           )}
         >
           {!isMe ? value?.displayName : `${value?.displayName} (me)`}
@@ -109,10 +107,10 @@ function DirectMessage({ dm }: { dm: any }) {
         {notifications > 0 && !typingArray?.length && (
           <div
             style={{
-              paddingTop: '2px',
-              paddingBottom: '2px',
-              marginTop: '2px',
-              marginBottom: '2px',
+              paddingTop: "2px",
+              paddingBottom: "2px",
+              marginTop: "2px",
+              marginBottom: "2px",
             }}
             className="text-xs rounded px-2 focus:outline-none th-color-brwhite th-bg-red font-semibold flex items-center justify-center"
             role="button"
@@ -129,10 +127,10 @@ function DirectMessage({ dm }: { dm: any }) {
         {notifications > 0 && typingArray?.length > 0 && (
           <div
             style={{
-              paddingTop: '2px',
-              paddingBottom: '2px',
-              marginTop: '2px',
-              marginBottom: '2px',
+              paddingTop: "2px",
+              paddingBottom: "2px",
+              marginTop: "2px",
+              marginBottom: "2px",
             }}
             className="rounded flex items-centerjustify-center px-1 th-color-brwhite th-bg-red font-semibold text-xs"
           >
@@ -141,7 +139,7 @@ function DirectMessage({ dm }: { dm: any }) {
         )}
         {!notifications && !loading && typingArray?.length > 0 && (
           <div
-            style={{ paddingTop: '4px', paddingBottom: '4px' }}
+            style={{ paddingTop: "4px", paddingBottom: "4px" }}
             className="rounded flex items-center justify-center px-2 th-color-brwhite font-semibold text-xs"
           >
             <DotsHorizontalIcon className="h-4 w-4 animate-bounce" />
@@ -162,7 +160,8 @@ function DirectMessage({ dm }: { dm: any }) {
 }
 
 function AddTeammates() {
-  const { setOpen, setSection } = useContext(CreateMessageContext);
+  const { setOpenCreateMessage: setOpen, setCreateMessageSection: setSection } =
+    useModal();
   return (
     <div
       role="button"
@@ -170,7 +169,7 @@ function AddTeammates() {
       className="flex items-center px-8 cursor-pointer focus:outline-none pt-2"
       onClick={() => {
         setOpen(true);
-        setSection('members');
+        setSection("members");
       }}
     >
       <div className="flex items-center justify-center rounded p-1 mr-2 th-bg-blue">
@@ -193,8 +192,8 @@ export default function DirectMessages() {
               <div className="flex items-center">
                 <ArrowIcon
                   className={classNames(
-                    open ? 'transform rotate-90' : '',
-                    'h-4 w-4 mr-2'
+                    open ? "transform rotate-90" : "",
+                    "h-4 w-4 mr-2"
                   )}
                   style={{
                     color: themeColors?.foreground,

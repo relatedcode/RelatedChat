@@ -1,8 +1,8 @@
 import { useQuery, useSubscription } from "@apollo/client";
+import { DetailsContext } from "contexts/DetailsContext";
 import * as queries from "graphql/queries";
 import * as subscriptions from "graphql/subscriptions";
 import useAuth from "hooks/useAuth";
-import { DetailsContext } from "lib/context";
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 

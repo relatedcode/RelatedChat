@@ -16,11 +16,6 @@ type Channel {
   updatedAt: Date
 }
 
-type ChannelConnection {
-  items: [Channel]
-  nextToken: String
-}
-
 type Detail {
   objectId: String!
   chatId: String
@@ -29,11 +24,6 @@ type Detail {
   workspaceId: String
   createdAt: Date
   updatedAt: Date
-}
-
-type DetailConnection {
-  items: [Detail]
-  nextToken: String
 }
 
 type Direct {
@@ -49,11 +39,6 @@ type Direct {
   updatedAt: Date
 }
 
-type DirectConnection {
-  items: [Direct]
-  nextToken: String
-}
-
 type Message {
   objectId: String!
   chatId: String
@@ -65,21 +50,17 @@ type Message {
   fileURL: String
   isDeleted: Boolean
   isEdited: Boolean
-  mediaDuration: Float
+  mediaDuration: Int
   mediaHeight: Int
   mediaWidth: Int
   senderId: String
   sticker: String
   text: String
+  type: String
   thumbnailURL: String
   workspaceId: String
   createdAt: Date
   updatedAt: Date
-}
-
-type MessageConnection {
-  items: [Message]
-  nextToken: String
 }
 
 type Presence {
@@ -87,11 +68,6 @@ type Presence {
   lastPresence: Date
   createdAt: Date
   updatedAt: Date
-}
-
-type PresenceConnection {
-  items: [Presence]
-  nextToken: String
 }
 
 type User {
@@ -109,11 +85,6 @@ type User {
   updatedAt: Date
 }
 
-type UserConnection {
-  items: [User]
-  nextToken: String
-}
-
 type Workspace {
   objectId: String!
   channelId: String
@@ -128,9 +99,15 @@ type Workspace {
   updatedAt: Date
 }
 
-type WorkspaceConnection {
-  items: [Workspace]
-  nextToken: String
+type Reaction {
+  objectId: String!
+  chatId: String
+  messageId: String
+  userId: String
+  workspaceId: String
+  reaction: String
+  createdAt: Date
+  updatedAt: Date
 }
 
 type Mutation {
@@ -141,6 +118,7 @@ type Mutation {
   createPresence(input: CreatePresenceInput!): Presence
   createUser(input: CreateUserInput!): User
   createWorkspace(input: CreateWorkspaceInput!): Workspace
+  createReaction(input: CreateReactionInput!): Reaction
   updateChannel(input: UpdateChannelInput!): Channel
   updateDetail(input: UpdateDetailInput!): Detail
   updateDirect(input: UpdateDirectInput!): Direct
@@ -148,6 +126,7 @@ type Mutation {
   updatePresence(input: UpdatePresenceInput!): Presence
   updateUser(input: UpdateUserInput!): User
   updateWorkspace(input: UpdateWorkspaceInput!): Workspace
+  updateReaction(input: UpdateReactionInput!): Reaction
 }
 
 type Query {
@@ -158,23 +137,15 @@ type Query {
   getPresence(objectId: String!): Presence
   getUser(objectId: String, email: String): User
   getWorkspace(objectId: String!): Workspace
-  listChannels(
-    updatedAt: Date
-    workspaceId: String
-    userId: String
-    name: String
-  ): [Channel]
+  getReaction(objectId: String!): Reaction
+  listChannels(updatedAt: Date, workspaceId: String, userId: String, name: String): [Channel]
   listDetails(updatedAt: Date, workspaceId: String, userId: String): [Detail]
   listDirects(updatedAt: Date, workspaceId: String, userId: String): [Direct]
-  listMessages(
-    updatedAt: Date
-    chatId: String
-    limit: Int
-    nextToken: String
-  ): [Message]
+  listMessages(updatedAt: Date, chatId: String, limit: Int, nextToken: String): [Message]
   listPresences(updatedAt: Date): [Presence]
   listUsers(updatedAt: Date, workspaceId: String): [User]
   listWorkspaces(updatedAt: Date): [Workspace]
+  listReactions(updatedAt: Date, chatId: String): [Reaction]
 }
 
 type Subscription {
@@ -185,6 +156,7 @@ type Subscription {
   onUpdatePresence(objectId: String): Presence
   onUpdateUser(objectId: String): User
   onUpdateWorkspace(objectId: String): Workspace
+  onUpdateReaction(objectId: String, chatId: String): Reaction
 }
 
 input CreateChannelInput {
@@ -236,12 +208,13 @@ input CreateMessageInput {
   fileURL: String
   isDeleted: Boolean
   isEdited: Boolean
-  mediaDuration: Float
+  mediaDuration: Int
   mediaHeight: Int
   mediaWidth: Int
   senderId: String
   sticker: String
   text: String
+  type: String
   thumbnailURL: String
   workspaceId: String
   createdAt: Date
@@ -277,6 +250,16 @@ input CreateWorkspaceInput {
   ownerId: String
   photoURL: String
   thumbnailURL: String
+  createdAt: Date
+}
+
+input CreateReactionInput {
+  objectId: String!
+  chatId: String
+  messageId: String
+  userId: String
+  workspaceId: String
+  reaction: String
   createdAt: Date
 }
 
@@ -326,12 +309,13 @@ input UpdateMessageInput {
   fileURL: String
   isDeleted: Boolean
   isEdited: Boolean
-  mediaDuration: Float
+  mediaDuration: Int
   mediaHeight: Int
   mediaWidth: Int
   senderId: String
   sticker: String
   text: String
+  type: String
   thumbnailURL: String
   workspaceId: String
 }
@@ -364,4 +348,13 @@ input UpdateWorkspaceInput {
   ownerId: String
   photoURL: String
   thumbnailURL: String
+}
+
+input UpdateReactionInput {
+  objectId: String!
+  chatId: String
+  messageId: String
+  userId: String
+  workspaceId: String
+  reaction: String
 }

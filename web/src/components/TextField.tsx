@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-export default function AuthField({
+export default function TextField({
   label,
   name,
   autoComplete,
@@ -8,7 +8,7 @@ export default function AuthField({
   infos,
   value,
   handleChange,
-  type = 'text',
+  type = "text",
   required = false,
   focus = false,
   disabled = false,

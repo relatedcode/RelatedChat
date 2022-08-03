@@ -1,20 +1,21 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
-import TextField from 'components/TextField';
-import ModalButton from 'components/dashboard/ModalButton';
-import { Formik } from 'formik';
-import { InviteTeammatesContext } from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, { Fragment, useContext, useRef } from 'react';
-import toast from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
-import * as Yup from 'yup';
+import { Dialog, Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
+import ModalButton from "components/dashboard/ModalButton";
+import TextField from "components/TextField";
+import { useModal } from "contexts/ModalContext";
+import { useTheme } from "contexts/ThemeContext";
+import { Formik } from "formik";
+import { Fragment, useRef } from "react";
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
+import { postData } from "utils/api-helpers";
+import * as Yup from "yup";
 
 export default function AddTeammatesModal() {
   const { themeColors } = useTheme();
   const cancelButtonRef = useRef(null);
-  const { open, setOpen } = useContext(InviteTeammatesContext);
+  const { openInviteTeammates: open, setOpenInviteTeammates: setOpen } =
+    useModal();
   const { workspaceId } = useParams();
 
   return (
@@ -84,7 +85,7 @@ export default function AddTeammatesModal() {
               </div>
               <Formik
                 initialValues={{
-                  email: '',
+                  email: "",
                 }}
                 enableReinitialize
                 validationSchema={Yup.object().shape({
@@ -96,7 +97,7 @@ export default function AddTeammatesModal() {
                     await postData(`/workspaces/${workspaceId}/members`, {
                       email,
                     });
-                    toast.success('Member added.');
+                    toast.success("Member added.");
                     setOpen(false);
                   } catch (err: any) {
                     toast.error(err.message);

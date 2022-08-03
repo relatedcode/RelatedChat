@@ -1,16 +1,16 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
-import CancelButton from 'components/CancelButton';
-import ModalButton from 'components/dashboard/ModalButton';
-import TextArea from 'components/TextArea';
-import TextField from 'components/TextField';
-import { Formik } from 'formik';
-import { useChannelById } from 'hooks/useChannels';
-import { useTheme } from 'lib/hooks';
-import React, { Fragment, useRef } from 'react';
-import toast from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
+import { Dialog, Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
+import CancelButton from "components/CancelButton";
+import ModalButton from "components/dashboard/ModalButton";
+import TextArea from "components/TextArea";
+import TextField from "components/TextField";
+import { useTheme } from "contexts/ThemeContext";
+import { Formik } from "formik";
+import { useChannelById } from "hooks/useChannels";
+import React, { Fragment, useRef } from "react";
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
+import { postData } from "utils/api-helpers";
 
 export default function EditChannelItemsDialog({
   open,
@@ -101,7 +101,7 @@ export default function EditChannelItemsDialog({
               </div>
               <Formik
                 initialValues={{
-                  detail: (value ? value[`${field}`] : '') || '',
+                  detail: (value ? value[`${field}`] : "") || "",
                 }}
                 enableReinitialize
                 onSubmit={async (values, { setSubmitting }) => {
@@ -109,11 +109,11 @@ export default function EditChannelItemsDialog({
                   try {
                     await postData(`/channels/${channelId}`, {
                       [`${field}`]:
-                        field === 'name'
-                          ? `${values.detail.replace('#', '').trim()}`
+                        field === "name"
+                          ? `${values.detail.replace("#", "").trim()}`
                           : values.detail,
                     });
-                    toast.success('Updated.');
+                    toast.success("Updated.");
                     setOpen(false);
                   } catch (err: any) {
                     toast.error(err.message);
@@ -153,14 +153,14 @@ export default function EditChannelItemsDialog({
                             infos={infos}
                             handleChange={(e: any) =>
                               setFieldValue(
-                                'detail',
+                                "detail",
                                 e.target.value
                                   .toLowerCase()
-                                  .replace(/[^a-z0-9_\- ]/g, '')
-                                  .replace('#', '')
+                                  .replace(/[^a-z0-9_\- ]/g, "")
+                                  .replace("#", "")
                               )
                             }
-                            value={values.detail.replace('#', '')}
+                            value={values.detail.replace("#", "")}
                           />
                         )}
                       </div>

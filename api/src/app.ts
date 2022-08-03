@@ -50,35 +50,6 @@ const authMiddleware = async (
   }
 };
 
-// const versionMiddleware = async (
-//   req: express.Request,
-//   res: express.Response,
-//   next: express.NextFunction
-// ) => {
-//   try {
-//     if (!(req.headers && req.headers["x-client-version"]))
-//       throw new Error("The version should be set in a request header.");
-
-//     const clientVersion = req.headers["x-client-version"];
-
-//     let databaseVersion = NEWEST_DB_VERSION;
-//     const versionDoc = await getVersion();
-//     if (!versionDoc) {
-//       await setVersion(databaseVersion);
-//     } else databaseVersion = versionDoc.databaseVersion;
-
-//     if (
-//       !BACKEND_DATABASE_COMPATIBILITY.includes(databaseVersion) ||
-//       !BACKEND_CLIENT_COMPATIBILITY.includes(clientVersion)
-//     )
-//       throw new Error("Version error. Please contact your administrator.");
-
-//     return next();
-//   } catch (err) {
-//     return next(err);
-//   }
-// };
-
 const channelsRouter = express.Router();
 channelsRouter.use(authMiddleware);
 channelsRouter.post("/", channels.createChannel);
@@ -111,6 +82,7 @@ messagesRouter.use(authMiddleware);
 messagesRouter.post("/", messages.createMessage);
 messagesRouter.post("/:id", messages.editMessage);
 messagesRouter.delete("/:id", messages.deleteMessage);
+messagesRouter.post("/:id/reactions", messages.editMessageReaction);
 
 const usersRouter = express.Router();
 usersRouter.post("/", users.createUser);

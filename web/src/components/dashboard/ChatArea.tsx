@@ -1,18 +1,18 @@
-import { ChevronDownIcon } from '@heroicons/react/outline';
-import EditChannel from 'components/dashboard/channels/EditChannel';
-import Editor from 'components/dashboard/chat/Editor';
-import Messages from 'components/dashboard/chat/Messages';
-import { useChannelById } from 'hooks/useChannels';
-import { useDetailByChat } from 'hooks/useDetails';
-import { useDirectMessageById } from 'hooks/useDirects';
-import { useUserById } from 'hooks/useUsers';
-import { UserContext } from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import { postData } from 'utils/api-helpers';
-import { getHref } from 'utils/get-file-url';
+import { ChevronDownIcon } from "@heroicons/react/outline";
+import EditChannel from "components/dashboard/channels/EditChannel";
+import Editor from "components/dashboard/chat/Editor";
+import Messages from "components/dashboard/chat/Messages";
+import { useTheme } from "contexts/ThemeContext";
+import { useUser } from "contexts/UserContext";
+import { useChannelById } from "hooks/useChannels";
+import { useDetailByChat } from "hooks/useDetails";
+import { useDirectMessageById } from "hooks/useDirects";
+import { useUserById } from "hooks/useUsers";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import styled from "styled-components";
+import { postData } from "utils/api-helpers";
+import { getHref } from "utils/get-file-url";
 
 const SelectChannel = styled.button`
   :hover {
@@ -34,7 +34,7 @@ function HeaderChannel() {
         theme={themeColors}
       >
         <div className="font-bold text-lg mr-1 th-color-for max-w-sm truncate">
-          {`#${value?.name || ''}`}
+          {`#${value?.name || ""}`}
         </div>
         <ChevronDownIcon className="h-4 w-4 th-color-for" />
       </SelectChannel>
@@ -61,7 +61,7 @@ function HeaderDirectMessage() {
   const { themeColors } = useTheme();
   const { dmId } = useParams();
   const { value: dm } = useDirectMessageById(dmId);
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const otherUserId = dm?.members.find((m: string) => m !== user?.uid);
   const { value } = useUserById(otherUserId || user?.uid);
 
@@ -73,7 +73,7 @@ function HeaderDirectMessage() {
         className="flex items-center cursor-pointer focus:outline-none py-1 px-2 rounded"
         onClick={() =>
           navigate(
-            `${location.pathname.split('/user_profile')[0]}/user_profile/${
+            `${location.pathname.split("/user_profile")[0]}/user_profile/${
               value?.objectId
             }`
           )
@@ -95,7 +95,7 @@ function HeaderDirectMessage() {
 }
 
 export default function ChatArea() {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const { channelId, dmId } = useParams();
   const { value: channel } = useChannelById(channelId);
   const { value: directMessage } = useDirectMessageById(dmId);
@@ -104,7 +104,7 @@ export default function ChatArea() {
   const [lastRead, setLastRead] = useState(null);
 
   useEffect(() => {
-    const el = document.getElementById('messages')!;
+    const el = document.getElementById("messages")!;
     el.scrollTo(el.scrollHeight, 0);
     setLastRead(null);
     setHasNew(false);
@@ -115,7 +115,7 @@ export default function ChatArea() {
   useEffect(() => {
     if (channel && channel.lastMessageCounter !== detail?.lastRead) {
       postData(`/users/${user?.uid}/read`, {
-        chatType: 'Channel',
+        chatType: "Channel",
         chatId: channelId,
       });
       if (!hasNew) {
@@ -127,7 +127,7 @@ export default function ChatArea() {
       directMessage.lastMessageCounter !== detail?.lastRead
     ) {
       postData(`/users/${user?.uid}/read`, {
-        chatType: 'Direct',
+        chatType: "Direct",
         chatId: dmId,
       });
       if (!hasNew) {

@@ -1,10 +1,80 @@
-<img src="https://related.chat/relatedchat/header1.png">
+## OVERVIEW
 
-<img src="https://related.chat/relatedchat/pricing1.png">
+RelatedChat is an open-source alternative communication platform. Both iOS (Swift), Android (React Native), and Web (React) version source codes are available.
 
-<img src="https://related.chat/relatedchat/product2.png">
+<img src="https://related.chat/messenger/header1.png" width="880">
 
-# Installation instructions
+---
+
+## NEW FEATURES
+
+- Updated iOS codebase
+- Desktop browser version
+- Android version (React Native)
+- Single backend server (GraphQLite)
+
+---
+
+<img src="https://related.chat/messenger/ios11.png" width="880">
+
+---
+
+## FEATURES
+
+- Direct chat functionality
+- Channel chat functionality
+- Sending text messages
+- Sending emoji messages
+- Sending photo messages
+- Sending video messages
+- Sending audio messages
+- Sending stickers
+- Sending GIF messages
+- Media file local cache
+- Media message re-download option
+- Media download network settings (Wi-Fi, Cellular or Manual)
+- Cache settings for media messages (automatic/manual cleanup)
+- Typing indicator
+- Load earlier messages
+- Message delivery receipt
+- Message read receipt
+- Arbitrary message sizes
+- Send/Receive sound effects
+- Copy and paste text messages
+- Video length limit possibility
+- Save photo messages to device
+- Save video messages to device
+- Realtime conversation view for ongoing chats
+- All media view for chat media files
+- Picture view for multiple pictures
+- Basic Settings view included
+- Basic Profile view for users
+- Edit Profile view for changing user details
+- Sign in with Email
+- Privacy Policy view
+- Terms of Service view
+- Full source code is available
+- No backend programming is needed
+- Native and easy to customize user interface
+- Supports native iOS Dark Mode
+- Supported devices: iPhone SE - iPhone 13 Pro Max
+
+---
+
+<img src="https://related.chat/messenger/ios12.png" width="880">
+<img src="https://related.chat/messenger/ios13.png" width="880">
+
+---
+
+## INSTALLATION (iOS)
+
+**1.,** Run `pod install` first (the [CocoaPods](https://cocoapods.org) Frameworks and Libraries are not included in the repo).
+
+**2.,** Create some test users by using the [Desktop browser version](https://relatedchat.io).
+
+---
+
+## INSTALLATION (Web)
 
 You can install RelatedChat on any servers (Windows, Linux or macOS), by using Docker. Just download the Docker Compose file to your computer and initiate the process.
 
@@ -39,4 +109,26 @@ environment:
 
 ---
 
-© Related Code 2022 - All Rights Reserved
+## LICENSE
+
+MIT License
+
+Copyright (c) 2022 Related Code
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -1,15 +1,16 @@
-import { Menu, Transition } from '@headlessui/react';
-import { SearchIcon } from '@heroicons/react/outline';
-import EditPasswordModal from 'components/dashboard/EditPasswordModal';
-import EditProfile from 'components/dashboard/navbar/EditProfile';
-import { PreferencesContext, UserContext } from 'lib/context';
-import { useEditPasswordModal, useTheme } from 'lib/hooks';
-import React, { Fragment, useContext, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import classNames from 'utils/classNames';
-import { getHref } from 'utils/get-file-url';
-import hexToRgbA from 'utils/hexToRgbA';
+import { Menu, Transition } from "@headlessui/react";
+import { SearchIcon } from "@heroicons/react/outline";
+import EditPasswordModal from "components/dashboard/EditPasswordModal";
+import EditProfile from "components/dashboard/navbar/EditProfile";
+import { useModal } from "contexts/ModalContext";
+import { useTheme } from "contexts/ThemeContext";
+import { useUser } from "contexts/UserContext";
+import { Fragment, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import classNames from "utils/classNames";
+import { getHref } from "utils/get-file-url";
+import hexToRgbA from "utils/hexToRgbA";
 
 function NavbarItem({ onClick, text }: { onClick: any; text: string }) {
   return (
@@ -19,8 +20,8 @@ function NavbarItem({ onClick, text }: { onClick: any; text: string }) {
           role="button"
           tabIndex={0}
           className={classNames(
-            active ? 'th-bg-blue th-color-brwhite' : 'th-bg-bg th-color-for',
-            'block px-5 py-1 text-sm cursor-pointer focus:outline-none'
+            active ? "th-bg-blue th-color-brwhite" : "th-bg-bg th-color-for",
+            "block px-5 py-1 text-sm cursor-pointer focus:outline-none"
           )}
           onClick={onClick}
         >
@@ -33,44 +34,44 @@ function NavbarItem({ onClick, text }: { onClick: any; text: string }) {
 
 const SearchInput = styled.input`
   ::placeholder {
-    color: ${(props) => hexToRgbA(props.theme.brightWhite, '0.8')};
+    color: ${(props) => hexToRgbA(props.theme.brightWhite, "0.8")};
   }
 `;
 
 export default function Navbar() {
   const { themeColors } = useTheme();
   const [openEditProfile, setOpenEditProfile] = useState(false);
-  const { setOpen: setOpenPreferences } = useContext(PreferencesContext);
-  const { setOpen: setOpenEditPassword } = useEditPasswordModal();
+  const { setOpenPreferences } = useModal();
+  const { setOpenEditPassword } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
-  const profile = location.pathname?.includes('user_profile');
+  const profile = location.pathname?.includes("user_profile");
 
-  const { userdata } = useContext(UserContext);
+  const { userdata } = useUser();
   const photoURL =
     getHref(userdata?.thumbnailURL) || getHref(userdata?.photoURL);
 
   return (
     <div
       className={classNames(
-        profile ? 'col-span-4' : 'col-span-3',
-        'max-h-12 border-b px-4 th-bg-blue th-border-bg grid grid-cols-6'
+        profile ? "col-span-4" : "col-span-3",
+        "max-h-12 border-b px-4 th-bg-blue th-border-bg grid grid-cols-6"
       )}
     >
       <div className="col-span-1" />
       <div className="col-span-4 flex items-center justify-center">
         <div
           style={{
-            paddingTop: '1px',
-            paddingBottom: '1px',
-            backgroundColor: hexToRgbA(themeColors?.brightBlue, '0.4')!,
-            borderColor: hexToRgbA(themeColors?.selectionBackground, '0.5')!,
+            paddingTop: "1px",
+            paddingBottom: "1px",
+            backgroundColor: hexToRgbA(themeColors?.brightBlue, "0.4")!,
+            borderColor: hexToRgbA(themeColors?.selectionBackground, "0.5")!,
           }}
           className="px-3 flex items-center justify-center w-9/12 rounded-md border"
         >
           <SearchIcon
             className="h-4 w-4 mr-2"
-            style={{ color: hexToRgbA(themeColors?.brightWhite, '0.8')! }}
+            style={{ color: hexToRgbA(themeColors?.brightWhite, "0.8")! }}
           />
           <SearchInput
             theme={themeColors}
@@ -91,7 +92,7 @@ export default function Navbar() {
                   <div className="th-bg-blue rounded-full h-3 w-3 absolute bottom-0 right-0 transform translate-x-1 translate-y-1 flex items-center justify-center">
                     <div
                       style={{
-                        backgroundColor: '#94e864',
+                        backgroundColor: "#94e864",
                       }}
                       className="rounded-full h-2 w-2"
                     />
@@ -134,7 +135,7 @@ export default function Navbar() {
                       </h5>
                       <div className="flex items-center">
                         <div
-                          style={{ backgroundColor: '#007a5a' }}
+                          style={{ backgroundColor: "#007a5a" }}
                           className="rounded-full h-2 w-2 mr-2"
                         />
                         <h6 className="text-sm font-medium capitalize th-color-for">
@@ -160,7 +161,7 @@ export default function Navbar() {
                   <NavbarItem
                     text="Sign out"
                     onClick={() => {
-                      navigate('/dashboard/logout');
+                      navigate("/dashboard/logout");
                     }}
                   />
                 </Menu.Items>

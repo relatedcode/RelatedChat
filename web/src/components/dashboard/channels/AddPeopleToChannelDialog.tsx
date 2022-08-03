@@ -1,14 +1,14 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
-import ModalButton from 'components/dashboard/ModalButton';
-import TextField from 'components/TextField';
-import { Formik } from 'formik';
-import { useChannelById } from 'hooks/useChannels';
-import React, { Fragment, useRef } from 'react';
-import toast from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
-import { postData } from 'utils/api-helpers';
-import * as Yup from 'yup';
+import { Dialog, Transition } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
+import ModalButton from "components/dashboard/ModalButton";
+import TextField from "components/TextField";
+import { Formik } from "formik";
+import { useChannelById } from "hooks/useChannels";
+import React, { Fragment, useRef } from "react";
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
+import { postData } from "utils/api-helpers";
+import * as Yup from "yup";
 
 export default function AddPeopleToChannelDialog({
   open,
@@ -79,7 +79,7 @@ export default function AddPeopleToChannelDialog({
               </div>
               <Formik
                 initialValues={{
-                  email: '',
+                  email: "",
                 }}
                 enableReinitialize
                 validationSchema={Yup.object().shape({
@@ -91,7 +91,7 @@ export default function AddPeopleToChannelDialog({
                     await postData(`/channels/${channelId}/members`, {
                       email,
                     });
-                    toast.success('Member added.');
+                    toast.success("Member added.");
                     setOpen(false);
                   } catch (err: any) {
                     toast.error(err.message);

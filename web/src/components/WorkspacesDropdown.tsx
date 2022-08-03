@@ -1,8 +1,8 @@
-import { Listbox, Transition } from '@headlessui/react';
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
-import React, { Fragment } from 'react';
-import classNames from 'utils/classNames';
-import { getHref } from 'utils/get-file-url';
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import { Fragment } from "react";
+import classNames from "utils/classNames";
+import { getHref } from "utils/get-file-url";
 
 export function WorkspacesSelectDropdown({
   workspaces,
@@ -25,7 +25,7 @@ export function WorkspacesSelectDropdown({
         id="workspaces"
         name="workspaces"
         value={select}
-        onChange={(e) => setSelect('workspace', e.target.value)}
+        onChange={(e) => setSelect("workspace", e.target.value)}
         className="mt-3 w-full th-color-for th-bg-bg border th-border-brblack rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none sm:text-sm"
       >
         {workspaces.map((workspace: any) => (
@@ -48,7 +48,7 @@ export function WorkspacesDropdown({
   return (
     <Listbox
       value={select}
-      onChange={(e) => setSelect('workspace', e)}
+      onChange={(e) => setSelect("workspace", e)}
       as="div"
     >
       <Listbox.Label className="block text-sm font-bold th-color-for">
@@ -92,8 +92,8 @@ export function WorkspacesDropdown({
                   key={workspace.objectId}
                   className={({ active }) =>
                     classNames(
-                      active ? 'th-color-bg th-bg-blue' : 'th-color-for',
-                      'cursor-default select-none relative py-2 pl-3 pr-9'
+                      active ? "th-color-bg th-bg-blue" : "th-color-for",
+                      "cursor-default select-none relative py-2 pl-3 pr-9"
                     )
                   }
                   value={workspace}
@@ -108,8 +108,8 @@ export function WorkspacesDropdown({
                         />
                         <span
                           className={classNames(
-                            selected ? 'font-semibold' : 'font-normal',
-                            'ml-3 block truncate'
+                            selected ? "font-semibold" : "font-normal",
+                            "ml-3 block truncate"
                           )}
                         >
                           {workspace.name}
@@ -119,8 +119,8 @@ export function WorkspacesDropdown({
                       {selected ? (
                         <span
                           className={classNames(
-                            active ? 'th-color-bg' : 'th-color-blue',
-                            'absolute inset-y-0 right-0 flex items-center pr-4'
+                            active ? "th-color-bg" : "th-color-blue",
+                            "absolute inset-y-0 right-0 flex items-center pr-4"
                           )}
                         >
                           <CheckIcon className="h-5 w-5" aria-hidden="true" />

@@ -1,22 +1,16 @@
-import { Dialog, RadioGroup, Transition } from '@headlessui/react';
-import { ArchiveIcon, TrashIcon, XIcon } from '@heroicons/react/outline';
-import ConfirmationModal from 'components/ConfirmationModal';
-import EditChannelItems from 'components/dashboard/channels/EditChannelItems';
-import MembersSection from 'components/dashboard/channels/MembersSection';
-import { useWorkspaceById } from 'hooks/useWorkspaces';
-import { UserContext } from 'lib/context';
-import { useTheme } from 'lib/hooks';
-import React, {
-  Fragment,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
-import { deleteData, postData } from 'utils/api-helpers';
-import classNames from 'utils/classNames';
+import { Dialog, RadioGroup, Transition } from "@headlessui/react";
+import { ArchiveIcon, TrashIcon, XIcon } from "@heroicons/react/outline";
+import ConfirmationModal from "components/ConfirmationModal";
+import EditChannelItems from "components/dashboard/channels/EditChannelItems";
+import MembersSection from "components/dashboard/channels/MembersSection";
+import { useTheme } from "contexts/ThemeContext";
+import { useUser } from "contexts/UserContext";
+import { useWorkspaceById } from "hooks/useWorkspaces";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteData, postData } from "utils/api-helpers";
+import classNames from "utils/classNames";
 
 export default function EditChannel({
   open,
@@ -35,16 +29,16 @@ export default function EditChannel({
 }) {
   const { themeColors } = useTheme();
   const cancelButtonRef = useRef(null);
-  const [section, setSection] = useState('about');
+  const [section, setSection] = useState("about");
   const { channelId, workspaceId } = useParams();
   const { value } = useWorkspaceById(workspaceId);
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const defaultChannel = value?.channelId === channelId;
 
   useEffect(() => {
-    setSection('about');
+    setSection("about");
   }, [open]);
 
   const [openDeleteChannel, setOpenDeleteChannel] = useState(false);
@@ -172,11 +166,11 @@ export default function EditChannel({
                     {({ checked }) => (
                       <div
                         className={classNames(
-                          checked ? 'border-b-2' : '',
-                          'pb-2 cursor-pointer'
+                          checked ? "border-b-2" : "",
+                          "pb-2 cursor-pointer"
                         )}
                         style={{
-                          borderColor: checked ? themeColors?.brightBlue : '',
+                          borderColor: checked ? themeColors?.brightBlue : "",
                         }}
                       >
                         <span>About</span>
@@ -190,11 +184,11 @@ export default function EditChannel({
                     {({ checked }) => (
                       <div
                         className={classNames(
-                          checked ? 'border-b-2' : '',
-                          'pb-2 cursor-pointer'
+                          checked ? "border-b-2" : "",
+                          "pb-2 cursor-pointer"
                         )}
                         style={{
-                          borderColor: checked ? themeColors?.brightBlue : '',
+                          borderColor: checked ? themeColors?.brightBlue : "",
                         }}
                       >
                         <span>Members</span>
@@ -208,11 +202,11 @@ export default function EditChannel({
                     {({ checked }) => (
                       <div
                         className={classNames(
-                          checked ? 'border-b-2' : '',
-                          'pb-2 cursor-pointer'
+                          checked ? "border-b-2" : "",
+                          "pb-2 cursor-pointer"
                         )}
                         style={{
-                          borderColor: checked ? themeColors?.brightBlue : '',
+                          borderColor: checked ? themeColors?.brightBlue : "",
                         }}
                       >
                         <span>Settings</span>
@@ -222,11 +216,11 @@ export default function EditChannel({
                 </RadioGroup>
                 <div
                   className={classNames(
-                    section === 'members' ? '' : 'px-8',
-                    'space-y-6 pt-5 pb-8 border-t h-550 th-bg-bg th-border-selbg'
+                    section === "members" ? "" : "px-8",
+                    "space-y-6 pt-5 pb-8 border-t h-550 th-bg-bg th-border-selbg"
                   )}
                 >
-                  {section === 'about' && (
+                  {section === "about" && (
                     <>
                       <div className="border rounded-xl th-bg-bg th-border-selbg">
                         <EditChannelItems
@@ -260,8 +254,8 @@ export default function EditChannel({
                       />
                     </>
                   )}
-                  {section === 'members' && <MembersSection />}
-                  {section === 'settings' && (
+                  {section === "members" && <MembersSection />}
+                  {section === "settings" && (
                     <>
                       <div
                         style={{

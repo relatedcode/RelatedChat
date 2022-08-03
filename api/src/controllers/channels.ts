@@ -3,9 +3,11 @@ import {
   CREATE_CHANNEL,
   CREATE_DETAIL,
   UPDATE_CHANNEL,
+  UPDATE_DETAIL,
 } from "graphql/mutations";
 import {
   GET_CHANNEL,
+  GET_DETAIL,
   GET_USER,
   GET_WORKSPACE,
   LIST_CHANNELS,
@@ -14,6 +16,42 @@ import { sha256, timeDiff } from "utils";
 import { arrayRemove, arrayUnion } from "utils/array-helpers";
 import graphQLClient from "utils/graphql";
 import { v4 as uuidv4 } from "uuid";
+
+export async function createOrUpdateDetails({
+  token,
+  uid,
+  chat,
+}: {
+  token: string;
+  uid: string;
+  chat: any;
+}) {
+  const detailId = sha256(`${uid}#${chat.objectId}`);
+  try {
+    await graphQLClient(token).request(GET_DETAIL, {
+      objectId: detailId,
+    });
+
+    // chatDetails already exists, so update it
+    await graphQLClient(token).request(UPDATE_DETAIL, {
+      input: {
+        objectId: detailId,
+        lastRead: chat.lastMessageCounter,
+      },
+    });
+  } catch (err) {
+    // chatDetails does not exist, so create it
+    await graphQLClient(token).request(CREATE_DETAIL, {
+      input: {
+        objectId: detailId,
+        chatId: chat.objectId,
+        userId: uid,
+        workspaceId: chat.workspaceId,
+        lastRead: chat.lastMessageCounter,
+      },
+    });
+  }
+}
 
 export const createChannel = async (
   req: express.Request,
@@ -240,15 +278,10 @@ export const unarchiveChannel = async (
     });
 
     if (!channel.members.includes(uid)) {
-      const d1 = sha256(`${uid}#${channel.objectId}`);
-      await graphQLClient(res.locals.token).request(CREATE_DETAIL, {
-        input: {
-          objectId: d1,
-          chatId: channel.objectId,
-          userId: uid,
-          workspaceId: channel.workspaceId,
-          lastRead: channel.lastMessageCounter,
-        },
+      await createOrUpdateDetails({
+        token: res.locals.token,
+        uid,
+        chat: channel,
       });
     }
 
@@ -303,16 +336,12 @@ export const addMember = async (
       },
     });
 
-    const d1 = sha256(`${userId}#${channel.objectId}`);
-    await graphQLClient(res.locals.token).request(CREATE_DETAIL, {
-      input: {
-        objectId: d1,
-        chatId: channel.objectId,
-        userId,
-        workspaceId: channel.workspaceId,
-        lastRead: channel.lastMessageCounter,
-      },
+    await createOrUpdateDetails({
+      token: res.locals.token,
+      uid: userId,
+      chat: channel,
     });
+
     res.locals.data = {
       success: true,
     };

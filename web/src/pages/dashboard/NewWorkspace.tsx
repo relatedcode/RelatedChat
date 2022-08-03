@@ -4,10 +4,10 @@ import LoadingScreen from "components/LoadingScreen";
 import TextField from "components/TextField";
 import { WorkspacesDropdown } from "components/WorkspacesDropdown";
 import { APP_NAME } from "config";
+import { useUser } from "contexts/UserContext";
 import { Formik } from "formik";
 import { useMyWorkspaces, WorkspacesContext } from "hooks/useWorkspaces";
-import { UserContext } from "lib/context";
-import React, { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import toast from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -21,21 +21,33 @@ export function TabLists() {
   return (
     <div className="mt-5">
       <div className="hidden sm:block">
-        <nav className="flex space-x-4 w-full" aria-label="Tabs">
+        <nav
+          className="group p-0.5 rounded-lg flex bg-gray-100 hover:bg-gray-200"
+          aria-label="Tabs"
+        >
           {tabs.map((tab) => (
-            <Tab.List key={tab.name} className="w-1/2 text-center">
+            <Tab.List key={tab.name} className="w-1/2 text-center flex">
               <Tab as={Fragment}>
                 {({ selected }) => (
                   <button
                     className={classNames(
                       selected
-                        ? "th-bg-blue-40 th-color-brwhite"
-                        : "th-color-brwhite",
-                      "px-3 py-2 font-medium text-sm rounded-md cursor-pointer w-full"
+                        ? "flex rounded-md focus:outline-none"
+                        : "px-auto rounded-md flex items-center text-sm text-gray-600 font-medium focus:outline-none",
+                      "flex-1 flex"
                     )}
                     aria-current={selected ? "page" : undefined}
                   >
-                    {tab.name}
+                    <span
+                      className={classNames(
+                        selected
+                          ? "bg-white shadow-sm ring-1 ring-black ring-opacity-5"
+                          : "",
+                        "p-1.5 lg:pl-2.5 lg:pr-3.5 rounded-md flex justify-center items-center text-sm font-medium flex-1"
+                      )}
+                    >
+                      {tab.name}
+                    </span>
                   </button>
                 )}
               </Tab>
@@ -49,7 +61,7 @@ export function TabLists() {
 
 function HeaderDefaultWorkspace() {
   const navigate = useNavigate();
-  const { userdata } = useContext(UserContext);
+  const { userdata } = useUser();
   return (
     <header className="w-full py-8 grid grid-cols-3">
       <div />
@@ -71,7 +83,7 @@ function HeaderDefaultWorkspace() {
 }
 
 export default function NewWorkspace() {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const { value: allWorkspaces, loading: loadingAllWorkspaces } =
     useContext(WorkspacesContext);
   const { value: workspaces } = useMyWorkspaces();

@@ -1,20 +1,13 @@
 import { USER_PHOTO_MAX_WIDTH, USER_THUMBNAIL_WIDTH } from "config";
+import { createOrUpdateDetails } from "controllers/channels";
 import express from "express";
 import {
-  CREATE_DETAIL,
   CREATE_PRESENCE,
   CREATE_USER,
-  UPDATE_DETAIL,
   UPDATE_PRESENCE,
   UPDATE_USER,
 } from "graphql/mutations";
-import {
-  GET_CHANNEL,
-  GET_DETAIL,
-  GET_DIRECT,
-  GET_PRESENCE,
-} from "graphql/queries";
-import { sha256 } from "utils";
+import { GET_CHANNEL, GET_DIRECT, GET_PRESENCE } from "graphql/queries";
 import { createGQLUser } from "utils/auth";
 import graphQLClient from "utils/graphql";
 import { getFileMetadata, saveImageThumbnail } from "utils/storage";
@@ -85,17 +78,14 @@ export const updateUser = async (
         )
       : "";
     const metadata = await getFileMetadata(path);
-    const [thumbnailURL, , photoResizedURL] = await saveImageThumbnail(
-      path,
-      USER_THUMBNAIL_WIDTH,
-      USER_THUMBNAIL_WIDTH,
+    const [thumbnailURL, , photoResizedURL] = await saveImageThumbnail({
+      filePath: path,
+      width: USER_THUMBNAIL_WIDTH,
+      height: USER_THUMBNAIL_WIDTH,
       metadata,
-      false,
-      false,
-      true,
-      USER_PHOTO_MAX_WIDTH,
-      res.locals.token
-    );
+      resizeOriginalSize: USER_PHOTO_MAX_WIDTH,
+      authToken: res.locals.token,
+    });
 
     await graphQLClient(res.locals.token).request(UPDATE_USER, {
       input: {
@@ -174,15 +164,6 @@ export const read = async (
 
     if (id !== uid) throw new Error("Not allowed.");
 
-    const detailId = sha256(`${uid}#${chatId}`);
-
-    const { getDetail: detail } = await graphQLClient(res.locals.token).request(
-      GET_DETAIL,
-      {
-        objectId: detailId,
-      }
-    );
-
     let chat;
     if (chatType === "Direct") {
       const { getDirect: direct } = await graphQLClient(
@@ -200,28 +181,7 @@ export const read = async (
       chat = channel;
     }
 
-    if (detail && uid !== detail.userId) throw new Error("Not allowed.");
-    if (detail && chatId !== detail.chatId)
-      throw new Error("An error has occured.");
-
-    if (detail) {
-      await graphQLClient(res.locals.token).request(UPDATE_DETAIL, {
-        input: {
-          objectId: detailId,
-          lastRead: chat.lastMessageCounter,
-        },
-      });
-    } else {
-      await graphQLClient(res.locals.token).request(CREATE_DETAIL, {
-        input: {
-          objectId: detailId,
-          chatId,
-          userId: uid,
-          workspaceId: chat.workspaceId,
-          lastRead: chat.lastMessageCounter,
-        },
-      });
-    }
+    await createOrUpdateDetails({ token: res.locals.token, uid, chat });
 
     res.locals.data = {
       success: true,

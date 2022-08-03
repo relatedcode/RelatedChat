@@ -1,19 +1,13 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
-import { uploadFile } from "gqlite-lib/dist/client/storage";
 import CancelButton from "components/CancelButton";
 import ModalButton from "components/dashboard/ModalButton";
 import TextField from "components/TextField";
 import { APP_NAME } from "config";
+import { useUser } from "contexts/UserContext";
 import { Formik } from "formik";
-import { UserContext } from "lib/context";
-import React, {
-  Fragment,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { uploadFile } from "gqlite-lib/dist/client/storage";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { postData } from "utils/api-helpers";
 import { getHref } from "utils/get-file-url";
@@ -26,7 +20,7 @@ export default function EditProfile({
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { userdata } = useContext(UserContext);
+  const { userdata } = useUser();
 
   const userPhotoURL = getHref(userdata?.photoURL);
 

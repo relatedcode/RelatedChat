@@ -1,8 +1,8 @@
 import { useQuery, useSubscription } from "@apollo/client";
+import { DirectMessagesContext } from "contexts/DirectMessagesContext";
 import * as queries from "graphql/queries";
 import * as subscriptions from "graphql/subscriptions";
 import useAuth from "hooks/useAuth";
-import { DirectMessagesContext } from "lib/context";
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 

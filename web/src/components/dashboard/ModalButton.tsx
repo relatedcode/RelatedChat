@@ -1,13 +1,12 @@
-import React from 'react';
-import classNames from 'utils/classNames';
+import classNames from "utils/classNames";
 
 export default function ModalButton({
   text,
   isSubmitting,
   onClick,
-  type = 'submit',
+  type = "submit",
   isDelete = false,
-  className = 'w-full inline-flex sm:ml-3 justify-center items-center py-2 px-4 border border-transparent text-base font-bold rounded text-white focus:outline-none focus:ring-4 focus:ring-blue-200 sm:w-auto sm:text-sm disabled:opacity-50',
+  className = "w-full inline-flex sm:ml-3 justify-center items-center py-2 px-4 border border-transparent text-base font-bold rounded text-white focus:outline-none focus:ring-4 focus:ring-blue-200 sm:w-auto sm:text-sm disabled:opacity-50",
   disabled = false,
   ref,
 }: {
@@ -26,8 +25,8 @@ export default function ModalButton({
       disabled={isSubmitting || disabled}
       className={classNames(
         !isDelete
-          ? 'th-bg-blue th-color-brwhite'
-          : 'th-bg-red th-color-brwhite',
+          ? "th-bg-blue th-color-brwhite"
+          : "th-bg-red th-color-brwhite",
         className
       )}
       onClick={onClick}
