@@ -6,10 +6,11 @@ RelatedChat is an open-source alternative communication platform. Both iOS (Swif
 
 ## NEW FEATURES
 
-- Updated iOS codebase
-- Desktop browser version
-- Android version (React Native)
-- Single backend server (GraphQLite)
+- Live [demo server](https://relatedchat.io) available
+- Updated iOS (Swift) codebase
+- New Android (React Native) version
+- New Desktop browser (React) version
+- Single backend server (using [GraphQLite](https://graphqlite.com))
 
 <img src="https://related.chat/messenger/ios11.png" width="880">
 
@@ -62,7 +63,7 @@ RelatedChat is an open-source alternative communication platform. Both iOS (Swif
 
 **2.,** Create some test users by using the [demo server](https://relatedchat.io).
 
-**3.,** Open the app.xcworkspace from Xcode and select Product/Run (⌘ R).
+**3.,** Open the `app.xcworkspace` from Xcode and select Product/Run (⌘ R).
 
 ## INSTALLATION (Web)
 
