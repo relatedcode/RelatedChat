@@ -1,3 +1,14 @@
+## TABLE OF CONTENTS
+[OVERVIEW](https://github.com/seankcheema/RelatedChat/blob/main/README.md#overview)
+[WHY RELATEDCHAT](https://github.com/seankcheema/RelatedChat/blob/main/README.md#why-relatedchat)
+[NEW FEATURES](https://github.com/seankcheema/RelatedChat/blob/main/README.md#new-features)
+[FEATURES](https://github.com/seankcheema/RelatedChat/blob/main/README.md#features)
+[INSTALLATION (iOS)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-ios)
+[INSTALLATION (Android)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-android)
+[INSTALLATION (Web)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-web)
+[LICENSE](https://github.com/seankcheema/RelatedChat/blob/main/README.md#license)
+
+
 ## OVERVIEW
 
 RelatedChat is an open-source alternative communication platform. Both iOS (Swift), Android (React Native), and Web (React) version source codes are available.
@@ -17,12 +28,12 @@ Why would you use RelatedChat over other communication platforms?
     - RelatedChat requires minimal user information so users can get chatting in no time.
 - _Customization_
     - RelatedChat provides a plethora of customization options compared to other applications of its kind.
-    - Some examples of customization include detailed profile descriptions, native iOS Dark Mode, and custom channel and   group names.
+    - Some examples of customization include detailed profile descriptions, native iOS Dark Mode, and custom channel and group names.
 - _Privacy_
     - RelatedChat provides exceptional privacy that other applications tend to overlook.
     - For example, users may choose to password-protect their information.
 - _User Experience_
-    - RelatedChat provides a level of user personality and organization through a variety of features that some     applications don't offer.
+    - RelatedChat provides a level of user personality and organization through a variety of features that some applications don't offer.
     - These features include but are not limited to: video messages, photo messages, audio messages, stickers, gifs, emojis, and channel organization.
     
 ## NEW FEATURES
