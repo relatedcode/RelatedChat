@@ -6,6 +6,25 @@ RelatedChat is an open-source alternative communication platform. Both iOS (Swif
 
 <img src="https://related.chat/messenger/android1.png" width="880">
 
+## WHY RELATEDCHAT
+
+Why would you use RelatedChat over other communication platforms?
+- _Infinite Applications_
+    - RelatedChat is infinitely applicable to users' situations.
+    - It can be used for anything from student projects, to professional groups, to chatting with friends and family.
+- _Ease of Access_
+    - With minimal dependencies, RelatedChat is easy to install even for users who have never used open source software.
+    - RelatedChat requires minimal user information so users can get chatting in no time.
+- _Customization_
+    - RelatedChat provides a plethora of customization options compared to other applications of its kind.
+    - Some examples of customization include detailed profile descriptions, native iOS Dark Mode, and custom channel and   group names.
+- _Privacy_
+    - RelatedChat provides exceptional privacy that other applications tend to overlook.
+    - For example, users may choose to password-protect their information.
+- _User Experience_
+    - RelatedChat provides a level of user personality and organization through a variety of features that some     applications don't offer.
+    - These features include but are not limited to: video messages, photo messages, audio messages, stickers, gifs, emojis, and channel organization.
+    
 ## NEW FEATURES
 
 - Live [demo server](https://relatedchat.io) available
