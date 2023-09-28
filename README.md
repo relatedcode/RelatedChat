@@ -1,13 +1,12 @@
 ## TABLE OF CONTENTS
-[OVERVIEW](https://github.com/seankcheema/RelatedChat/blob/main/README.md#overview)
-[WHY RELATEDCHAT](https://github.com/seankcheema/RelatedChat/blob/main/README.md#why-relatedchat)
-[NEW FEATURES](https://github.com/seankcheema/RelatedChat/blob/main/README.md#new-features)
-[FEATURES](https://github.com/seankcheema/RelatedChat/blob/main/README.md#features)
-[INSTALLATION (iOS)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-ios)
-[INSTALLATION (Android)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-android)
-[INSTALLATION (Web)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-web)
+[OVERVIEW](https://github.com/seankcheema/RelatedChat/blob/main/README.md#overview) | 
+[WHY RELATEDCHAT](https://github.com/seankcheema/RelatedChat/blob/main/README.md#why-relatedchat) | 
+[NEW FEATURES](https://github.com/seankcheema/RelatedChat/blob/main/README.md#new-features) | 
+[FEATURES](https://github.com/seankcheema/RelatedChat/blob/main/README.md#features) | 
+[INSTALLATION (iOS)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-ios) | 
+[INSTALLATION (Android)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-android) | 
+[INSTALLATION (Web)](https://github.com/seankcheema/RelatedChat/blob/main/README.md#installation-web) | 
 [LICENSE](https://github.com/seankcheema/RelatedChat/blob/main/README.md#license)
-
 
 ## OVERVIEW
 
