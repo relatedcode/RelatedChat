@@ -1,22 +1,21 @@
-<a href="https://fictiongpt.xyz"><img src="https://related.chat/github/header40.png" width="880"></a>
+<a href="https://learngpt.art"><img src="https://rel.codes/banner/002.png" width="880"></a>
 
 ## OVERVIEW
 
 RelatedChat is an open-source alternative communication platform. Both iOS (Swift), Android (React Native), and Web (React) version source codes are available.
 
-<img src="https://related.chat/messenger/web1.png" width="880">
+<img src="https://rel.codes/messenger/web1.png" width="880">
 
-<img src="https://related.chat/messenger/android1.png" width="880">
+<img src="https://rel.codes/messenger/android1.png" width="880">
 
 ## NEW FEATURES
 
-- Live [demo server](https://relatedchat.io) available
 - Updated iOS (Swift) codebase
 - New Android (React Native) version
 - New Desktop browser (React) version
 - Single backend server (using [GraphQLite](https://graphqlite.com))
 
-<img src="https://related.chat/messenger/ios11.png" width="880">
+<img src="https://rel.codes/messenger/ios11.png" width="880">
 
 ## FEATURES
 
@@ -58,12 +57,12 @@ RelatedChat is an open-source alternative communication platform. Both iOS (Swif
 - Supports native iOS Dark Mode
 - Supported devices: iPhone SE - iPhone 13 Pro Max
 
-<img src="https://related.chat/messenger/ios12.png" width="880">
-<img src="https://related.chat/messenger/ios13.png" width="880">
+<img src="https://rel.codes/messenger/ios12.png" width="880">
+<img src="https://rel.codes/messenger/ios13.png" width="880">
 
 ## INSTALLATION (iOS)
 
-**1.,** Create some test users by using the [demo server](https://relatedchat.io).
+**1.,** Create some test users by using a demo server.
 
 **2.,** Open the `app.xcodeproj` from Xcode and select Product/Run (⌘ R).
 
